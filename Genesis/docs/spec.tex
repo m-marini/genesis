@@ -1,0 +1,300 @@
+\documentclass[a4paper,twoside]{article}
+\usepackage[italian]{babel}
+\usepackage[latin1]{inputenc}
+\begin{document}
+\title{Specifiche Genesis\thanks{\$Id: spec.tex,v 1.3 2011/12/27 23:13:06 marco Exp $ $}}
+\author{Marco Marini}
+\maketitle
+\part{Principi}
+\section{Reazioni chimiche}
+Le reazioni chimiche simulate sono due:
+
+\subsection{Sintesi}
+La sintesi produce glucosio assorbendo l'energia dal sistema. Durante la sintesi l'anidride carbonica si unisce all'acqua e viene prodotto glucosio e ossigeno.
+
+anidride carbonica + acqua + energia = glucosio + ossigeno
+
+$6 \, CO_2 +6 \,  H_2O + energia = C_6 H_{12}O_6 + 6 \, O_2 $
+
+\subsection{Combustione}
+La combustione brucia glucosio creando energia.
+Durante la combustione il glucosio si unisce all'ossigeno e produce l'acqua e anidride carbonica.
+
+ glucosio + ossigeno = anidride carbonica  + acqua + energia 
+ 
+$ C_6 H_{12}O_6 + 6 \, O_2 = 6 \, CO_2 + 6 \,  H_2O + energia $
+
+L'ossigeno e l'anidride carbonica sono allo stato gassoso, l'acqua è allo stato liquido e il glucosio allo stato liquido
+
+\part{Attività}
+Ogni essere vivente reagisce in base ai segnali che arrivano dall'ambiente.
+
+Possiamo identificare alcune azioni base:
+
+\section{Produzione di energia}
+Le attività di base dell'essere vivente necessitano di una quantità di energia che viene prodotta bruciano glucosio (reazione di ossidazione). Se l'essere non ha sufficiente glucosio per sopravvivere l'essere muore. L'essere vivente non ha controllo sulla produzione di energia che è automatica.
+
+\section{Sintesi}
+L'essere viviente assorbe energia dal e la converte in glucosio, ogni essere vivente può regolare la quantità di energia assorbita quindi l'azione disponiible è la modifica del parametro di controllo ovvero la velocità di sintesi del glucosio $S$
+\begin{equation}
+\Delta G = S \, \Delta t
+\end{equation}
+
+L'attività di sintesi cambia lo stato accumulando glucosio nel corpo, quindi è utile all'essere vivente conoscere la quantità di glucosio  $G$ presente.
+
+Ci sono tre regole che controllano la velocità di sintesi in base a tre fascie di glucosio:
+\begin{eqnarray}
+	0 \le G < G_1 \Rightarrow S = S_1
+	\\	
+	G_1 \le G < G_2 \Rightarrow  S = S_2
+	\\
+	G \ge G_2 \Rightarrow  S = S_3
+\end{eqnarray}
+
+I valori $G_1, G_2, S_1, S_2, S_3$ sono determinati dal codice genetico dell'essere vivente.
+
+\section{Clonazione}
+L'essere vivente può creare una copia di se stesso, la posizione del nuovo essere vivente è nei dintorni del genitore. Questà attività necessita di energia aggiuntiva altre a quella di sopravvivenza.
+
+L'equazione energetica della clonazione è:
+\begin{eqnarray}
+\Delta G_1=-E_0- G_c
+\\
+G_c=K (G - E_0)
+\end{eqnarray}
+dove $E_0$ è l'energia di clonazione, $G_c$ è il glucosio ceduto al clone, $K$ è la percentuale di glucosio cedibile al clone.
+
+La condizione utile per clonare è
+\begin{equation}
+G >E_0
+\end{equation}
+
+L'attività di clonazione riduce la quantità di glucosio quindi è utile per conoscere il livello di glucosio dell'essere. I parametri controllati dall'essere che guidano l'attività di clonazione sono due: la percentuale di glucosio ceduto al clone e la probabilità di clonazione.
+
+In questo caso possiamo definire tre regole di clonazione funzione del livello di glucosio:
+\begin{eqnarray}
+0 \le G < G_1 \Rightarrow P(c)=P_1, K = K_1
+\\
+G_1 \le G < G_2 \Rightarrow P(c)=P_2, K = K_2
+\\
+G \ge G_2 \Rightarrow P(c)=P_3, K = K_3
+\end{eqnarray}
+Dove P(c) la probabilità di clonazione.
+
+I valori $G_1, G_2, P_1, P_2, P_3, K_1, K_2, K_3$ sono determinati dal codice genetico. 
+
+\section{Accoppiamento}
+L'essere vivente può accopiarsi con un'altro essere vivente nel'intorno della cella e creare un nuovo essere vivente. Il patrimonio genetico dei due genitori viene mescolato casualmente. Questta attività necessita di energia aggiuntiva. L'equazione energetica dell'accoppiamento è 
+\begin{eqnarray}
+\Delta G = -E_0 - G_a
+\\
+G_a=K (G-E_0)
+\end{eqnarray}
+
+dove $E_0$ è l'energia di accoppiamento, $G_a$ è il glucosio ceduto al figlio, $K$ è la percentuale di glucosio ceduta dal genitore.
+
+La condizione per accoppiarsi è
+\begin{equation}
+	G_1>E_0
+\end{equation}
+
+La logica di selezione del genitore potrebbe essere quella di favorire gli individui con maggior livello di glucosio secondo la logica per cui la probabilità di sopravvivenza dovrebbe essere proporzionale alla capacità di accumulo del glucosio. In pratica la probabilità di selezionare un individuo nei dintorni dovrebbe essere proporzionale al livello di glucosio.
+
+L'attività di accoppiamento riduce la quantità di energia quindi è utile conoscere il livello di glucosio dell'essere. I parametri controllati dall'essere che guidano l'accoppiamento sono due: la percentuale di glucosio ceduto al figlio e la probabilità di clonazione, altro.
+
+In questo caso possiamo definire tre regole di accoppiamento, funzione del livello di glucosio:
+\begin{eqnarray}
+0 \le G < G_1 \Rightarrow P(a)=P_1, K = K_1
+\\
+G_1 \le G < G_2 \Rightarrow P(a)=P_2, K = K_2
+\\
+G \ge G_2 \Rightarrow P(a)=P_3, K = K_3
+\end{eqnarray}
+
+\section{Assorbimento}
+
+L'essere vivente può assorbire il glucosio presente nell'ambiente. Questà attività necessita di energia aggiuntiva oltre a quella di sopravvivenza. L'equazione energetica dell'assorbimento è
+\begin{equation}
+\Delta G= -\pi_0 \Delta t+ min(G_t, \pi_x \Delta t) 
+\end{equation}
+$\pi_0$ è l'energia necessaria per assorbire il glucosio, $G_t$ il glucosio nel terreno e $\pi_x$ il limite massimo di assorbimento. L'azione a disposizione è quella di modifica della probabilità di assorbimento $P(a)$.
+
+L'assorbimento è utile quando
+\begin{equation}
+\Delta G>0 \Rightarrow
+\begin{array}{l}
+\pi_x>\pi_0
+\\
+G_t>\pi_0  \Delta t
+\end{array}
+\end{equation}
+
+L'assorbimento consumando energia deve valutare il rapporto costi/benefici tra lo spendere le energie per assorbire e l'energia assorbita, per questo è necessario misurare la quantità di glucosio presente nel terreno e rapportarla con la quantità assorbibile.
+\begin{equation}
+\rho = \frac{G_t}{\pi_0 \Delta t+G_t}, \; \rho=0\dots 1
+\end{equation}
+
+Quindi l'assorbimento è utile quando
+\begin{equation}
+	\rho \ge \frac{1}{2}
+\end{equation}
+
+In questo caso possiamo definire due regole di accoppiamento, funzione del livello di glucosio nel terreno:
+\begin{eqnarray}
+0 \le G_t < G_1 \Rightarrow P(a)=P_1
+\\
+G_t \ge G_1 \Rightarrow P(a)=P_2
+\end{eqnarray}
+
+
+\section{Attacco}
+L'essere vivente può attacccare un'altro essere vivente nel'intorno della cella. In caso di attacco viene consumata dell'energia sia da chi attacca che da chi si difende. La probabilità di vincita è definita da
+\begin{equation}
+	P(v)=\frac{E_a}{E_a+E_d}
+\end{equation}
+$E_a$ è l'energia usata per l'attacco e $E_d$ quella usata per la difesa.
+
+L'equazione energetica dell'attacco è 
+\begin{eqnarray}
+\Delta G_a = E_a = K_a G_a
+\\
+\Delta G_d = E_d = K_d G_d
+\end{eqnarray}
+dove $K_a$ è la percentuale di energia da destinare all'attacco e $K_d$ la percentuale da destinare alla difesa.
+
+In caso di più prede presenti l'attaccante deve decidere quale preda attaccare. E' ammesso un solo attacco per ciclo. L'attaccante può decidere se attaccare la preda più grossa o più piccola controllando la probabilità tra le due strategie $P(x)$.
+
+I parametri di controllo sono quindi la probabilità di attivazione $P(a)$, la probabilità di attacco della preda più grossa, la quantità di energia per l'attacco $K_a$ e la quantità di energia per la difesa $K_d$.
+
+In caso di vincita l'attaccante acquisisce il glucosio della preda altrimenti non succede nulla. L'attaccante conosce solo la quantità di energia che può consumare e la quantità di glucosio della preda (minimo e massimo).
+
+Si possono quindi identificare 3 parametri e costruire quindi 8 regole per l'attacco:
+\begin{eqnarray}
+	E_a < E_1, G_x < G_1, G_m<G_2 \Rightarrow P(a)=P_{11}, P(x)=P_{12}, K_a = K_1 
+\\	E_a < E_1, G_x < G_1, G_m\ge G_2 \Rightarrow P(a)=P_{11}, P(x)=P_{22}, K_a = K_2 
+\\	E_a < E_1, G_x \ge G_1, G_m < G_2 \Rightarrow P(a)=P_{31}, P(x)=P_{32}, K_a = K_3 
+\\	E_a < E_1,G_x \ge G_1, G_m \ge G_2 \Rightarrow P(a)=P_{41}, P(x)=P_{42}, K_a = K_4 
+\\	E_a \ge E_1,  G_x < G_1, G_m<G_2 \Rightarrow P(a)=P_{51}, P(x)=P_{52}, K_a = K_5
+\\	E_a \ge E_1,  G_x < G_1, G_m \ge G_2 \Rightarrow P(a)=P_{61}, P(x)=P_{62}, K_a = K_6
+\\	E_a \ge E_1,  G_x \ge G_1, G_m < G_2 \Rightarrow P(a)=P_{71}, P(x)=P_{72}, K_a = K_7 
+\\	E_a \ge E_1,  G_x \ge G_1, G_m \ge G_2 \Rightarrow P(a)=P_{81}, P(x)=P_{82}, K_a = K_8 
+\end{eqnarray}
+
+Le regole di difesa invece sono quattro:
+\begin{eqnarray}
+	E_a<E_2, E_d < E_3 \Rightarrow K_d = K_1 
+\\	E_a<E_2, E_d \ge E_3 \Rightarrow K_d = K_2 
+\\	E_a\ge E_2, E_d < E_3 \Rightarrow K_d = K_3 
+\\	E_a \ge E_2, E_d \ge E_3 \Rightarrow K_d = K_4 
+\end{eqnarray}
+
+
+\section{Movimento}
+L'essere vivente può spostarsi nel'intorno della cella per cercare condizioni favorevoli o per scappare da qualche predatore. Questà attività necessita di energia aggiuntiva oltre a quella di sopravvivenza.
+
+L'equazione energetica è:
+\begin{equation}
+\Delta G = -E_m
+\end{equation}
+$E_m$ è l'energia necessaria a muoversi.
+
+Condizioni necessaria per muoversi è che ci siano celle libere nei dintorni e che ci sia energia per muoversi $G > E_m$. Sono definiti tre comportamenti base per muoversi: fuga, ricerca glucosio, ricerca di condizioni per sintetizzare, ricerca condizioni per la respirazione.
+
+La scelta del comportamento può quindi essere regolato dalla combinazione di quattro insiemi di regole ogniuno delle quali definisce la preferenza comportamentale:
+\begin{eqnarray}
+P(fuga)=\frac{p_f}{p_f+p_g+p_s+p_r+p_i}
+\\P(glucosio)=\frac{p_g}{p_f+p_g+p_s+p_r+p_i}
+\\P(sintesi)=\frac{p_s}{p_f+p_g+p_s+p_r+p_i}
+\end{eqnarray}
+
+Se $p_f+p_g+p_s+p_i=0$ allora non ci sarà alcun movimento.
+
+
+\subsection{Fuga}
+La fuga consiste nello spostarsi in una cella libera più possibilmente lontana da grossi predatori. Il sistema cerca la cella adiacente la cui somma di glucosio degli esseri viventi confinanti sia minore. Questo valore dà un'indicazione del rischio di attacco.
+\begin{equation}
+	R_i = \sum_{a \in A_i} G_a
+\end{equation}
+dove $A_i$ sono le celle adiacenti a i.
+
+Rapportare tale rischio al quello della posizione corrente dà l'indicatore normalizzato che può identficare la situazione di fuga.
+\begin{equation}
+	Pi = \frac{R_i}{R_i + R_j}
+\end{equation}
+dove $j$ è la cella con minor rischio.
+
+Quando $P<\frac{1}{2}$ significa che la cella attuale è a rischio minore di quella di fuga, se invece 
+$P>\frac{1}{2}$ la cella attuale ha un rischio maggiore di quella di fuga.
+
+Le regole quindi sono
+\begin{eqnarray}
+	G < G_t, P < P_t \Rightarrow p_f = p_1
+\\	G < G_t, P \ge P_t \Rightarrow p_f = p_2
+\\	G \ge	G_t, P < P_t \Rightarrow p_f = p_3
+\\	G \ge G_t, P \ge P_t \Rightarrow p_f = p_4
+\end{eqnarray}
+
+\subsection{Ricerca glucosio}
+In questo caso l'essere si sposta verso la cella con maggior quantità di glucosio. E' interessante conoscere in questo caso se la cella migliore esiste o se la cella corrente è migliore della destinataria e la quantità di glucosio presente nella posizione destinataria.
+
+Le regole quindi sono
+\begin{eqnarray}
+	G < G_1, G_i < G_2 \Rightarrow p_g = p_1
+\\	G < G_1, G_i \ge G_2 \Rightarrow p_g = p_2
+\\	G \ge	G_1, G_i < G_2 \Rightarrow p_g = p_3
+\\	G \ge G_1, G_i \ge G_2 \Rightarrow p_g = p_4
+\end{eqnarray}
+
+\subsection{Ricerca sintesi}
+In questo caso l'essere si sposta verso la cella con maggior quantità di glucosio sintetizzabile (valore minimo tra anidride carbonica e acqua). E' interessante conoscere in questo caso se la cella migliore esiste o se la cella corrente è migliore della destinataria e la quantità di glucosio sitetizzabile presente nella posizione destinataria.
+
+Le regole quindi sono
+\begin{eqnarray}
+	G < G_1, G_i < G_2 \Rightarrow p_s = p_1
+\\	G < G_1, G_i \ge G_2 \Rightarrow p_s = p_2
+\\	G \ge	G_1, G_i < G_2 \Rightarrow p_s = p_3
+\\	G \ge G_1, G_i \ge G_2 \Rightarrow p_s = p_4
+\end{eqnarray}
+  
+\part{Codice genetico}
+
+Il codice genetico deve codificare le regole di comportamento degli essere. Si sono identificati vari parametri sia di riconoscimento che di controllo. Per semplificazione il codice genetico codifica valori discreti di questi parametri.
+\begin{itemize}
+\item
+I livelli assoluti di glucosio si codificano in 10 possibili livelli da 0 a $G_{max}$.
+\item
+Le probabilità si codificano in cinque possibili valori $P(x)=\{0, 0.25, 0.5, 0.75, 1\}$
+\item
+Le percentuali si codificano in cinque possibili valori $K=\{0\%, 25\%, 50\%, 75\%, 100\%\}$
+\item
+Le percentuali si codificano in cinque possibili valori $K=\{0\%, 25\%, 50\%, 75\%, 100\%\}$
+\end{itemize}
+
+Il processo di clonazione consiste nel generare un nuovo essere clonando i parametri genetici.
+Durante la clonazione di ogni parametro può generarsi una mutazione genetica con probabilità
+\begin{equation}
+P(mutazione) = P
+\end{equation}
+definita nella sessione di simulazione. In caso di mutazione il parametro viene modificato casualmente.
+
+  \part{Test di simulazione}
+  
+  \section{Test di simulazione}
+  L'obiettivo \`e analizzare il comportamento basato sull'alimentazione e
+  ricerca del cibo di reti elementari.
+  
+  \section{Test di evoluzione}
+  L'obiettivo \`e analizzare l'evoluzione delle reti neurali genetiche in
+  ambiente di pura alimentazione e ricerca cibo.
+  
+  \`E necessario definire degli indicatori per verificare quando e quanto viene
+  utilizzato un comportamento e l'associazione del comportamento con lo stato
+  dell'ambiente.
+  
+  Come schema di valutazione possiamo usare una griglia con le classi di
+  ambiente (input) e i comportamenti intrapresi (output).
+  
+  
+  \`E importante monitorare anche il tasso di mortalita naturale, se il sistema
+  evolve questo dovrebbe diminuire.
+\end{document}

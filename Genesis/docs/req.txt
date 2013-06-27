@@ -1,0 +1,72 @@
+$Id: req.txt,v 1.2 2007/05/01 08:32:49 marco Exp $
+
+Requirements for 1.0.0
+
+Define the input functions in terms of boolean
+functions.
+
+Add the unit input, use to introduce the thresholds or
+offsets input values in the network
+
+Save the simulation state in xml file 
+
+Load the simulation state in xml file 
+
+Add non linear neural transfer function
+
+Add feedbeck cycle in inference
+
+Add input/output normalization functions
+
+Add crossbreed of living being
+
+Add Use cases
+
+Create new simulation
+
+Set parameters
+
+Create population
+
+Run simulation
+
+Stop simulation
+
+Add ui
+
+Change simulation rules:
+use a fix population size, define life time, after the life time keep a defined number
+ of being and substitute the worst other (less energy) with new crossbreeded being
+ from the best being and repeat.
+
+Simulation user interface (SUI):
+
+SUI allows to load test, load simulation, save simulation, run and stop simulation.
+
+SUI shows the current best error, worst error, the absolute best error.
+
+SUI shows the sample results of best current net.
+
+SUI shows the weights value of best current net.
+
+SUI shows the result of the population
+
+View:
+
+Population view.
+It shows a table with the result of the population
+
+Errors view.
+It shows the history of errors: current best error, current worst error, absolute
+best error and cycle number, current cycle number.
+
+Sample results view.
+It shows the sample results of a net.
+
+Check for the save
+
+Merge e reorg function on XML with XSL.
+
+Probabilistic function to choose the parents
+The best net has more probablity to be choosen then the worst net
+
