@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The simulator handler manages a session of simulation.
@@ -23,7 +23,8 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 public class SimulationHandler implements SimulationConstants {
-	private static Log log = LogFactory.getLog(SimulationHandler.class);
+	private static Logger log = LoggerFactory
+			.getLogger(SimulationHandler.class);
 	private SimulationParameters parameters;
 	private Point[][] neighbours;
 	private Cell[][] grid;

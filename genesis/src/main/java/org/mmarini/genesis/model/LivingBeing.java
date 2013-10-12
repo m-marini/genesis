@@ -3,8 +3,8 @@
  */
 package org.mmarini.genesis.model;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author US00852
@@ -16,7 +16,7 @@ public class LivingBeing implements SimulationConstants {
 	private static final int ESCAPE_MOVE_INDEX = 0;
 	private static final int MOVE_TYPE_COUNT = 3;
 
-	private static Log log = LogFactory.getLog(LivingBeing.class);
+	private static Logger log = LoggerFactory.getLogger(LivingBeing.class);
 
 	private Cell cell;
 	private double glucose;

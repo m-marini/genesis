@@ -22,11 +22,11 @@ import javax.swing.KeyStroke;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mmarini.genesis.model.GridSnapshot;
 import org.mmarini.genesis.model.SimulationHandler;
 import org.mmarini.genesis.model.Snapshot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author US00852
@@ -36,7 +36,7 @@ public class Main {
 	private static final double SNAPSHOT_INTERVAL = 1;
 	private static final double MILLISEC = 1000.;
 	private static final int INTERVAL = 30;
-	private static Log log = LogFactory.getLog(Main.class);
+	private static Logger log = LoggerFactory.getLogger(Main.class);
 
 	/**
 	 * @param args
@@ -148,17 +148,17 @@ public class Main {
 		startAction.putValue(Action.NAME, "Start");
 		startAction.putValue(Action.ACCELERATOR_KEY,
 				KeyStroke.getKeyStroke("ctrl N"));
-		
+
 		resumeAction.putValue(Action.NAME, "Resume");
 		resumeAction.putValue(Action.ACCELERATOR_KEY,
 				KeyStroke.getKeyStroke("ctrl R"));
 		resumeAction.setEnabled(false);
-		
+
 		stopAction.putValue(Action.NAME, "Stop");
 		stopAction.putValue(Action.ACCELERATOR_KEY,
 				KeyStroke.getKeyStroke("ctrl S"));
 		stopAction.setEnabled(false);
-		
+
 		exitAction.putValue(Action.NAME, "Exit");
 		exitAction.putValue(Action.ACCELERATOR_KEY,
 				KeyStroke.getKeyStroke("ctrl X"));
