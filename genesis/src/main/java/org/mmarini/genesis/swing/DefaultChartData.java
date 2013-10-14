@@ -79,7 +79,7 @@ public class DefaultChartData extends AbstractChartData {
 	public String getLabel(int col) {
 		if (col >= 0 && col < labels.size())
 			return labels.get(col);
-		return "?";
+		return "?"; //$NON-NLS-1$
 	}
 
 	/**

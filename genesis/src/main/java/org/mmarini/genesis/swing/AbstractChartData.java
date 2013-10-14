@@ -41,6 +41,18 @@ public abstract class AbstractChartData implements ChartData {
 	}
 
 	/**
+	 * 
+	 */
+	protected void fireDataChanged() {
+		List<ChartDataListener> ls = listeners;
+		if (ls == null)
+			return;
+		for (ChartDataListener l : ls) {
+			l.dataChanged(event);
+		}
+	}
+
+	/**
 	 * @see org.mmarini.genesis.swing.ChartData#removeCharDataListner(org.mmarini
 	 *      .genesis.swing.ChartDataListener)
 	 */
@@ -52,17 +64,5 @@ public abstract class AbstractChartData implements ChartData {
 		ls = new ArrayList<ChartDataListener>(ls);
 		ls.remove(l);
 		listeners = ls;
-	}
-
-	/**
-	 * 
-	 */
-	protected void fireDataChanged() {
-		List<ChartDataListener> ls = listeners;
-		if (ls == null)
-			return;
-		for (ChartDataListener l : ls) {
-			l.dataChanged(event);
-		}
 	}
 }

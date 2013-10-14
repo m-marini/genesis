@@ -19,57 +19,11 @@ public class GridSnapshot {
 	}
 
 	/**
-	 * @return the dataGrid
-	 */
-	public GridData[][] getDataGrid() {
-		return dataGrid;
-	}
-
-	/**
-	 * @param dataGrid
-	 *            the dataGrid to set
-	 */
-	public void setDataGrid(GridData[][] dataGrid) {
-		this.dataGrid = dataGrid;
-	}
-
-	/**
-	 * @return the snapshot
-	 */
-	public Snapshot getSnapshot() {
-		return snapshot;
-	}
-
-	/**
 	 * @return
-	 * @see org.mmarini.genesis.model.Snapshot#getGlucose()
+	 * @see org.mmarini.genesis.model.Snapshot#getAbsorberCounter()
 	 */
-	public double getGlucose() {
-		return snapshot.getGlucose();
-	}
-
-	/**
-	 * @param glucose
-	 * @see org.mmarini.genesis.model.Snapshot#setGlucose(double)
-	 */
-	public void setGlucose(double glucose) {
-		snapshot.setGlucose(glucose);
-	}
-
-	/**
-	 * @return
-	 * @see org.mmarini.genesis.model.Snapshot#getWater()
-	 */
-	public double getWater() {
-		return snapshot.getWater();
-	}
-
-	/**
-	 * @param water
-	 * @see org.mmarini.genesis.model.Snapshot#setWater(double)
-	 */
-	public void setWater(double water) {
-		snapshot.setWater(water);
+	public int getAbsorberCounter() {
+		return snapshot.getAbsorberCounter();
 	}
 
 	/**
@@ -81,27 +35,18 @@ public class GridSnapshot {
 	}
 
 	/**
-	 * @param carbonDioxide
-	 * @see org.mmarini.genesis.model.Snapshot#setCarbonDioxide(double)
+	 * @return the dataGrid
 	 */
-	public void setCarbonDioxide(double carbonDioxide) {
-		snapshot.setCarbonDioxide(carbonDioxide);
+	public GridData[][] getDataGrid() {
+		return dataGrid;
 	}
 
 	/**
 	 * @return
-	 * @see org.mmarini.genesis.model.Snapshot#getOxygen()
+	 * @see org.mmarini.genesis.model.Snapshot#getGlucose()
 	 */
-	public double getOxygen() {
-		return snapshot.getOxygen();
-	}
-
-	/**
-	 * @param oxygen
-	 * @see org.mmarini.genesis.model.Snapshot#setOxygen(double)
-	 */
-	public void setOxygen(double oxygen) {
-		snapshot.setOxygen(oxygen);
+	public double getGlucose() {
+		return snapshot.getGlucose();
 	}
 
 	/**
@@ -113,27 +58,11 @@ public class GridSnapshot {
 	}
 
 	/**
-	 * @param livingBeingsGlucose
-	 * @see org.mmarini.genesis.model.Snapshot#setLivingBeingsGlucose(double)
-	 */
-	public void setLivingBeingsGlucose(double livingBeingsGlucose) {
-		snapshot.setLivingBeingsGlucose(livingBeingsGlucose);
-	}
-
-	/**
 	 * @return
-	 * @see org.mmarini.genesis.model.Snapshot#getSynthesizerCounter()
+	 * @see org.mmarini.genesis.model.Snapshot#getOxygen()
 	 */
-	public int getSynthesizerCounter() {
-		return snapshot.getSynthesizerCounter();
-	}
-
-	/**
-	 * @param synthesizerCounter
-	 * @see org.mmarini.genesis.model.Snapshot#setSynthesizerCounter(int)
-	 */
-	public void setSynthesizerCounter(int synthesizerCounter) {
-		snapshot.setSynthesizerCounter(synthesizerCounter);
+	public double getOxygen() {
+		return snapshot.getOxygen();
 	}
 
 	/**
@@ -145,27 +74,26 @@ public class GridSnapshot {
 	}
 
 	/**
-	 * @param predatorCounter
-	 * @see org.mmarini.genesis.model.Snapshot#setPredatorCounter(int)
+	 * @return the snapshot
 	 */
-	public void setPredatorCounter(int predatorCounter) {
-		snapshot.setPredatorCounter(predatorCounter);
+	public Snapshot getSnapshot() {
+		return snapshot;
 	}
 
 	/**
 	 * @return
-	 * @see org.mmarini.genesis.model.Snapshot#getAbsorberCounter()
+	 * @see org.mmarini.genesis.model.Snapshot#getSynthesizerCounter()
 	 */
-	public int getAbsorberCounter() {
-		return snapshot.getAbsorberCounter();
+	public int getSynthesizerCounter() {
+		return snapshot.getSynthesizerCounter();
 	}
 
 	/**
-	 * @param absorberCounter
-	 * @see org.mmarini.genesis.model.Snapshot#setAbsorberCounter(int)
+	 * @return
+	 * @see org.mmarini.genesis.model.Snapshot#getTime()
 	 */
-	public void setAbsorberCounter(int absorberCounter) {
-		snapshot.setAbsorberCounter(absorberCounter);
+	public double getTime() {
+		return snapshot.getTime();
 	}
 
 	/**
@@ -178,10 +106,74 @@ public class GridSnapshot {
 
 	/**
 	 * @return
-	 * @see org.mmarini.genesis.model.Snapshot#getTime()
+	 * @see org.mmarini.genesis.model.Snapshot#getWater()
 	 */
-	public double getTime() {
-		return snapshot.getTime();
+	public double getWater() {
+		return snapshot.getWater();
+	}
+
+	/**
+	 * @param absorberCounter
+	 * @see org.mmarini.genesis.model.Snapshot#setAbsorberCounter(int)
+	 */
+	public void setAbsorberCounter(int absorberCounter) {
+		snapshot.setAbsorberCounter(absorberCounter);
+	}
+
+	/**
+	 * @param carbonDioxide
+	 * @see org.mmarini.genesis.model.Snapshot#setCarbonDioxide(double)
+	 */
+	public void setCarbonDioxide(double carbonDioxide) {
+		snapshot.setCarbonDioxide(carbonDioxide);
+	}
+
+	/**
+	 * @param dataGrid
+	 *            the dataGrid to set
+	 */
+	public void setDataGrid(GridData[][] dataGrid) {
+		this.dataGrid = dataGrid;
+	}
+
+	/**
+	 * @param glucose
+	 * @see org.mmarini.genesis.model.Snapshot#setGlucose(double)
+	 */
+	public void setGlucose(double glucose) {
+		snapshot.setGlucose(glucose);
+	}
+
+	/**
+	 * @param livingBeingsGlucose
+	 * @see org.mmarini.genesis.model.Snapshot#setLivingBeingsGlucose(double)
+	 */
+	public void setLivingBeingsGlucose(double livingBeingsGlucose) {
+		snapshot.setLivingBeingsGlucose(livingBeingsGlucose);
+	}
+
+	/**
+	 * @param oxygen
+	 * @see org.mmarini.genesis.model.Snapshot#setOxygen(double)
+	 */
+	public void setOxygen(double oxygen) {
+		snapshot.setOxygen(oxygen);
+	}
+
+	/**
+	 * @param predatorCounter
+	 * @see org.mmarini.genesis.model.Snapshot#setPredatorCounter(int)
+	 */
+	public void setPredatorCounter(int predatorCounter) {
+		snapshot.setPredatorCounter(predatorCounter);
+	}
+
+	/**
+	 * @param synthesizerCounter
+	 * @see org.mmarini.genesis.model.Snapshot#setSynthesizerCounter(int)
+	 */
+	public void setSynthesizerCounter(int synthesizerCounter) {
+		snapshot.setSynthesizerCounter(synthesizerCounter);
 	}
 
 	/**
@@ -190,6 +182,14 @@ public class GridSnapshot {
 	 */
 	public void setTime(double time) {
 		snapshot.setTime(time);
+	}
+
+	/**
+	 * @param water
+	 * @see org.mmarini.genesis.model.Snapshot#setWater(double)
+	 */
+	public void setWater(double water) {
+		snapshot.setWater(water);
 	}
 
 }

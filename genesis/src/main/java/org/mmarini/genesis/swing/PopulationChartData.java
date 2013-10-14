@@ -10,8 +10,9 @@ import org.mmarini.genesis.model.Snapshot;
  * 
  */
 public class PopulationChartData extends AbstractSimChartData {
-	private static final String[] LABELS = new String[] { "Time", "Total",
-			"Synthesiser", "Absorber", "Predator" };
+	private static final String[] LABELS = new String[] {
+			Messages.getString("PopulationChartData.time.label"), Messages.getString("PopulationChartData.total.label"), //$NON-NLS-1$ //$NON-NLS-2$
+			Messages.getString("PopulationChartData.synthesiser.label"), Messages.getString("PopulationChartData.absorber.label"), Messages.getString("PopulationChartData.predator.label") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 	/**
 	 * 

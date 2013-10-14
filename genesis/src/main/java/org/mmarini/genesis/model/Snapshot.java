@@ -33,6 +33,133 @@ public class Snapshot implements Cloneable {
 	}
 
 	/**
+	 * @see java.lang.Object#clone()
+	 */
+	@Override
+	public Snapshot clone() {
+		return new Snapshot(this);
+	}
+
+	/**
+	 * @return the absorberCounter
+	 */
+	public int getAbsorberCounter() {
+		return absorberCounter;
+	}
+
+	/**
+	 * @return the carbonDioxide
+	 */
+	public double getCarbonDioxide() {
+		return carbonDioxide;
+	}
+
+	/**
+	 * @return the glucose
+	 */
+	public double getGlucose() {
+		return glucose;
+	}
+
+	/**
+	 * @return the livingBeingsGlucose
+	 */
+	public double getLivingBeingsGlucose() {
+		return livingBeingsGlucose;
+	}
+
+	/**
+	 * @return the oxygen
+	 */
+	public double getOxygen() {
+		return oxygen;
+	}
+
+	/**
+	 * @return the predatorCounter
+	 */
+	public int getPredatorCounter() {
+		return predatorCounter;
+	}
+
+	/**
+	 * @return the synthesizerCounter
+	 */
+	public int getSynthesizerCounter() {
+		return synthesizerCounter;
+	}
+
+	/**
+	 * @return the time
+	 */
+	public double getTime() {
+		return time;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public int getTotalBeingCount() {
+		return absorberCounter + synthesizerCounter + predatorCounter;
+	}
+
+	/**
+	 * @return the water
+	 */
+	public double getWater() {
+		return water;
+	}
+
+	/**
+	 * @param absorberCounter
+	 *            the absorberCounter to set
+	 */
+	public void setAbsorberCounter(int absorberCounter) {
+		this.absorberCounter = absorberCounter;
+	}
+
+	/**
+	 * @param carbonDioxide
+	 *            the carbonDioxide to set
+	 */
+	public void setCarbonDioxide(double carbonDioxide) {
+		this.carbonDioxide = carbonDioxide;
+	}
+
+	/**
+	 * @param glucose
+	 *            the glucose to set
+	 */
+	public void setGlucose(double glucose) {
+		this.glucose = glucose;
+	}
+
+	/**
+	 * @param livingBeingsGlucose
+	 *            the livingBeingsGlucose to set
+	 */
+	public void setLivingBeingsGlucose(double livingBeingsGlucose) {
+		this.livingBeingsGlucose = livingBeingsGlucose;
+	}
+
+	/**
+	 * @param oxygen
+	 *            the oxygen to set
+	 */
+	public void setOxygen(double oxygen) {
+		this.oxygen = oxygen;
+	}
+
+	/**
+	 * @param predatorCounter
+	 *            the predatorCounter to set
+	 */
+	public void setPredatorCounter(int predatorCounter) {
+		this.predatorCounter = predatorCounter;
+	}
+
+	/**
 	 * 
 	 * @param snapshot
 	 */
@@ -49,88 +176,6 @@ public class Snapshot implements Cloneable {
 	}
 
 	/**
-	 * @return the glucose
-	 */
-	public double getGlucose() {
-		return glucose;
-	}
-
-	/**
-	 * @param glucose
-	 *            the glucose to set
-	 */
-	public void setGlucose(double glucose) {
-		this.glucose = glucose;
-	}
-
-	/**
-	 * @return the water
-	 */
-	public double getWater() {
-		return water;
-	}
-
-	/**
-	 * @param water
-	 *            the water to set
-	 */
-	public void setWater(double water) {
-		this.water = water;
-	}
-
-	/**
-	 * @return the carbonDioxide
-	 */
-	public double getCarbonDioxide() {
-		return carbonDioxide;
-	}
-
-	/**
-	 * @param carbonDioxide
-	 *            the carbonDioxide to set
-	 */
-	public void setCarbonDioxide(double carbonDioxide) {
-		this.carbonDioxide = carbonDioxide;
-	}
-
-	/**
-	 * @return the oxygen
-	 */
-	public double getOxygen() {
-		return oxygen;
-	}
-
-	/**
-	 * @param oxygen
-	 *            the oxygen to set
-	 */
-	public void setOxygen(double oxygen) {
-		this.oxygen = oxygen;
-	}
-
-	/**
-	 * @return the livingBeingsGlucose
-	 */
-	public double getLivingBeingsGlucose() {
-		return livingBeingsGlucose;
-	}
-
-	/**
-	 * @param livingBeingsGlucose
-	 *            the livingBeingsGlucose to set
-	 */
-	public void setLivingBeingsGlucose(double livingBeingsGlucose) {
-		this.livingBeingsGlucose = livingBeingsGlucose;
-	}
-
-	/**
-	 * @return the synthesizerCounter
-	 */
-	public int getSynthesizerCounter() {
-		return synthesizerCounter;
-	}
-
-	/**
 	 * @param synthesizerCounter
 	 *            the synthesizerCounter to set
 	 */
@@ -139,33 +184,19 @@ public class Snapshot implements Cloneable {
 	}
 
 	/**
-	 * @return the predatorCounter
+	 * @param time
+	 *            the time to set
 	 */
-	public int getPredatorCounter() {
-		return predatorCounter;
+	public void setTime(double time) {
+		this.time = time;
 	}
 
 	/**
-	 * @param predatorCounter
-	 *            the predatorCounter to set
+	 * @param water
+	 *            the water to set
 	 */
-	public void setPredatorCounter(int predatorCounter) {
-		this.predatorCounter = predatorCounter;
-	}
-
-	/**
-	 * @return the absorberCounter
-	 */
-	public int getAbsorberCounter() {
-		return absorberCounter;
-	}
-
-	/**
-	 * @param absorberCounter
-	 *            the absorberCounter to set
-	 */
-	public void setAbsorberCounter(int absorberCounter) {
-		this.absorberCounter = absorberCounter;
+	public void setWater(double water) {
+		this.water = water;
 	}
 
 	/*
@@ -181,37 +212,6 @@ public class Snapshot implements Cloneable {
 				+ ", synthesizerCounter=" + synthesizerCounter
 				+ ", predatorCounter=" + predatorCounter + ", absorberCounter="
 				+ absorberCounter + "]";
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public int getTotalBeingCount() {
-		return absorberCounter + synthesizerCounter + predatorCounter;
-	}
-
-	/**
-	 * @return the time
-	 */
-	public double getTime() {
-		return time;
-	}
-
-	/**
-	 * @param time
-	 *            the time to set
-	 */
-	public void setTime(double time) {
-		this.time = time;
-	}
-
-	/**
-	 * @see java.lang.Object#clone()
-	 */
-	@Override
-	public Snapshot clone() {
-		return new Snapshot(this);
 	}
 
 }

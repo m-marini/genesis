@@ -200,6 +200,22 @@ public class LivingBeing implements SimulationConstants {
 	}
 
 	/**
+	 * 
+	 * @return
+	 */
+	public boolean isAbsorber() {
+		return (absorbingCounter > synthesisCounter && absorbingCounter >= attackCounter);
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isSynthesizer() {
+		return (synthesisCounter >= absorbingCounter && synthesisCounter >= attackCounter);
+	}
+
+	/**
 	 * @param newCell
 	 *            the cell to set
 	 */
@@ -427,21 +443,5 @@ public class LivingBeing implements SimulationConstants {
 			return;
 		syntetize(time);
 		consume(time * handler.getConsumptionRate());
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean isSynthesizer() {
-		return (synthesisCounter >= absorbingCounter && synthesisCounter >= attackCounter);
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public boolean isAbsorber() {
-		return (absorbingCounter > synthesisCounter && absorbingCounter >= attackCounter);
 	}
 }

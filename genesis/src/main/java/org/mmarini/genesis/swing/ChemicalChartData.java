@@ -10,8 +10,9 @@ import org.mmarini.genesis.model.Snapshot;
  * 
  */
 public class ChemicalChartData extends AbstractSimChartData {
-	private static final String[] LABELS = new String[] { "Time", "H2O", "CO2",
-			"O2", "Glucose", "Living Being Glucose" };
+	private static final String[] LABELS = new String[] {
+			Messages.getString("ChemicalChartData.time.label"), Messages.getString("ChemicalChartData.h2o.label"), Messages.getString("ChemicalChartData.c2o.label"), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			Messages.getString("ChemicalChartData.o2.label"), Messages.getString("ChemicalChartData.glucose.label"), Messages.getString("ChemicalChartData.livingBeingGlucose.label") }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 	/**
 	 * 

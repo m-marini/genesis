@@ -31,11 +31,24 @@ public abstract class AbstractSimChartData extends AbstractChartData {
 
 	/**
 	 * 
-	 * @param rowData
-	 * @param col
-	 * @return
+	 * @param snapshot
 	 */
-	protected abstract double getVaule(Snapshot rowData, int col);
+	public void add(Snapshot snapshot) {
+		list.add(snapshot);
+		if (list.size() > maxItemCount) {
+			list.subList(0, cleanItemCount).clear();
+		}
+		fireDataChanged();
+
+	}
+
+	/**
+	 * 
+	 */
+	public void clear() {
+		list.clear();
+		fireDataChanged();
+	}
 
 	/**
 	 * @see org.mmarini.genesis.swing.ChartData#getRows()
@@ -56,22 +69,9 @@ public abstract class AbstractSimChartData extends AbstractChartData {
 
 	/**
 	 * 
-	 * @param snapshot
+	 * @param rowData
+	 * @param col
+	 * @return
 	 */
-	public void add(Snapshot snapshot) {
-		list.add(snapshot);
-		if (list.size() > maxItemCount) {
-			list.subList(0, cleanItemCount).clear();
-		}
-		fireDataChanged();
-
-	}
-
-	/**
-	 * 
-	 */
-	public void clear() {
-		list.clear();
-		fireDataChanged();
-	}
+	protected abstract double getVaule(Snapshot rowData, int col);
 }

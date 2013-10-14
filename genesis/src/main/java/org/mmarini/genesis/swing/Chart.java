@@ -72,7 +72,7 @@ public class Chart extends JComponent {
 				Color.ORANGE, Color.CYAN, Color.MAGENTA, Color.PINK,
 				Color.YELLOW };
 		lineWidth = 2;
-		labelPattern = "#,##0.#########";
+		labelPattern = "#,##0.#########"; //$NON-NLS-1$
 		listener = new ChartDataListener() {
 
 			@Override

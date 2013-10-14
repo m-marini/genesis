@@ -14,6 +14,12 @@ public interface ChartData {
 
 	/**
 	 * 
+	 * @param l
+	 */
+	public abstract void addCharDataListner(ChartDataListener l);
+
+	/**
+	 * 
 	 * @return
 	 */
 	public abstract int getColumns();
@@ -38,12 +44,6 @@ public interface ChartData {
 	 * @return
 	 */
 	public abstract double getValue(int row, int col);
-
-	/**
-	 * 
-	 * @param l
-	 */
-	public abstract void addCharDataListner(ChartDataListener l);
 
 	/**
 	 * 

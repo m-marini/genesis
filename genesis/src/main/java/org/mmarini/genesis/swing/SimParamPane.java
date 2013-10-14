@@ -114,19 +114,31 @@ public class SimParamPane extends DataPanel {
 	 * 
 	 */
 	private void createContent() {
-		addField("Columns", new JSpinner(numCols));
-		addField("Rows", new JSpinner(numRows));
-		addField("Water Level(mol/cell)", new JSpinner(waterLevel));
-		addField("Carbon Dioxide Level (mol/cell)", new JSpinner(
-				carbonDioxideLevel));
-		addField("Energy level", new JSpinner(energyLevel));
-		addField("Water Spread (s)", new JSpinner(waterSpread));
-		addField("Carbon Dioxide Spread (s)", new JSpinner(carbonDioxideSpread));
-		addField("Glucose Spread (s)", new JSpinner(glucoseSpread));
-		addField("Oxygen Spread (s)", new JSpinner(oxygenSpread));
-		addField("Mutation probability", new JSpinner(mutationProbability));
-		addField("Update Interval (s.)", new JSpinner(updateInterval));
-		addField("Reaction Interval(s.)", new JSpinner(reactionInterval));
+		addField(
+				Messages.getString("SimParamPane.columns.label"), new JSpinner(numCols)); //$NON-NLS-1$
+		addField(
+				Messages.getString("SimParamPane.rows.label"), new JSpinner(numRows)); //$NON-NLS-1$
+		addField(
+				Messages.getString("SimParamPane.waterLevel.label"), new JSpinner(waterLevel)); //$NON-NLS-1$
+		addField(
+				Messages.getString("SimParamPane.carbonDioxideLevel.label"), new JSpinner( //$NON-NLS-1$
+						carbonDioxideLevel));
+		addField(
+				Messages.getString("SimParamPane.energyLevel.label"), new JSpinner(energyLevel)); //$NON-NLS-1$
+		addField(
+				Messages.getString("SimParamPane.waterSpreadTime.label"), new JSpinner(waterSpread)); //$NON-NLS-1$
+		addField(
+				Messages.getString("SimParamPane.carbonDioxideSpreadTime.label"), new JSpinner(carbonDioxideSpread)); //$NON-NLS-1$
+		addField(
+				Messages.getString("SimParamPane.glucoseSpreadTime.label"), new JSpinner(glucoseSpread)); //$NON-NLS-1$
+		addField(
+				Messages.getString("SimParamPane.oxygenSpreadTime.label"), new JSpinner(oxygenSpread)); //$NON-NLS-1$
+		addField(
+				Messages.getString("SimParamPane.mutationProb.label"), new JSpinner(mutationProbability)); //$NON-NLS-1$
+		addField(
+				Messages.getString("SimParamPane.updateInterval.label"), new JSpinner(updateInterval)); //$NON-NLS-1$
+		addField(
+				Messages.getString("SimParamPane.reactionInterval.label"), new JSpinner(reactionInterval)); //$NON-NLS-1$
 	}
 
 	/**

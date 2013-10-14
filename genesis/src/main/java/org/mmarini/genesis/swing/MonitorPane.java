@@ -23,8 +23,8 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
 import org.mmarini.genesis.model.CellGetCommand;
-import org.mmarini.genesis.model.SimulationHandler;
 import org.mmarini.genesis.model.GridSnapshot;
+import org.mmarini.genesis.model.SimulationHandler;
 
 /**
  * @author US00852
@@ -33,7 +33,7 @@ import org.mmarini.genesis.model.GridSnapshot;
 public class MonitorPane extends JPanel {
 	private static final int FIELD_COLUMNS = 8;
 
-	private static final String FORMAT_PATTERN = "#,##0.00";
+	private static final String FORMAT_PATTERN = "#,##0.00"; //$NON-NLS-1$
 
 	private static final long serialVersionUID = 1424128424156001994L;
 
@@ -198,11 +198,16 @@ public class MonitorPane extends JPanel {
 		predatorField.setColumns(FIELD_COLUMNS);
 		beingGlucoseField.setColumns(FIELD_COLUMNS);
 
-		waterAction.putValue(Action.NAME, "Water");
-		glucoseAction.putValue(Action.NAME, "Glucose");
-		oxygenAction.putValue(Action.NAME, "Oxygen");
-		carbonDioxideAction.putValue(Action.NAME, "Carbon Dioxide");
-		showLivingBeingAction.putValue(Action.NAME, "Show Living Beings");
+		waterAction.putValue(Action.NAME,
+				Messages.getString("MonitorPane.water.label")); //$NON-NLS-1$
+		glucoseAction.putValue(Action.NAME,
+				Messages.getString("MonitorPane.glucose.label")); //$NON-NLS-1$
+		oxygenAction.putValue(Action.NAME,
+				Messages.getString("MonitorPane.oxygen.label")); //$NON-NLS-1$
+		carbonDioxideAction.putValue(Action.NAME,
+				Messages.getString("MonitorPane.carbonDioxide.label")); //$NON-NLS-1$
+		showLivingBeingAction.putValue(Action.NAME,
+				Messages.getString("MonitorPane.livingBeing.label")); //$NON-NLS-1$
 
 		carbonDioxideButton.setAction(carbonDioxideAction);
 		waterButton.setAction(waterAction);
@@ -218,7 +223,8 @@ public class MonitorPane extends JPanel {
 		oxygenButton.setSelected(true);
 		command = CellGetCommand.OXYGEN_COMMAND;
 		showLivingBeingButton.setSelected(true);
-		grid.setBorder(BorderFactory.createTitledBorder("Grid Map"));
+		grid.setBorder(BorderFactory.createTitledBorder(Messages
+				.getString("MonitorPane.gridMap.label"))); //$NON-NLS-1$
 
 		createContent();
 	}
@@ -250,7 +256,8 @@ public class MonitorPane extends JPanel {
 		addComponentToGrid(gbc, grid);
 
 		Box vb1 = Box.createVerticalBox();
-		vb1.setBorder(BorderFactory.createTitledBorder("Grid Map Controls"));
+		vb1.setBorder(BorderFactory.createTitledBorder(Messages
+				.getString("MonitorPane.gridMapControl.label"))); //$NON-NLS-1$
 		vb1.add(showLivingBeingButton);
 		vb1.add(new JSeparator());
 		vb1.add(waterButton);
@@ -259,19 +266,31 @@ public class MonitorPane extends JPanel {
 		vb1.add(oxygenButton);
 
 		DataPanel pan = new DataPanel();
-		pan.setBorder(BorderFactory.createTitledBorder("Info"));
+		pan.setBorder(BorderFactory.createTitledBorder(Messages
+				.getString("MonitorPane.info.label"))); //$NON-NLS-1$
 
-		pan.addField("Water (mol)", waterField);
-		pan.addField("Carbon Dioxide (mol)", carbonDioxideField);
-		pan.addField("Glucose (mol)", glucoseField);
-		pan.addField("Oxygen (mol)", oxygenField);
-		pan.addField("# Syntesier", synthesierField);
-		pan.addField("# Absorber", absorberField);
-		pan.addField("# Predator", predatorField);
-		pan.addField("# Total Living Being", beingField);
-		pan.addField("Living Being Glucose (mol)", beingGlucoseField);
-		pan.addField("Refresh Rate (fps)", refreshRateField);
-		pan.addField("Update Rate (cps)", updateRateField);
+		pan.addField(
+				Messages.getString("MonitorPane.waterField.label"), waterField); //$NON-NLS-1$
+		pan.addField(
+				Messages.getString("MonitorPane.carbonDioxideField.label"), carbonDioxideField); //$NON-NLS-1$
+		pan.addField(
+				Messages.getString("MonitorPane.glucoseField.label"), glucoseField); //$NON-NLS-1$
+		pan.addField(
+				Messages.getString("MonitorPane.oxygenField.label"), oxygenField); //$NON-NLS-1$
+		pan.addField(
+				Messages.getString("MonitorPane.syntesierField.label"), synthesierField); //$NON-NLS-1$
+		pan.addField(
+				Messages.getString("MonitorPane.absorberField.label"), absorberField); //$NON-NLS-1$
+		pan.addField(
+				Messages.getString("MonitorPane.predatorField.label"), predatorField); //$NON-NLS-1$
+		pan.addField(
+				Messages.getString("MonitorPane.livingBeingField.label"), beingField); //$NON-NLS-1$
+		pan.addField(
+				Messages.getString("MonitorPane.livingBeingGlucoseField.label"), beingGlucoseField); //$NON-NLS-1$
+		pan.addField(
+				Messages.getString("MonitorPane.refreshField.label"), refreshRateField); //$NON-NLS-1$
+		pan.addField(
+				Messages.getString("MonitorPane.updateField.label"), updateRateField); //$NON-NLS-1$
 
 		gbc.gridwidth = GridBagConstraints.REMAINDER;
 		gbc.gridheight = 1;
@@ -288,6 +307,13 @@ public class MonitorPane extends JPanel {
 		gbc.weightx = 0;
 		gbc.weighty = 0;
 		addComponentToGrid(gbc, pan);
+	}
+
+	/**
+	 * @return the snapshot
+	 */
+	public GridSnapshot getSnapshot() {
+		return snapshot;
 	}
 
 	/**
@@ -329,12 +355,5 @@ public class MonitorPane extends JPanel {
 	 */
 	public void setUpdateRate(double refreshRate) {
 		updateRateField.setValue(refreshRate);
-	}
-
-	/**
-	 * @return the snapshot
-	 */
-	public GridSnapshot getSnapshot() {
-		return snapshot;
 	}
 }

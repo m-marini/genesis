@@ -20,7 +20,6 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.Timer;
-import javax.swing.UIManager;
 
 import org.mmarini.genesis.model.GridSnapshot;
 import org.mmarini.genesis.model.SimulationHandler;
@@ -42,16 +41,12 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// for (LookAndFeelInfo i : UIManager.getInstalledLookAndFeels())
-		// System.out.println(i);
-		try {
-			UIManager
-					.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-			// UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-			// UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		try {
+//			UIManager
+//					.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel"); //$NON-NLS-1$
+//		} catch (Exception e) {
+//			log.error(e.getMessage(), e);
+//		}
 		Main main = new Main();
 		main.start();
 	}
@@ -145,27 +140,29 @@ public class Main {
 
 		monitorPane.setHandler(handler);
 
-		startAction.putValue(Action.NAME, "Start");
-		startAction.putValue(Action.ACCELERATOR_KEY,
-				KeyStroke.getKeyStroke("ctrl N"));
+		startAction.putValue(Action.NAME,
+				Messages.getString("Main.start.label")); //$NON-NLS-1$
+		startAction.putValue(Action.ACCELERATOR_KEY, KeyStroke
+				.getKeyStroke(Messages.getString("Main.start.keystroke"))); //$NON-NLS-1$
 
-		resumeAction.putValue(Action.NAME, "Resume");
-		resumeAction.putValue(Action.ACCELERATOR_KEY,
-				KeyStroke.getKeyStroke("ctrl R"));
+		resumeAction.putValue(Action.NAME,
+				Messages.getString("Main.resume.label")); //$NON-NLS-1$
+		resumeAction.putValue(Action.ACCELERATOR_KEY, KeyStroke
+				.getKeyStroke(Messages.getString("Main.resume.keystroke"))); //$NON-NLS-1$
 		resumeAction.setEnabled(false);
 
-		stopAction.putValue(Action.NAME, "Stop");
-		stopAction.putValue(Action.ACCELERATOR_KEY,
-				KeyStroke.getKeyStroke("ctrl S"));
+		stopAction.putValue(Action.NAME, Messages.getString("Main.stop.label")); //$NON-NLS-1$
+		stopAction.putValue(Action.ACCELERATOR_KEY, KeyStroke
+				.getKeyStroke(Messages.getString("Main.stop.keystroke"))); //$NON-NLS-1$
 		stopAction.setEnabled(false);
 
-		exitAction.putValue(Action.NAME, "Exit");
-		exitAction.putValue(Action.ACCELERATOR_KEY,
-				KeyStroke.getKeyStroke("ctrl X"));
+		exitAction.putValue(Action.NAME, Messages.getString("Main.exit.label")); //$NON-NLS-1$
+		exitAction.putValue(Action.ACCELERATOR_KEY, KeyStroke
+				.getKeyStroke(Messages.getString("Main.exit.keystroke"))); //$NON-NLS-1$
 
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu();
-		menu.setText("File");
+		menu.setText(Messages.getString("Main.fileMenu.label")); //$NON-NLS-1$
 
 		menu.add(new JMenuItem(startAction));
 		menu.add(new JMenuItem(resumeAction));
@@ -176,15 +173,16 @@ public class Main {
 		menuBar.add(menu);
 
 		frame.setJMenuBar(menuBar);
-		frame.setTitle("Genesis");
+		frame.setTitle(Messages.getString("Main.title")); //$NON-NLS-1$
 		frame.setSize(1024, 768);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Container c = frame.getContentPane();
 		c.setLayout(new BorderLayout());
 		JTabbedPane tabPane = new JTabbedPane();
-		tabPane.add("Monitor", monitorPane);
-		tabPane.add("Chemical Charts", chemicalChartsPane);
-		tabPane.add("Population Charts", popChartsPane);
+		tabPane.add(Messages.getString("Main.monitor.label"), monitorPane); //$NON-NLS-1$
+		tabPane.add(
+				Messages.getString("Main.chemical.label"), chemicalChartsPane); //$NON-NLS-1$
+		tabPane.add(Messages.getString("Main.population.label"), popChartsPane); //$NON-NLS-1$
 		c.add(tabPane, BorderLayout.CENTER);
 
 		chemicalChartsPane.setBorder(BorderFactory
@@ -193,18 +191,8 @@ public class Main {
 		chemicalChartsPane.setTable(chemicalChartsData);
 		popChartsPane.setTable(popChartsData);
 
-		simParamPane.setBorder(BorderFactory
-				.createTitledBorder("Simulation Parameters"));
-	}
-
-	/**
-	 * 
-	 */
-	private void resume() {
-		startAction.setEnabled(false);
-		resumeAction.setEnabled(false);
-		stopAction.setEnabled(true);
-		startThread();
+		simParamPane.setBorder(BorderFactory.createTitledBorder(Messages
+				.getString("Main.simulation.label"))); //$NON-NLS-1$
 	}
 
 	/**
@@ -234,7 +222,7 @@ public class Main {
 	 * 
 	 */
 	private void performSimulation() {
-		log.info("Start simulation");
+		log.info("Start simulation"); //$NON-NLS-1$
 		long last = System.currentTimeMillis();
 		double updateInterval = handler.getParameters().getUpdateInterval();
 		long interval = Math.round(updateInterval * MILLISEC);
@@ -259,7 +247,17 @@ public class Main {
 		} catch (InterruptedException e) {
 			log.error(e.getMessage(), e);
 		}
-		log.info("Simulation completed");
+		log.info("Simulation completed"); //$NON-NLS-1$
+	}
+
+	/**
+	 * 
+	 */
+	private void resume() {
+		startAction.setEnabled(false);
+		resumeAction.setEnabled(false);
+		stopAction.setEnabled(true);
+		startThread();
 	}
 
 	/**
@@ -273,8 +271,11 @@ public class Main {
 	 *  
 	 */
 	private void startNewSimulation() {
-		int selection = JOptionPane.showConfirmDialog(null, simParamPane,
-				"Start new selection", JOptionPane.OK_CANCEL_OPTION);
+		int selection = JOptionPane
+				.showConfirmDialog(
+						null,
+						simParamPane,
+						Messages.getString("Main.startSelection.title"), JOptionPane.OK_CANCEL_OPTION); //$NON-NLS-1$
 		if (selection != JOptionPane.OK_OPTION) {
 			return;
 		}
@@ -293,7 +294,7 @@ public class Main {
 	 * 
 	 */
 	private void startThread() {
-		threadSimulator = new Thread("Simulator") {
+		threadSimulator = new Thread("Simulator") { //$NON-NLS-1$
 
 			/**
 			 * @see java.lang.Thread#run()

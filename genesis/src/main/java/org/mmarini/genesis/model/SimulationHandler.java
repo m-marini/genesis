@@ -222,6 +222,14 @@ public class SimulationHandler implements SimulationConstants {
 	}
 
 	/**
+	 * 
+	 * @return
+	 */
+	public double getConsumptionRate() {
+		return parameters.getConsumptionRate();
+	}
+
+	/**
 	 * Return the initial energy level
 	 * 
 	 * @return the initial energy level
@@ -256,6 +264,15 @@ public class SimulationHandler implements SimulationConstants {
 	 */
 	public boolean hasChance(double probability) {
 		return parameters.hasChance(probability);
+	}
+
+	/**
+	 * 
+	 * @param time
+	 * @return
+	 */
+	public boolean hasReaction(double time) {
+		return parameters.hasReaction(time);
 	}
 
 	/**
@@ -319,6 +336,93 @@ public class SimulationHandler implements SimulationConstants {
 	}
 
 	/**
+	 * 
+	 * @param data
+	 * @param command
+	 * @return
+	 */
+	private GridData[][] retrieveDataGrid(GridData[][] data,
+			CellGetCommand command) {
+		if (grid == null)
+			return null;
+		int n = grid.length;
+		int m = grid[0].length;
+		if (data == null || data.length != n || data[0].length != m) {
+			data = new GridData[n][m];
+			for (int i = 0; i < n; ++i) {
+				for (int j = 0; j < n; ++j) {
+					data[i][j] = new GridData();
+				}
+			}
+		}
+		for (int i = 0; i < n; ++i) {
+			for (int j = 0; j < n; ++j) {
+				GridData gridData = data[i][j];
+				Cell cell = grid[i][j];
+				gridData.setBackground(command.retrieveData(cell));
+				LivingBeing locator = cell.getLocator();
+				if (locator != null) {
+					gridData.setLivingBean(true);
+					gridData.setForeground(locator.getGlucose());
+				} else
+					gridData.setLivingBean(false);
+			}
+		}
+		return data;
+	}
+
+	/**
+	 * 
+	 * @param snapshot
+	 */
+	public synchronized void retrieveSnapshot(GridSnapshot snapshot,
+			CellGetCommand command) {
+		double totGlucose = 0;
+		double totH2O = 0;
+		double totCO2 = 0;
+		double totO2 = 0;
+		double livingBeingsGlucose = 0;
+		int synthesizers = 0;
+		int predators = 0;
+		int absorbesr = 0;
+		for (Cell[] row : grid)
+			for (Cell cell : row) {
+				totCO2 += cell.getCarbonDioxide();
+				totO2 += cell.getOxygen();
+				totH2O += cell.getWater();
+				totGlucose += cell.getGlucose();
+				LivingBeing locator = cell.getLocator();
+				if (locator != null) {
+					livingBeingsGlucose += locator.getGlucose();
+					if (locator.isSynthesizer()) {
+						++synthesizers;
+					} else if (locator.isAbsorber()) {
+						++absorbesr;
+					} else
+						++predators;
+				}
+			}
+		snapshot.setDataGrid(retrieveDataGrid(snapshot.getDataGrid(), command));
+		snapshot.setGlucose(totGlucose);
+		snapshot.setWater(totH2O);
+		snapshot.setCarbonDioxide(totCO2);
+		snapshot.setOxygen(totO2);
+		snapshot.setAbsorberCounter(absorbesr);
+		snapshot.setPredatorCounter(predators);
+		snapshot.setSynthesizerCounter(synthesizers);
+		snapshot.setLivingBeingsGlucose(livingBeingsGlucose);
+		snapshot.setTime(time);
+	}
+
+	/**
+	 * Update the simulation status
+	 */
+	public void update() {
+		log.debug("Start update");
+		update(parameters.getUpdateInterval());
+	}
+
+	/**
 	 * Update the simulation status
 	 */
 	public synchronized void update(double time) {
@@ -374,109 +478,5 @@ public class SimulationHandler implements SimulationConstants {
 				cell.apply();
 			}
 		}
-	}
-
-	/**
-	 * 
-	 * @param time
-	 * @return
-	 */
-	public boolean hasReaction(double time) {
-		return parameters.hasReaction(time);
-	}
-
-	/**
-	 * 
-	 * @param snapshot
-	 */
-	public synchronized void retrieveSnapshot(GridSnapshot snapshot,
-			CellGetCommand command) {
-		double totGlucose = 0;
-		double totH2O = 0;
-		double totCO2 = 0;
-		double totO2 = 0;
-		double livingBeingsGlucose = 0;
-		int synthesizers = 0;
-		int predators = 0;
-		int absorbesr = 0;
-		for (Cell[] row : grid)
-			for (Cell cell : row) {
-				totCO2 += cell.getCarbonDioxide();
-				totO2 += cell.getOxygen();
-				totH2O += cell.getWater();
-				totGlucose += cell.getGlucose();
-				LivingBeing locator = cell.getLocator();
-				if (locator != null) {
-					livingBeingsGlucose += locator.getGlucose();
-					if (locator.isSynthesizer()) {
-						++synthesizers;
-					} else if (locator.isAbsorber()) {
-						++absorbesr;
-					} else
-						++predators;
-				}
-			}
-		snapshot.setDataGrid(retrieveDataGrid(snapshot.getDataGrid(), command));
-		snapshot.setGlucose(totGlucose);
-		snapshot.setWater(totH2O);
-		snapshot.setCarbonDioxide(totCO2);
-		snapshot.setOxygen(totO2);
-		snapshot.setAbsorberCounter(absorbesr);
-		snapshot.setPredatorCounter(predators);
-		snapshot.setSynthesizerCounter(synthesizers);
-		snapshot.setLivingBeingsGlucose(livingBeingsGlucose);
-		snapshot.setTime(time);
-	}
-
-	/**
-	 * 
-	 * @param data
-	 * @param command
-	 * @return
-	 */
-	private GridData[][] retrieveDataGrid(GridData[][] data,
-			CellGetCommand command) {
-		if (grid == null)
-			return null;
-		int n = grid.length;
-		int m = grid[0].length;
-		if (data == null || data.length != n || data[0].length != m) {
-			data = new GridData[n][m];
-			for (int i = 0; i < n; ++i) {
-				for (int j = 0; j < n; ++j) {
-					data[i][j] = new GridData();
-				}
-			}
-		}
-		for (int i = 0; i < n; ++i) {
-			for (int j = 0; j < n; ++j) {
-				GridData gridData = data[i][j];
-				Cell cell = grid[i][j];
-				gridData.setBackground(command.retrieveData(cell));
-				LivingBeing locator = cell.getLocator();
-				if (locator != null) {
-					gridData.setLivingBean(true);
-					gridData.setForeground(locator.getGlucose());
-				} else
-					gridData.setLivingBean(false);
-			}
-		}
-		return data;
-	}
-
-	/**
-	 * Update the simulation status
-	 */
-	public void update() {
-		log.debug("Start update");
-		update(parameters.getUpdateInterval());
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public double getConsumptionRate() {
-		return parameters.getConsumptionRate();
 	}
 }

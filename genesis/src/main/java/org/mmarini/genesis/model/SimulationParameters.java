@@ -300,6 +300,13 @@ public class SimulationParameters implements SimulationConstants {
 	}
 
 	/**
+	 * @return the consumptionRate
+	 */
+	public double getConsumptionRate() {
+		return consumptionRate;
+	}
+
+	/**
 	 * @return the energyLevel
 	 */
 	public double getEnergyLevel() {
@@ -383,6 +390,16 @@ public class SimulationParameters implements SimulationConstants {
 	 */
 	public boolean hasChance(double probability) {
 		return random.nextDouble() < probability;
+	}
+
+	/**
+	 * 
+	 * @param time
+	 * @return
+	 */
+	public boolean hasReaction(double time) {
+		double pr = -Math.expm1(-time / reactionInterval);
+		return hasChance(pr);
 	}
 
 	/**
@@ -568,22 +585,5 @@ public class SimulationParameters implements SimulationConstants {
 				+ maxGlucoseLevel + ", maxProbability=" + maxProbability
 				+ ", maxRate=" + maxRate + ", maxSynthesisRate="
 				+ maxSynthesisRate + "]";
-	}
-
-	/**
-	 * 
-	 * @param time
-	 * @return
-	 */
-	public boolean hasReaction(double time) {
-		double pr = -Math.expm1(-time / reactionInterval);
-		return hasChance(pr);
-	}
-
-	/**
-	 * @return the consumptionRate
-	 */
-	public double getConsumptionRate() {
-		return consumptionRate;
 	}
 }
