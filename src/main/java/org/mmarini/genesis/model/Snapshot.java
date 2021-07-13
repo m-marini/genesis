@@ -28,7 +28,7 @@ public class Snapshot implements Cloneable {
 	 * 
 	 * @param snapshot
 	 */
-	public Snapshot(Snapshot snapshot) {
+	public Snapshot(final Snapshot snapshot) {
 		setSnapshot(snapshot);
 	}
 
@@ -115,7 +115,7 @@ public class Snapshot implements Cloneable {
 	 * @param absorberCounter
 	 *            the absorberCounter to set
 	 */
-	public void setAbsorberCounter(int absorberCounter) {
+	public void setAbsorberCounter(final int absorberCounter) {
 		this.absorberCounter = absorberCounter;
 	}
 
@@ -123,7 +123,7 @@ public class Snapshot implements Cloneable {
 	 * @param carbonDioxide
 	 *            the carbonDioxide to set
 	 */
-	public void setCarbonDioxide(double carbonDioxide) {
+	public void setCarbonDioxide(final double carbonDioxide) {
 		this.carbonDioxide = carbonDioxide;
 	}
 
@@ -131,7 +131,7 @@ public class Snapshot implements Cloneable {
 	 * @param glucose
 	 *            the glucose to set
 	 */
-	public void setGlucose(double glucose) {
+	public void setGlucose(final double glucose) {
 		this.glucose = glucose;
 	}
 
@@ -139,7 +139,7 @@ public class Snapshot implements Cloneable {
 	 * @param livingBeingsGlucose
 	 *            the livingBeingsGlucose to set
 	 */
-	public void setLivingBeingsGlucose(double livingBeingsGlucose) {
+	public void setLivingBeingsGlucose(final double livingBeingsGlucose) {
 		this.livingBeingsGlucose = livingBeingsGlucose;
 	}
 
@@ -147,7 +147,7 @@ public class Snapshot implements Cloneable {
 	 * @param oxygen
 	 *            the oxygen to set
 	 */
-	public void setOxygen(double oxygen) {
+	public void setOxygen(final double oxygen) {
 		this.oxygen = oxygen;
 	}
 
@@ -155,7 +155,7 @@ public class Snapshot implements Cloneable {
 	 * @param predatorCounter
 	 *            the predatorCounter to set
 	 */
-	public void setPredatorCounter(int predatorCounter) {
+	public void setPredatorCounter(final int predatorCounter) {
 		this.predatorCounter = predatorCounter;
 	}
 
@@ -163,7 +163,7 @@ public class Snapshot implements Cloneable {
 	 * 
 	 * @param snapshot
 	 */
-	private void setSnapshot(Snapshot snapshot) {
+	private void setSnapshot(final Snapshot snapshot) {
 		time = snapshot.time;
 		glucose = snapshot.glucose;
 		water = snapshot.water;
@@ -179,7 +179,7 @@ public class Snapshot implements Cloneable {
 	 * @param synthesizerCounter
 	 *            the synthesizerCounter to set
 	 */
-	public void setSynthesizerCounter(int synthesizerCounter) {
+	public void setSynthesizerCounter(final int synthesizerCounter) {
 		this.synthesizerCounter = synthesizerCounter;
 	}
 
@@ -187,7 +187,7 @@ public class Snapshot implements Cloneable {
 	 * @param time
 	 *            the time to set
 	 */
-	public void setTime(double time) {
+	public void setTime(final double time) {
 		this.time = time;
 	}
 
@@ -195,7 +195,7 @@ public class Snapshot implements Cloneable {
 	 * @param water
 	 *            the water to set
 	 */
-	public void setWater(double water) {
+	public void setWater(final double water) {
 		this.water = water;
 	}
 

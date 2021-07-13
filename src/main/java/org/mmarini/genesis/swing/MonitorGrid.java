@@ -21,8 +21,8 @@ public class MonitorGrid extends JComponent {
 	private static final int VERTEX_COUNT = 6;
 	private static final long serialVersionUID = -8626872860003937592L;
 
-	private int[][] poly;
-	private Dimension inbound;
+	private final int[][] poly;
+	private final Dimension inbound;
 	private boolean showLivingBeing;
 	private GridData[][] data;
 	private double foregroundColorScale;
@@ -46,10 +46,10 @@ public class MonitorGrid extends JComponent {
 	 * @param xtick
 	 * @param ytick
 	 */
-	private void computeCorner(Point corner, int xx, int yy, double xtick,
-			double ytick) {
+	private void computeCorner(final Point corner, final int xx, final int yy,
+			final double xtick, final double ytick) {
 		int x = xx * 2;
-		boolean odd = (yy % 2) == 1;
+		final boolean odd = (yy % 2) == 1;
 		if (odd)
 			++x;
 		x = x * 2 + 1;
@@ -63,9 +63,9 @@ public class MonitorGrid extends JComponent {
 	 * @param x
 	 * @return
 	 */
-	private Color createColor(double x) {
-		float h = (float) (0.8 * (1 - x));
-		float b = (float) (0.7 * x + 0.3);
+	private Color createColor(final double x) {
+		final float h = (float) (0.8 * (1 - x));
+		final float b = (float) (0.7 * x + 0.3);
 		return Color.getHSBColor(h, 1f, b);
 	}
 
@@ -76,12 +76,12 @@ public class MonitorGrid extends JComponent {
 	 * @param max
 	 * @return
 	 */
-	private Color createColor(double value, double min, double max) {
+	private Color createColor(double value, final double min, final double max) {
 		if (value < min)
 			value = min;
 		if (value > max)
 			value = max;
-		double x = (value - min) / (max - min);
+		final double x = (value - min) / (max - min);
 		return createColor(x);
 	}
 
@@ -100,14 +100,14 @@ public class MonitorGrid extends JComponent {
 		Dimension size = getSize();
 		if (data == null)
 			return;
-		Insets insets = getInsets();
+		final Insets insets = getInsets();
 		if (insets == null) {
 			inbound.setSize(size);
 		} else {
-			int x = insets.left;
-			int y = insets.top;
-			int w = size.width - insets.left - insets.right;
-			int h = size.height - insets.top - insets.bottom;
+			final int x = insets.left;
+			final int y = insets.top;
+			final int w = size.width - insets.left - insets.right;
+			final int h = size.height - insets.top - insets.bottom;
 			g = g.create(x, y, w, h);
 			inbound.setSize(w, h);
 		}
@@ -121,21 +121,21 @@ public class MonitorGrid extends JComponent {
 	 * 
 	 * @param g
 	 */
-	private void paintGrid(Graphics g) {
-		int rows = data.length;
-		int cols = data[0].length;
+	private void paintGrid(final Graphics g) {
+		final int rows = data.length;
+		final int cols = data[0].length;
 
-		int w = inbound.width;
-		int h = inbound.height;
+		final int w = inbound.width;
+		final int h = inbound.height;
 
-		double xtick = (double) w / (cols * 2 + 1);
-		double ytick = (double) h / (rows * 3 + 1);
+		final double xtick = (double) w / (cols * 2 + 1);
+		final double ytick = (double) h / (rows * 3 + 1);
 
-		Point corner = new Point();
-		int ow = (int) Math.round(xtick);
-		int oh = (int) Math.round(ytick * 2);
+		final Point corner = new Point();
+		final int ow = (int) Math.round(xtick);
+		final int oh = (int) Math.round(ytick * 2);
 
-		boolean paintGrid = xtick >= 5 && ytick >= 3;
+		final boolean paintGrid = xtick >= 5 && ytick >= 3;
 
 		int i0 = 0;
 		for (int i = 0; i < rows; i += 2) {
@@ -149,7 +149,7 @@ public class MonitorGrid extends JComponent {
 				poly[0][0] = poly[0][3] = (int) Math.round((j0 + 1) * xtick);
 				poly[0][1] = poly[0][2] = (int) Math.round((j0 + 2) * xtick);
 				poly[0][4] = poly[0][5] = (int) Math.round(j0 * xtick);
-				GridData dt = data[i][j];
+				final GridData dt = data[i][j];
 				Color c = createColor(dt.getBackground(), 0,
 						backgroundColorScale);
 				g.setColor(c);
@@ -186,7 +186,7 @@ public class MonitorGrid extends JComponent {
 				poly[0][1] = poly[0][2] = (int) Math.round((j0 + 2) * xtick);
 				poly[0][4] = poly[0][5] = (int) Math.round(j0 * xtick);
 
-				GridData dt = data[i][j];
+				final GridData dt = data[i][j];
 				Color c = createColor(dt.getBackground(), 0,
 						backgroundColorScale);
 				g.setColor(c);
@@ -221,8 +221,8 @@ public class MonitorGrid extends JComponent {
 		double totFg = 0;
 		double totBg = 0;
 		int ctFg = 0;
-		for (GridData[] row : data) {
-			for (GridData dt : row) {
+		for (final GridData[] row : data) {
+			for (final GridData dt : row) {
 				if (dt.isLivingBean()) {
 					++ctFg;
 					totFg += dt.getForeground();
@@ -245,7 +245,7 @@ public class MonitorGrid extends JComponent {
 	 * @param data
 	 *            the data to set
 	 */
-	public void setData(GridData[][] data) {
+	public void setData(final GridData[][] data) {
 		this.data = data;
 		refresh();
 	}
@@ -254,7 +254,7 @@ public class MonitorGrid extends JComponent {
 	 * @param showLivingBeing
 	 *            the showLivingBeing to set
 	 */
-	public void setShowLivingBeing(boolean showLivingBeing) {
+	public void setShowLivingBeing(final boolean showLivingBeing) {
 		this.showLivingBeing = showLivingBeing;
 	}
 }

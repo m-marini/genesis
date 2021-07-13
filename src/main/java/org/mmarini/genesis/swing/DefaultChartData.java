@@ -9,8 +9,8 @@ import java.util.List;
  * 
  */
 public class DefaultChartData extends AbstractChartData {
-	private List<String> labels;
-	private List<double[]> rows;
+	private final List<String> labels;
+	private final List<double[]> rows;
 
 	/**
 	 * 
@@ -24,7 +24,7 @@ public class DefaultChartData extends AbstractChartData {
 	 * 
 	 * @param label
 	 */
-	public void addLabel(String label) {
+	public void addLabel(final String label) {
 		labels.add(label);
 		fireDataChanged();
 	}
@@ -33,7 +33,7 @@ public class DefaultChartData extends AbstractChartData {
 	 * 
 	 * @param label
 	 */
-	public void addRow(double[] row) {
+	public void addRow(final double[] row) {
 		rows.add(row);
 		fireDataChanged();
 	}
@@ -76,7 +76,7 @@ public class DefaultChartData extends AbstractChartData {
 	 * @see org.mmarini.genesis.swing.ChartData#getLabel(int)
 	 */
 	@Override
-	public String getLabel(int col) {
+	public String getLabel(final int col) {
 		if (col >= 0 && col < labels.size())
 			return labels.get(col);
 		return "?"; //$NON-NLS-1$
@@ -94,7 +94,7 @@ public class DefaultChartData extends AbstractChartData {
 	 * @see org.mmarini.genesis.swing.ChartData#getValue(int, int)
 	 */
 	@Override
-	public double getValue(int row, int col) {
+	public double getValue(final int row, final int col) {
 		return rows.get(row)[col];
 	}
 }

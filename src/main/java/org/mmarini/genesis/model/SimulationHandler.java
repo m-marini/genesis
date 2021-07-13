@@ -26,9 +26,9 @@ public class SimulationHandler implements SimulationConstants {
 	private static Logger log = LoggerFactory
 			.getLogger(SimulationHandler.class);
 	private SimulationParameters parameters;
-	private Point[][] neighbours;
+	private final Point[][] neighbours;
 	private Cell[][] grid;
-	private List<LivingBeing> list;
+	private final List<LivingBeing> list;
 	private double time;
 
 	/**
@@ -77,7 +77,7 @@ public class SimulationHandler implements SimulationConstants {
 	 *            the time interval
 	 * @return the energy consumption to absorb glucose
 	 */
-	public double computeAbsorbingConsumption(double time) {
+	public double computeAbsorbingConsumption(final double time) {
 		return parameters.computeAbsorbingConsumption(time);
 	}
 
@@ -88,7 +88,7 @@ public class SimulationHandler implements SimulationConstants {
 	 *            the time interval
 	 * @return the maximum glucose level
 	 */
-	public double computeMaxAbsorbingGlucose(double time) {
+	public double computeMaxAbsorbingGlucose(final double time) {
 		return parameters.computeMaxAbsorbingGlucose(time);
 	}
 
@@ -134,14 +134,14 @@ public class SimulationHandler implements SimulationConstants {
 		/*
 		 * Create the grid
 		 */
-		int n = parameters.getRows();
-		int m = parameters.getCols();
+		final int n = parameters.getRows();
+		final int m = parameters.getCols();
 		grid = new Cell[n][m];
-		double water = parameters.getWaterLevel();
-		double carbonDioxide = parameters.getCarbonDioxideLevel();
+		final double water = parameters.getWaterLevel();
+		final double carbonDioxide = parameters.getCarbonDioxideLevel();
 		for (int i = 0; i < n; ++i) {
 			for (int j = 0; j < m; ++j) {
-				Cell cell = new Cell();
+				final Cell cell = new Cell();
 				cell.setWater(water);
 				cell.setCarbonDioxide(carbonDioxide);
 				cell.setHandler(this);
@@ -155,10 +155,10 @@ public class SimulationHandler implements SimulationConstants {
 		Point[] ng = neighbours[0];
 		for (int i = 0; i < n; i += 2) {
 			for (int j = 0; j < m; ++j) {
-				Cell cell = grid[i][j];
+				final Cell cell = grid[i][j];
 				for (int k = 0; k < ng.length; ++k) {
-					int x = (j + ng[k].x + m) % m;
-					int y = (i + ng[k].y + n) % n;
+					final int x = (j + ng[k].x + m) % m;
+					final int y = (i + ng[k].y + n) % n;
 					cell.setNeighbor(k, grid[y][x]);
 				}
 			}
@@ -166,10 +166,10 @@ public class SimulationHandler implements SimulationConstants {
 		ng = neighbours[1];
 		for (int i = 1; i < n; i += 2) {
 			for (int j = 0; j < m; ++j) {
-				Cell cell = grid[i][j];
+				final Cell cell = grid[i][j];
 				for (int k = 0; k < ng.length; ++k) {
-					int x = (j + ng[k].x + m) % m;
-					int y = (i + ng[k].y + n) % n;
+					final int x = (j + ng[k].x + m) % m;
+					final int y = (i + ng[k].y + n) % n;
 					cell.setNeighbor(k, grid[y][x]);
 				}
 			}
@@ -182,22 +182,22 @@ public class SimulationHandler implements SimulationConstants {
 	 * @param parameters
 	 *            the parameters of simulation session
 	 */
-	public void createSession(SimulationParameters parameters) {
+	public void createSession(final SimulationParameters parameters) {
 		this.parameters = parameters;
 		createGrid();
 		createBeings();
 
 		list.clear();
-		for (Cell[] row : grid) {
-			for (Cell cell : row) {
-				LivingBeing locator = cell.getLocator();
+		for (final Cell[] row : grid) {
+			for (final Cell cell : row) {
+				final LivingBeing locator = cell.getLocator();
 				if (locator != null) {
 					list.add(locator);
 				}
 			}
 		}
 
-		for (LivingBeing lb : list) {
+		for (final LivingBeing lb : list) {
 			lb.react(Double.POSITIVE_INFINITY);
 		}
 		time = 0;
@@ -262,7 +262,7 @@ public class SimulationHandler implements SimulationConstants {
 	 *            probability of return true
 	 * @return true or false
 	 */
-	public boolean hasChance(double probability) {
+	public boolean hasChance(final double probability) {
 		return parameters.hasChance(probability);
 	}
 
@@ -271,7 +271,7 @@ public class SimulationHandler implements SimulationConstants {
 	 * @param time
 	 * @return
 	 */
-	public boolean hasReaction(double time) {
+	public boolean hasReaction(final double time) {
 		return parameters.hasReaction(time);
 	}
 
@@ -281,9 +281,9 @@ public class SimulationHandler implements SimulationConstants {
 	 * @return true if grid has no living being
 	 */
 	public synchronized boolean isEmpty() {
-		for (Cell[] row : grid) {
-			for (Cell cell : row) {
-				LivingBeing locator = cell.getLocator();
+		for (final Cell[] row : grid) {
+			for (final Cell cell : row) {
+				final LivingBeing locator = cell.getLocator();
 				if (locator != null)
 					return false;
 			}
@@ -295,9 +295,9 @@ public class SimulationHandler implements SimulationConstants {
 		Cell cell;
 		int x;
 		int y;
-		Random random = parameters.getRandom();
-		int n = parameters.getRows();
-		int m = parameters.getCols();
+		final Random random = parameters.getRandom();
+		final int n = parameters.getRows();
+		final int m = parameters.getCols();
 		do {
 			x = random.nextInt(m);
 			y = random.nextInt(n);
@@ -320,7 +320,7 @@ public class SimulationHandler implements SimulationConstants {
 	 * @param probabilities
 	 * @return
 	 */
-	public int nextRandomInt(double[] probabilities) {
+	public int nextRandomInt(final double[] probabilities) {
 		return parameters.nextRandomInt(probabilities);
 	}
 
@@ -331,7 +331,7 @@ public class SimulationHandler implements SimulationConstants {
 	 *            the range
 	 * @return the random value
 	 */
-	public int nextRandomInt(int range) {
+	public int nextRandomInt(final int range) {
 		return parameters.nextRandomInt(range);
 	}
 
@@ -342,11 +342,11 @@ public class SimulationHandler implements SimulationConstants {
 	 * @return
 	 */
 	private GridData[][] retrieveDataGrid(GridData[][] data,
-			CellGetCommand command) {
+			final CellGetCommand command) {
 		if (grid == null)
 			return null;
-		int n = grid.length;
-		int m = grid[0].length;
+		final int n = grid.length;
+		final int m = grid[0].length;
 		if (data == null || data.length != n || data[0].length != m) {
 			data = new GridData[n][m];
 			for (int i = 0; i < n; ++i) {
@@ -357,10 +357,10 @@ public class SimulationHandler implements SimulationConstants {
 		}
 		for (int i = 0; i < n; ++i) {
 			for (int j = 0; j < n; ++j) {
-				GridData gridData = data[i][j];
-				Cell cell = grid[i][j];
+				final GridData gridData = data[i][j];
+				final Cell cell = grid[i][j];
 				gridData.setBackground(command.retrieveData(cell));
-				LivingBeing locator = cell.getLocator();
+				final LivingBeing locator = cell.getLocator();
 				if (locator != null) {
 					gridData.setLivingBean(true);
 					gridData.setForeground(locator.getGlucose());
@@ -375,8 +375,8 @@ public class SimulationHandler implements SimulationConstants {
 	 * 
 	 * @param snapshot
 	 */
-	public synchronized void retrieveSnapshot(GridSnapshot snapshot,
-			CellGetCommand command) {
+	public synchronized void retrieveSnapshot(final GridSnapshot snapshot,
+			final CellGetCommand command) {
 		double totGlucose = 0;
 		double totH2O = 0;
 		double totCO2 = 0;
@@ -385,13 +385,13 @@ public class SimulationHandler implements SimulationConstants {
 		int synthesizers = 0;
 		int predators = 0;
 		int absorbesr = 0;
-		for (Cell[] row : grid)
-			for (Cell cell : row) {
+		for (final Cell[] row : grid)
+			for (final Cell cell : row) {
 				totCO2 += cell.getCarbonDioxide();
 				totO2 += cell.getOxygen();
 				totH2O += cell.getWater();
 				totGlucose += cell.getGlucose();
-				LivingBeing locator = cell.getLocator();
+				final LivingBeing locator = cell.getLocator();
 				if (locator != null) {
 					livingBeingsGlucose += locator.getGlucose();
 					if (locator.isSynthesizer()) {
@@ -425,24 +425,24 @@ public class SimulationHandler implements SimulationConstants {
 	/**
 	 * Update the simulation status
 	 */
-	public synchronized void update(double time) {
+	public synchronized void update(final double time) {
 		updateGrid(time);
 
 		list.clear();
-		for (Cell[] row : grid) {
-			for (Cell cell : row) {
-				LivingBeing locator = cell.getLocator();
+		for (final Cell[] row : grid) {
+			for (final Cell cell : row) {
+				final LivingBeing locator = cell.getLocator();
 				if (locator != null) {
 					list.add(locator);
 				}
 			}
 		}
 
-		for (LivingBeing lb : list) {
+		for (final LivingBeing lb : list) {
 			lb.react(time);
 		}
 
-		for (LivingBeing lb : list) {
+		for (final LivingBeing lb : list) {
 			lb.update(time);
 		}
 		this.time += time;
@@ -454,27 +454,30 @@ public class SimulationHandler implements SimulationConstants {
 	 * @param time
 	 *            the time interval
 	 */
-	private void updateGrid(double time) {
-		for (Cell[] row : grid) {
-			for (Cell cell : row) {
+	private void updateGrid(final double time) {
+		for (final Cell[] row : grid) {
+			for (final Cell cell : row) {
 				cell.clearChanges();
 			}
 		}
 
-		double glucoseParm = -Math.expm1(-time / parameters.getGlucoseSpread());
-		double waterParm = -Math.expm1(-time / parameters.getWaterSpread());
-		double carbonDioxideParm = -Math.expm1(-time
+		final double glucoseParm = -Math.expm1(-time
+				/ parameters.getGlucoseSpread());
+		final double waterParm = -Math.expm1(-time
+				/ parameters.getWaterSpread());
+		final double carbonDioxideParm = -Math.expm1(-time
 				/ parameters.getCarbonDioxideSpread());
-		double oxygenParm = -Math.expm1(-time / parameters.getOxygenSpread());
+		final double oxygenParm = -Math.expm1(-time
+				/ parameters.getOxygenSpread());
 
-		for (Cell[] row : grid) {
-			for (Cell cell : row) {
+		for (final Cell[] row : grid) {
+			for (final Cell cell : row) {
 				cell.computeSpread(waterParm, glucoseParm, carbonDioxideParm,
 						oxygenParm);
 			}
 		}
-		for (Cell[] row : grid) {
-			for (Cell cell : row) {
+		for (final Cell[] row : grid) {
+			for (final Cell cell : row) {
 				cell.apply();
 			}
 		}

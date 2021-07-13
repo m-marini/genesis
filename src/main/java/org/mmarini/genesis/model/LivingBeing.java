@@ -21,11 +21,11 @@ public class LivingBeing implements SimulationConstants {
 	private Cell cell;
 	private double glucose;
 	private double synthesisRate;
-	private Phenotype phenotype;
-	private Genotype genotype;
+	private final Phenotype phenotype;
+	private final Genotype genotype;
 	private SimulationHandler handler;
-	private MoveActionContext[] moveContexts;
-	private EscapeActionContext escapeContext;
+	private final MoveActionContext[] moveContexts;
+	private final EscapeActionContext escapeContext;
 	private double attackCounter;
 	private double absorbingCounter;
 	private double synthesisCounter;
@@ -58,7 +58,8 @@ public class LivingBeing implements SimulationConstants {
 	 * @param genotype
 	 * @param parameters
 	 */
-	public void applyGenotype(Genotype genotype, SimulationParameters parameters) {
+	public void applyGenotype(final Genotype genotype,
+			final SimulationParameters parameters) {
 		this.genotype.setGenotype(genotype);
 		phenotype.generate(this.genotype, parameters);
 	}
@@ -68,14 +69,14 @@ public class LivingBeing implements SimulationConstants {
 	 * @return
 	 */
 	private void applyGlucoseRule() {
-		Cell target = cell.findGlucoseTarget();
+		final Cell target = cell.findGlucoseTarget();
 		if (target == null) {
 			moveContexts[GLUCOSE_MOVE_INDEX].setPreference(0);
 			return;
 		}
-		double e = computeAvailableEnergy();
-		double g1 = target.getGlucose();
-		double preference = phenotype.findGlucoseMoveRule(e, g1);
+		final double e = computeAvailableEnergy();
+		final double g1 = target.getGlucose();
+		final double preference = phenotype.findGlucoseMoveRule(e, g1);
 		moveContexts[GLUCOSE_MOVE_INDEX].setPreference(preference);
 		moveContexts[GLUCOSE_MOVE_INDEX].setTarget(target);
 	}
@@ -85,14 +86,14 @@ public class LivingBeing implements SimulationConstants {
 	 * @return
 	 */
 	private void applySyntesisRule() {
-		Cell target = cell.findSyntesisTarget();
+		final Cell target = cell.findSyntesisTarget();
 		if (target == null) {
 			moveContexts[SYNTHESIS_MOVE_INDEX].setPreference(0);
 			return;
 		}
-		double e = computeAvailableEnergy();
-		double g1 = target.computeMaxSynthesis();
-		double preference = phenotype.findSyntesisMoveRule(e, g1);
+		final double e = computeAvailableEnergy();
+		final double g1 = target.computeMaxSynthesis();
+		final double preference = phenotype.findSyntesisMoveRule(e, g1);
 		moveContexts[SYNTHESIS_MOVE_INDEX].setPreference(preference);
 		moveContexts[SYNTHESIS_MOVE_INDEX].setTarget(target);
 	}
@@ -102,14 +103,14 @@ public class LivingBeing implements SimulationConstants {
 	 * @param energy
 	 * @return
 	 */
-	private boolean attack(double energy) {
-		double availableEnergy = computeAvailableEnergy();
+	private boolean attack(final double energy) {
+		final double availableEnergy = computeAvailableEnergy();
 		if (availableEnergy <= 0)
 			return true;
-		double rule = phenotype.findDefenseRate(energy, availableEnergy);
-		double defense = availableEnergy * rule;
+		final double rule = phenotype.findDefenseRate(energy, availableEnergy);
+		final double defense = availableEnergy * rule;
 		consume(defense);
-		double pv = energy / (energy + defense);
+		final double pv = energy / (energy + defense);
 		return handler.hasChance(pv);
 	}
 
@@ -118,8 +119,8 @@ public class LivingBeing implements SimulationConstants {
 	 * @param parent1
 	 * @param parent2
 	 */
-	private void breedCode(LivingBeing parent1, LivingBeing parent2) {
-		SimulationParameters parameters = handler.getParameters();
+	private void breedCode(final LivingBeing parent1, final LivingBeing parent2) {
+		final SimulationParameters parameters = handler.getParameters();
 		genotype.breed(parent1.genotype, parent2.genotype, parameters);
 		phenotype.generate(genotype, parameters);
 	}
@@ -129,8 +130,8 @@ public class LivingBeing implements SimulationConstants {
 	 * @param parent
 	 * @param parameters
 	 */
-	private void cloneCode(LivingBeing parent) {
-		SimulationParameters parameters = handler.getParameters();
+	private void cloneCode(final LivingBeing parent) {
+		final SimulationParameters parameters = handler.getParameters();
 		genotype.cloneCode(parent.genotype, parameters);
 		phenotype.generate(genotype, parameters);
 	}
@@ -147,7 +148,7 @@ public class LivingBeing implements SimulationConstants {
 	 * 
 	 * @param demand
 	 */
-	private void consume(double demand) {
+	private void consume(final double demand) {
 		double energy = Math.min(cell.computeConsumtionLimits(), demand);
 		energy = Math.min(energy, glucose);
 		glucose -= energy;
@@ -175,14 +176,14 @@ public class LivingBeing implements SimulationConstants {
 		applyGlucoseRule();
 		applySyntesisRule();
 		double tot = 0;
-		for (MoveActionContext data : moveContexts)
+		for (final MoveActionContext data : moveContexts)
 			tot += data.getPreference();
 		if (tot == 0)
 			return null;
-		double p = tot * handler.nextRandomDouble();
+		final double p = tot * handler.nextRandomDouble();
 		tot = 0;
 		MoveActionContext data = null;
-		for (MoveActionContext d : moveContexts) {
+		for (final MoveActionContext d : moveContexts) {
 			data = d;
 			tot += data.getPreference();
 			if (p < tot) {
@@ -219,7 +220,7 @@ public class LivingBeing implements SimulationConstants {
 	 * @param newCell
 	 *            the cell to set
 	 */
-	public void moveTo(Cell newCell) {
+	public void moveTo(final Cell newCell) {
 		if (cell != null)
 			cell.setLocator(null);
 		cell = newCell;
@@ -232,7 +233,7 @@ public class LivingBeing implements SimulationConstants {
 	 * 
 	 * @param time
 	 */
-	public void react(double time) {
+	public void react(final double time) {
 		if (cell == null || !handler.hasReaction(time))
 			return;
 		reactSynthesis();
@@ -255,15 +256,17 @@ public class LivingBeing implements SimulationConstants {
 	 * 
 	 * @param time
 	 */
-	private void reactToAbsorbe(double time) {
-		double availableGlucose = cell.computeAvailableGlucose(time);
+	private void reactToAbsorbe(final double time) {
+		final double availableGlucose = cell.computeAvailableGlucose(time);
 		if (availableGlucose <= 0)
 			return;
-		double availableEnergy = computeAvailableEnergy();
-		double absorbingEnergy = handler.computeAbsorbingConsumption(time);
+		final double availableEnergy = computeAvailableEnergy();
+		final double absorbingEnergy = handler
+				.computeAbsorbingConsumption(time);
 		if (availableEnergy <= absorbingEnergy)
 			return;
-		double rho = availableGlucose / (availableGlucose + absorbingEnergy);
+		final double rho = availableGlucose
+				/ (availableGlucose + absorbingEnergy);
 		double probability;
 		if (rho <= phenotype.getAbsorbingLevel()) {
 			probability = phenotype.getAbsorbingProbability(0);
@@ -285,18 +288,18 @@ public class LivingBeing implements SimulationConstants {
 		/*
 		 * Check for clone availability
 		 */
-		double availableEnergy = computeAvailableEnergy();
+		final double availableEnergy = computeAvailableEnergy();
 		if (availableEnergy <= 0)
 			return;
-		AttackContext info = cell.findPreys();
+		final AttackContext info = cell.findPreys();
 		if (info == null)
 			return;
-		LivingBeing heavyPrey = info.getHeavyPrey();
-		LivingBeing lightPrey = info.getLightPrey();
-		double heavyWeight = heavyPrey.glucose;
-		double lightWeight = lightPrey.glucose;
-		AttackRule rule = phenotype.findAttackRule(lightWeight, heavyWeight,
-				availableEnergy);
+		final LivingBeing heavyPrey = info.getHeavyPrey();
+		final LivingBeing lightPrey = info.getLightPrey();
+		final double heavyWeight = heavyPrey.glucose;
+		final double lightWeight = lightPrey.glucose;
+		final AttackRule rule = phenotype.findAttackRule(lightWeight,
+				heavyWeight, availableEnergy);
 		if (handler.hasChance(rule.getAttackProbability())) {
 			LivingBeing prey;
 			if (handler.hasChance(rule.getHeavyProbability())) {
@@ -304,7 +307,7 @@ public class LivingBeing implements SimulationConstants {
 			} else {
 				prey = lightPrey;
 			}
-			double energy = availableEnergy * rule.getAttackEnergy();
+			final double energy = availableEnergy * rule.getAttackEnergy();
 			consume(energy);
 			if (prey.attack(energy)) {
 				glucose += prey.glucose;
@@ -321,21 +324,21 @@ public class LivingBeing implements SimulationConstants {
 		/*
 		 * Check for clone availability
 		 */
-		double breedEnergy = handler.getBreedEnergy();
-		double energy = computeAvailableEnergy();
+		final double breedEnergy = handler.getBreedEnergy();
+		final double energy = computeAvailableEnergy();
 		if (energy <= breedEnergy)
 			return;
-		Cell freeLocation = cell.chooseFreeCell();
+		final Cell freeLocation = cell.chooseFreeCell();
 		if (freeLocation == null)
 			return;
-		LivingBeing parent2 = cell.chooseBreeder();
+		final LivingBeing parent2 = cell.chooseBreeder();
 		if (parent2 == null)
 			return;
 
-		BreedRule rule = phenotype.findBreedRule(glucose);
+		final BreedRule rule = phenotype.findBreedRule(glucose);
 		if (handler.hasChance(rule.getProbability())) {
 			consume(breedEnergy);
-			LivingBeing child = new LivingBeing();
+			final LivingBeing child = new LivingBeing();
 			child.handler = handler;
 			child.glucose = glucose * rule.getGlucoseRate();
 			child.breedCode(this, parent2);
@@ -350,20 +353,20 @@ public class LivingBeing implements SimulationConstants {
 		/*
 		 * Check for clone availability
 		 */
-		double cloneEnergy = handler.getCloneEnergy();
-		double energy = computeAvailableEnergy();
+		final double cloneEnergy = handler.getCloneEnergy();
+		final double energy = computeAvailableEnergy();
 		if (energy <= cloneEnergy)
 			return;
-		Cell freeLocation = cell.chooseFreeCell();
+		final Cell freeLocation = cell.chooseFreeCell();
 		if (freeLocation == null)
 			return;
 
-		CloneRule rule = phenotype.findCloneRule(glucose);
+		final CloneRule rule = phenotype.findCloneRule(glucose);
 		if (handler.hasChance(rule.getProbability())) {
 			if (log.isDebugEnabled())
 				log.debug(this + " cloning");
 			consume(cloneEnergy);
-			LivingBeing clone = new LivingBeing();
+			final LivingBeing clone = new LivingBeing();
 			clone.handler = handler;
 			clone.glucose = glucose * rule.getGlucoseRate();
 			clone.cloneCode(this);
@@ -383,13 +386,13 @@ public class LivingBeing implements SimulationConstants {
 		/*
 		 * Check for move availability
 		 */
-		double availableEnergy = computeAvailableEnergy();
-		double moveEnergy = handler.getMoveEnergy();
+		final double availableEnergy = computeAvailableEnergy();
+		final double moveEnergy = handler.getMoveEnergy();
 		if (availableEnergy <= moveEnergy || !cell.hasFreeNeighbors()) {
 			return;
 		}
 
-		MoveActionContext data = findMoveRule();
+		final MoveActionContext data = findMoveRule();
 		if (data == null)
 			return;
 		consume(moveEnergy);
@@ -400,7 +403,7 @@ public class LivingBeing implements SimulationConstants {
 	 * @param handler
 	 *            the handler to set
 	 */
-	public void setHandler(SimulationHandler handler) {
+	public void setHandler(final SimulationHandler handler) {
 		this.handler = handler;
 	}
 
@@ -409,8 +412,8 @@ public class LivingBeing implements SimulationConstants {
 	 * 
 	 * @param time
 	 */
-	private void syntetize(double time) {
-		double glucose = Math.min(cell.computeSynthesisLimit(time), time
+	private void syntetize(final double time) {
+		final double glucose = Math.min(cell.computeSynthesisLimit(time), time
 				* synthesisRate);
 		if (glucose > 0) {
 			this.glucose += glucose;
@@ -438,7 +441,7 @@ public class LivingBeing implements SimulationConstants {
 	 * 
 	 * @param time
 	 */
-	public void update(double time) {
+	public void update(final double time) {
 		if (cell == null)
 			return;
 		syntetize(time);

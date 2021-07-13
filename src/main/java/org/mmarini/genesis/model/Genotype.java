@@ -47,7 +47,7 @@ public class Genotype {
 			+ ATTACK_CODE_LENGTH + DEFENSE_CODE_LENGTH
 			+ SYNTHESIS_MOVE_CODE_LENGTH + GLUCOSE_MOVE_CODE_LENGTH;
 
-	private int[] code;
+	private final int[] code;
 
 	/**
 	 * Create a genotype
@@ -68,9 +68,9 @@ public class Genotype {
 	 * @param parameters
 	 *            the simulation parameters
 	 */
-	public void breed(Genotype parent1, Genotype parent2,
-			SimulationParameters parameters) {
-		double propability = parameters.getMutationProbability();
+	public void breed(final Genotype parent1, final Genotype parent2,
+			final SimulationParameters parameters) {
+		final double propability = parameters.getMutationProbability();
 		for (int i = 0; i < CODE_LENGTH; ++i) {
 			if (parameters.hasChance(propability)) {
 				code[i] = parameters.generateCode();
@@ -92,8 +92,9 @@ public class Genotype {
 	 * @param parameters
 	 *            the simulatino parameters
 	 */
-	public void cloneCode(Genotype parent, SimulationParameters parameters) {
-		double mutationProbability = parameters.getMutationProbability();
+	public void cloneCode(final Genotype parent,
+			final SimulationParameters parameters) {
+		final double mutationProbability = parameters.getMutationProbability();
 		for (int i = 0; i < CODE_LENGTH; ++i) {
 			if (parameters.hasChance(mutationProbability)) {
 				code[i] = parameters.generateCode();
@@ -110,7 +111,7 @@ public class Genotype {
 	 *            the index
 	 * @return the code
 	 */
-	public int getCode(int index) {
+	public int getCode(final int index) {
 		return code[index];
 	}
 
@@ -122,7 +123,7 @@ public class Genotype {
 	 * @param value
 	 *            the code
 	 */
-	public void setCode(int index, int value) {
+	public void setCode(final int index, final int value) {
 		code[index] = value;
 	}
 
@@ -132,7 +133,7 @@ public class Genotype {
 	 * @param genotype
 	 *            the source genotype
 	 */
-	public void setGenotype(Genotype genotype) {
+	public void setGenotype(final Genotype genotype) {
 		System.arraycopy(genotype.code, 0, code, 0, code.length);
 	}
 

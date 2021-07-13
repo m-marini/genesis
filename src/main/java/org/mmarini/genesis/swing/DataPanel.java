@@ -20,8 +20,8 @@ public class DataPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1276978353788583752L;
-	private GridBagConstraints labelConstraints;
-	private GridBagConstraints fieldConstraints;
+	private final GridBagConstraints labelConstraints;
+	private final GridBagConstraints fieldConstraints;
 
 	/**
 	 * 
@@ -43,9 +43,9 @@ public class DataPanel extends JPanel {
 	 * @param label
 	 * @param component
 	 */
-	public void addField(String label, Component component) {
-		GridBagLayout layout = (GridBagLayout) getLayout();
-		JLabel lab = new JLabel(label);
+	public void addField(final String label, final Component component) {
+		final GridBagLayout layout = (GridBagLayout) getLayout();
+		final JLabel lab = new JLabel(label);
 		layout.setConstraints(lab, labelConstraints);
 		add(lab);
 		layout.setConstraints(component, fieldConstraints);

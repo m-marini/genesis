@@ -21,7 +21,7 @@ public class Cell implements SimulationConstants {
 	private static final int NEIGHBOUR_COUNT = 6;
 
 	private LivingBeing locator;
-	private Cell[] neighbors;
+	private final Cell[] neighbors;
 	private double deltaWater;
 	private double deltaOxygen;
 	private double deltaCarbonDioxide;
@@ -45,7 +45,7 @@ public class Cell implements SimulationConstants {
 	 * @param value
 	 *            the value to add
 	 */
-	public void addCarbonDioxide(double value) {
+	public void addCarbonDioxide(final double value) {
 		carbonDioxide += value;
 	}
 
@@ -55,7 +55,7 @@ public class Cell implements SimulationConstants {
 	 * @param value
 	 *            the value to add
 	 */
-	public void addGlucose(double value) {
+	public void addGlucose(final double value) {
 		glucose += value;
 	}
 
@@ -65,7 +65,7 @@ public class Cell implements SimulationConstants {
 	 * @param value
 	 *            the value to add
 	 */
-	public void addOxygen(double value) {
+	public void addOxygen(final double value) {
 		oxygen += value;
 	}
 
@@ -75,7 +75,7 @@ public class Cell implements SimulationConstants {
 	 * @param value
 	 *            the value to add
 	 */
-	public void addWater(double value) {
+	public void addWater(final double value) {
 		water += value;
 	}
 
@@ -98,9 +98,9 @@ public class Cell implements SimulationConstants {
 	 * @return the chosen breeder
 	 */
 	public LivingBeing chooseBreeder() {
-		LivingBeing[] list = new LivingBeing[NEIGHBOUR_COUNT];
+		final LivingBeing[] list = new LivingBeing[NEIGHBOUR_COUNT];
 		int n = 0;
-		for (Cell cell : neighbors) {
+		for (final Cell cell : neighbors) {
 			if (cell.locator != null) {
 				list[n] = cell.locator;
 				++n;
@@ -119,7 +119,7 @@ public class Cell implements SimulationConstants {
 		for (int i = 0; i < n; ++i) {
 			pp += list[i].getGlucose();
 		}
-		double p = handler.nextRandomDouble() * pp;
+		final double p = handler.nextRandomDouble() * pp;
 		pp = 0;
 		for (int i = 0; i < n - 1; ++i) {
 			pp += list[i].getGlucose();
@@ -135,9 +135,9 @@ public class Cell implements SimulationConstants {
 	 * @return the free cell
 	 */
 	public Cell chooseFreeCell() {
-		Cell[] list = new Cell[NEIGHBOUR_COUNT];
+		final Cell[] list = new Cell[NEIGHBOUR_COUNT];
 		int n = 0;
-		for (Cell cell : neighbors) {
+		for (final Cell cell : neighbors) {
 			if (cell.locator == null)
 				list[n] = cell;
 			++n;
@@ -166,7 +166,7 @@ public class Cell implements SimulationConstants {
 	 *            the time interval
 	 * @return the level
 	 */
-	public double computeAvailableGlucose(double time) {
+	public double computeAvailableGlucose(final double time) {
 		return Math.min(glucose, handler.computeMaxAbsorbingGlucose(time));
 	}
 
@@ -176,12 +176,12 @@ public class Cell implements SimulationConstants {
 	 * @param k
 	 *            the spread parameter
 	 */
-	private void computeCarbonDioxideSpread(double k) {
+	private void computeCarbonDioxideSpread(final double k) {
 		/*
 		 * Compute average
 		 */
 		double avg = carbonDioxide;
-		for (Cell cell : neighbors) {
+		for (final Cell cell : neighbors) {
 			avg += cell.carbonDioxide;
 		}
 		avg /= NEIGHBOUR_COUNT + 1;
@@ -190,8 +190,8 @@ public class Cell implements SimulationConstants {
 		 * Update the differences
 		 */
 		double v = 0;
-		for (Cell cell : neighbors) {
-			double dv = (avg - cell.carbonDioxide) * k;
+		for (final Cell cell : neighbors) {
+			final double dv = (avg - cell.carbonDioxide) * k;
 			v += dv;
 			cell.deltaCarbonDioxide += dv;
 		}
@@ -211,12 +211,12 @@ public class Cell implements SimulationConstants {
 	 * 
 	 * @param escapeData
 	 */
-	public void computeEscape(EscapeActionContext escapeData) {
-		double risk = computeRisk();
+	public void computeEscape(final EscapeActionContext escapeData) {
+		final double risk = computeRisk();
 		Cell target = null;
 		double targetRisk = Double.POSITIVE_INFINITY;
-		for (Cell cell : neighbors) {
-			double r = cell.computeRisk();
+		for (final Cell cell : neighbors) {
+			final double r = cell.computeRisk();
 			if (r < targetRisk) {
 				target = cell;
 				targetRisk = r;
@@ -235,12 +235,12 @@ public class Cell implements SimulationConstants {
 	 * @param k
 	 *            the spread parameter
 	 */
-	private void computeGlucoseSpread(double k) {
+	private void computeGlucoseSpread(final double k) {
 		/*
 		 * Compute average
 		 */
 		double avg = glucose;
-		for (Cell cell : neighbors) {
+		for (final Cell cell : neighbors) {
 			avg += cell.glucose;
 		}
 		avg /= NEIGHBOUR_COUNT + 1;
@@ -249,8 +249,8 @@ public class Cell implements SimulationConstants {
 		 * Update the differences
 		 */
 		double v = 0;
-		for (Cell cell : neighbors) {
-			double dv = (avg - cell.glucose) * k;
+		for (final Cell cell : neighbors) {
+			final double dv = (avg - cell.glucose) * k;
 			v += dv;
 			cell.deltaGlucose += dv;
 		}
@@ -262,8 +262,8 @@ public class Cell implements SimulationConstants {
 	 * @return
 	 */
 	public double computeMaxSynthesis() {
-		double c = carbonDioxide / CARBON_DIOXIDE_REQUEST;
-		double w = water / WATER_REQUEST;
+		final double c = carbonDioxide / CARBON_DIOXIDE_REQUEST;
+		final double w = water / WATER_REQUEST;
 		return Math.min(c, w);
 	}
 
@@ -273,12 +273,12 @@ public class Cell implements SimulationConstants {
 	 * @param k
 	 *            the spread parameter
 	 */
-	private void computeOxygenSpread(double k) {
+	private void computeOxygenSpread(final double k) {
 		/*
 		 * Compute average
 		 */
 		double avg = oxygen;
-		for (Cell cell : neighbors) {
+		for (final Cell cell : neighbors) {
 			avg += cell.oxygen;
 		}
 		avg /= NEIGHBOUR_COUNT + 1;
@@ -287,8 +287,8 @@ public class Cell implements SimulationConstants {
 		 * Update the differences
 		 */
 		double v = 0;
-		for (Cell cell : neighbors) {
-			double dv = (avg - cell.oxygen) * k;
+		for (final Cell cell : neighbors) {
+			final double dv = (avg - cell.oxygen) * k;
 			v += dv;
 			cell.deltaOxygen += dv;
 		}
@@ -301,7 +301,7 @@ public class Cell implements SimulationConstants {
 	 */
 	private double computeRisk() {
 		double risk = 0;
-		for (Cell cell : neighbors) {
+		for (final Cell cell : neighbors) {
 			if (cell.locator != null) {
 				risk += cell.locator.getGlucose();
 			}
@@ -321,8 +321,8 @@ public class Cell implements SimulationConstants {
 	 * @param oxygenParm
 	 *            oxygen spread parameter
 	 */
-	public void computeSpread(double waterParm, double glucoseParm,
-			double carbonDioxideParm, double oxygenParm) {
+	public void computeSpread(final double waterParm, final double glucoseParm,
+			final double carbonDioxideParm, final double oxygenParm) {
 		computeWaterSpread(waterParm / (NEIGHBOUR_COUNT + 1));
 		computeOxygenSpread(oxygenParm / (NEIGHBOUR_COUNT + 1));
 		computeCarbonDioxideSpread(carbonDioxideParm / (NEIGHBOUR_COUNT + 1));
@@ -336,9 +336,9 @@ public class Cell implements SimulationConstants {
 	 *            the time interval
 	 * @return the glucose level
 	 */
-	public double computeSynthesisLimit(double time) {
-		double el = handler.getEnergyLevel() * time;
-		double max = computeMaxSynthesis();
+	public double computeSynthesisLimit(final double time) {
+		final double el = handler.getEnergyLevel() * time;
+		final double max = computeMaxSynthesis();
 		return Math.min(el, max);
 	}
 
@@ -348,12 +348,12 @@ public class Cell implements SimulationConstants {
 	 * @param k
 	 *            the spread parameter
 	 */
-	private void computeWaterSpread(double k) {
+	private void computeWaterSpread(final double k) {
 		/*
 		 * Compute average
 		 */
 		double avg = water;
-		for (Cell cell : neighbors) {
+		for (final Cell cell : neighbors) {
 			avg += cell.water;
 		}
 		avg /= NEIGHBOUR_COUNT + 1;
@@ -362,8 +362,8 @@ public class Cell implements SimulationConstants {
 		 * Update the differences
 		 */
 		double v = 0;
-		for (Cell cell : neighbors) {
-			double dv = (avg - cell.water) * k;
+		for (final Cell cell : neighbors) {
+			final double dv = (avg - cell.water) * k;
 			v -= dv;
 			cell.deltaWater += dv;
 		}
@@ -385,9 +385,9 @@ public class Cell implements SimulationConstants {
 	private Cell findGlucoseTargetMax() {
 		double max = Double.NEGATIVE_INFINITY;
 		Cell target = null;
-		for (Cell cell : neighbors) {
+		for (final Cell cell : neighbors) {
 			if (cell.locator == null) {
-				double p = cell.glucose;
+				final double p = cell.glucose;
 				if (p > max) {
 					max = p;
 					target = cell;
@@ -407,10 +407,10 @@ public class Cell implements SimulationConstants {
 	public AttackContext findPreys() {
 		LivingBeing heavy = null;
 		LivingBeing light = null;
-		for (Cell cell : neighbors) {
-			LivingBeing target = cell.getLocator();
+		for (final Cell cell : neighbors) {
+			final LivingBeing target = cell.getLocator();
 			if (target != null) {
-				double weight = target.getGlucose();
+				final double weight = target.getGlucose();
 				if (heavy == null || weight > heavy.getGlucose()) {
 					heavy = target;
 				}
@@ -421,7 +421,7 @@ public class Cell implements SimulationConstants {
 		}
 		if (heavy == null && light == null)
 			return null;
-		AttackContext result = new AttackContext();
+		final AttackContext result = new AttackContext();
 		result.setHeavyPrey(heavy);
 		result.setLightPrey(light);
 		return result;
@@ -442,9 +442,9 @@ public class Cell implements SimulationConstants {
 	private Cell findSynthesisMax() {
 		Cell target = null;
 		double max = Double.NEGATIVE_INFINITY;
-		for (Cell cell : neighbors) {
+		for (final Cell cell : neighbors) {
 			if (cell.locator == null) {
-				double p = cell.computeMaxSynthesis();
+				final double p = cell.computeMaxSynthesis();
 				if (p > max) {
 					max = p;
 					target = cell;
@@ -506,7 +506,7 @@ public class Cell implements SimulationConstants {
 	 * @return
 	 */
 	public boolean hasFreeNeighbors() {
-		for (Cell cell : neighbors) {
+		for (final Cell cell : neighbors) {
 			if (cell.locator == null)
 				return true;
 		}
@@ -519,7 +519,7 @@ public class Cell implements SimulationConstants {
 	 * @param carbonDioxide
 	 *            the carbonDioxide to set
 	 */
-	public void setCarbonDioxide(double carbonDioxide) {
+	public void setCarbonDioxide(final double carbonDioxide) {
 		this.carbonDioxide = carbonDioxide;
 	}
 
@@ -529,7 +529,7 @@ public class Cell implements SimulationConstants {
 	 * @param handler
 	 *            the handler to set
 	 */
-	public void setHandler(SimulationHandler handler) {
+	public void setHandler(final SimulationHandler handler) {
 		this.handler = handler;
 	}
 
@@ -539,7 +539,7 @@ public class Cell implements SimulationConstants {
 	 * @param locator
 	 *            the locator to set
 	 */
-	public void setLocator(LivingBeing locator) {
+	public void setLocator(final LivingBeing locator) {
 		this.locator = locator;
 	}
 
@@ -551,7 +551,7 @@ public class Cell implements SimulationConstants {
 	 * @param neighbor
 	 *            the neighbor
 	 */
-	public void setNeighbor(int index, Cell neighbor) {
+	public void setNeighbor(final int index, final Cell neighbor) {
 		neighbors[index] = neighbor;
 	}
 
@@ -561,7 +561,7 @@ public class Cell implements SimulationConstants {
 	 * @param water
 	 *            the water to set
 	 */
-	public void setWater(double water) {
+	public void setWater(final double water) {
 		this.water = water;
 	}
 

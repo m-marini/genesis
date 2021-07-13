@@ -19,27 +19,27 @@ public class Phenotype {
 	private static final int SYNTHESIS_RULE_COUNT = 3;
 	private static final int ABSORBING_RULE_COUNT = 2;
 
-	private double[] synthesisGlucoseLevel;
-	private double[] synthesisRate;
-	private double[] cloneGlucoseLevel;
-	private CloneRule[] cloneRules;
-	private double[] breedGlucoseLevel;
-	private BreedRule[] breedRules;
+	private final double[] synthesisGlucoseLevel;
+	private final double[] synthesisRate;
+	private final double[] cloneGlucoseLevel;
+	private final CloneRule[] cloneRules;
+	private final double[] breedGlucoseLevel;
+	private final BreedRule[] breedRules;
 	private double absorbingLevel;
-	private double[] absorbingProbability;
+	private final double[] absorbingProbability;
 	private double attackEnergyLevel;
 	private double lightPreyEnergyLevel;
 	private double heavyPreyEnergyLevel;
-	private AttackRule[] attackRules;
+	private final AttackRule[] attackRules;
 	private double attackingEnergyLevel;
 	private double defenseEnergyLevel;
-	private double[] defenseEnergyRate;
-	private double[] synthesisMovePreferences;
+	private final double[] defenseEnergyRate;
+	private final double[] synthesisMovePreferences;
 	private double synthesisMoveEnergy;
 	private double synthesisMoveGridGlucose;
 	private double glucoseMoveEnergy;
 	private double glucoseMoveGridGlucose;
-	private double[] glucoseMovePreferences;
+	private final double[] glucoseMovePreferences;
 
 	/**
 	 * 
@@ -72,7 +72,7 @@ public class Phenotype {
 	 * @param glucose
 	 * @return
 	 */
-	public double computeSynthesisRate(double glucose) {
+	public double computeSynthesisRate(final double glucose) {
 		for (int i = 0; i < SYNTHESIS_RULE_COUNT - 1; ++i) {
 			if (glucose < synthesisGlucoseLevel[i])
 				return synthesisRate[i];
@@ -87,8 +87,8 @@ public class Phenotype {
 	 * @param availableEnergy
 	 * @return
 	 */
-	public AttackRule findAttackRule(double lightWeight, double heavyWeight,
-			double availableEnergy) {
+	public AttackRule findAttackRule(final double lightWeight,
+			final double heavyWeight, final double availableEnergy) {
 
 		int idx = 0;
 		if (heavyWeight >= heavyPreyEnergyLevel)
@@ -105,7 +105,7 @@ public class Phenotype {
 	 * @param glucose
 	 * @return
 	 */
-	public BreedRule findBreedRule(double glucose) {
+	public BreedRule findBreedRule(final double glucose) {
 		for (int i = 0; i < BREED_RULE_COUNT - 1; ++i) {
 			if (glucose < breedGlucoseLevel[i])
 				return breedRules[i];
@@ -118,7 +118,7 @@ public class Phenotype {
 	 * @param glucose
 	 * @return
 	 */
-	public CloneRule findCloneRule(double glucose) {
+	public CloneRule findCloneRule(final double glucose) {
 		for (int i = 0; i < CLONE_RULE_COUNT - 1; ++i) {
 			if (glucose < cloneGlucoseLevel[i])
 				return cloneRules[i];
@@ -132,7 +132,8 @@ public class Phenotype {
 	 * @param defenseEnergy
 	 * @return
 	 */
-	public double findDefenseRate(double attackEnergy, double defenseEnergy) {
+	public double findDefenseRate(final double attackEnergy,
+			final double defenseEnergy) {
 		int idx = 0;
 		if (attackEnergy >= attackingEnergyLevel)
 			idx += 2;
@@ -147,7 +148,7 @@ public class Phenotype {
 	 * @param glucose
 	 * @return
 	 */
-	public double findGlucoseMoveRule(double energy, double glucose) {
+	public double findGlucoseMoveRule(final double energy, final double glucose) {
 		int idx = 0;
 		if (energy > glucoseMoveEnergy)
 			idx += 2;
@@ -162,7 +163,8 @@ public class Phenotype {
 	 * @param synthesisGlucose
 	 * @return
 	 */
-	public double findSyntesisMoveRule(double energy, double synthesisGlucose) {
+	public double findSyntesisMoveRule(final double energy,
+			final double synthesisGlucose) {
 		int idx = 0;
 		if (energy > synthesisMoveEnergy)
 			idx += 2;
@@ -176,25 +178,26 @@ public class Phenotype {
 	 * @param genotype
 	 * @param parameters
 	 */
-	public void generate(Genotype genotype, SimulationParameters parameters) {
+	public void generate(final Genotype genotype,
+			final SimulationParameters parameters) {
 		int idx = 0;
 		for (int i = 0; i < SYNTHESIS_RULE_COUNT - 1; ++i) {
-			int code = genotype.getCode(idx);
+			final int code = genotype.getCode(idx);
 			synthesisGlucoseLevel[i] = parameters.generateGlucoseLevel(code);
 			++idx;
 		}
 		for (int i = 0; i < SYNTHESIS_RULE_COUNT; ++i) {
-			int code = genotype.getCode(idx);
+			final int code = genotype.getCode(idx);
 			synthesisRate[i] = parameters.generateSynthesisRate(code);
 			++idx;
 		}
 
 		for (int i = 0; i < CLONE_RULE_COUNT - 1; ++i) {
-			int code = genotype.getCode(idx);
+			final int code = genotype.getCode(idx);
 			cloneGlucoseLevel[i] = parameters.generateGlucoseLevel(code);
 			++idx;
 		}
-		for (CloneRule rule : cloneRules) {
+		for (final CloneRule rule : cloneRules) {
 			int code = genotype.getCode(idx);
 			double value = parameters.generateProbability(code);
 			rule.setProbability(value);
@@ -207,11 +210,11 @@ public class Phenotype {
 		}
 
 		for (int i = 0; i < BREED_RULE_COUNT - 1; ++i) {
-			int code = genotype.getCode(idx);
+			final int code = genotype.getCode(idx);
 			breedGlucoseLevel[i] = parameters.generateGlucoseLevel(code);
 			++idx;
 		}
-		for (BreedRule rule : breedRules) {
+		for (final BreedRule rule : breedRules) {
 			int code = genotype.getCode(idx);
 			double value = parameters.generateProbability(code);
 			rule.setProbability(value);
@@ -226,8 +229,8 @@ public class Phenotype {
 
 		absorbingLevel = parameters.generateRate(genotype.getCode(idx++));
 		for (int i = 0; i < ABSORBING_RULE_COUNT; ++i) {
-			int code = genotype.getCode(idx);
-			double value = parameters.generateProbability(code);
+			final int code = genotype.getCode(idx);
+			final double value = parameters.generateProbability(code);
 			absorbingProbability[i] = value;
 			++idx;
 		}
@@ -238,7 +241,7 @@ public class Phenotype {
 				.getCode(idx++));
 		attackEnergyLevel = parameters.generateGlucoseLevel(genotype
 				.getCode(idx++));
-		for (AttackRule rule : attackRules) {
+		for (final AttackRule rule : attackRules) {
 			int code = genotype.getCode(idx);
 			double value = parameters.generateProbability(code);
 			rule.setAttackProbability(value);
@@ -260,8 +263,8 @@ public class Phenotype {
 		defenseEnergyLevel = parameters.generateGlucoseLevel(genotype
 				.getCode(idx++));
 		for (int i = 0; i < DEFENSE_RULE_COUNT; ++i) {
-			int code = genotype.getCode(idx);
-			double value = parameters.generateRate(code);
+			final int code = genotype.getCode(idx);
+			final double value = parameters.generateRate(code);
 			defenseEnergyRate[i] = value;
 			++idx;
 		}
@@ -271,8 +274,8 @@ public class Phenotype {
 		synthesisMoveGridGlucose = parameters.generateGlucoseLevel(genotype
 				.getCode(idx++));
 		for (int i = 0; i < SYNTHESIS_MOVE_COUNT; ++i) {
-			int code = genotype.getCode(idx);
-			double value = parameters.generateRate(code);
+			final int code = genotype.getCode(idx);
+			final double value = parameters.generateRate(code);
 			synthesisMovePreferences[i] = value;
 			++idx;
 		}
@@ -282,8 +285,8 @@ public class Phenotype {
 		glucoseMoveGridGlucose = parameters.generateGlucoseLevel(genotype
 				.getCode(idx++));
 		for (int i = 0; i < GLUCOSE_MOVE_COUNT; ++i) {
-			int code = genotype.getCode(idx);
-			double value = parameters.generateRate(code);
+			final int code = genotype.getCode(idx);
+			final double value = parameters.generateRate(code);
 			glucoseMovePreferences[i] = value;
 			++idx;
 		}
@@ -301,7 +304,7 @@ public class Phenotype {
 	 * @param index
 	 * @return
 	 */
-	public double getAbsorbingProbability(int index) {
+	public double getAbsorbingProbability(final int index) {
 		return absorbingProbability[index];
 	}
 

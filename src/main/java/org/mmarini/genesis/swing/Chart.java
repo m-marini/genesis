@@ -32,13 +32,13 @@ public class Chart extends JComponent {
 	private static final long serialVersionUID = 6128025266589737076L;
 
 	private ChartData table;
-	private Rectangle componentArea;
-	private Rectangle chartArea;
-	private Rectangle labelsArea;
-	private Rectangle axisArea;
-	private Insets labelsInsets;
-	private Insets chartInsets;
-	private Color[] chartColor;
+	private final Rectangle componentArea;
+	private final Rectangle chartArea;
+	private final Rectangle labelsArea;
+	private final Rectangle axisArea;
+	private final Insets labelsInsets;
+	private final Insets chartInsets;
+	private final Color[] chartColor;
 	private double scaleX;
 	private double scaleY;
 	private double baselineX;
@@ -47,12 +47,12 @@ public class Chart extends JComponent {
 	private double maximumY;
 	private double stepY;
 	private double stepX;
-	private Color axisColor;
-	private Color minorTickColor;
-	private Color majorTickColor;
-	private int lineWidth;
-	private String labelPattern;
-	private ChartDataListener listener;
+	private final Color axisColor;
+	private final Color minorTickColor;
+	private final Color majorTickColor;
+	private final int lineWidth;
+	private final String labelPattern;
+	private final ChartDataListener listener;
 
 	/**
 	 * 
@@ -76,7 +76,7 @@ public class Chart extends JComponent {
 		listener = new ChartDataListener() {
 
 			@Override
-			public void dataChanged(ChartDataEvent event) {
+			public void dataChanged(final ChartDataEvent event) {
 				update();
 			}
 		};
@@ -86,11 +86,11 @@ public class Chart extends JComponent {
 	 * 
 	 * @param gr
 	 */
-	private void computeAreas(Graphics2D gr) {
+	private void computeAreas(final Graphics2D gr) {
 		int width = 0;
-		FontMetrics fm = gr.getFontMetrics();
+		final FontMetrics fm = gr.getFontMetrics();
 		if (table != null) {
-			int cols = table.getColumns();
+			final int cols = table.getColumns();
 			for (int i = 1; i < cols; ++i) {
 				width = Math.max(fm.stringWidth(table.getLabel(i)), width);
 			}
@@ -102,17 +102,17 @@ public class Chart extends JComponent {
 				- labelsInsets.right;
 		labelsArea.y += labelsInsets.top;
 
-		NumberFormat labelFormat = new DecimalFormat(labelPattern);
+		final NumberFormat labelFormat = new DecimalFormat(labelPattern);
 		width = fm.stringWidth(labelFormat.format(baselineX)) / 2
 				- MAJOR_TICK_LENGTH - LABEL_TICK_HGAP;
 		for (double y = baselineY; y < maximumY; y += stepY) {
-			String txt = labelFormat.format(y);
+			final String txt = labelFormat.format(y);
 			width = Math.max(fm.stringWidth(txt), width);
 		}
-		String txt = labelFormat.format(maximumY);
+		final String txt = labelFormat.format(maximumY);
 		width = Math.max(fm.stringWidth(txt), width);
 
-		int w1 = fm.stringWidth(labelFormat.format(maximumX));
+		final int w1 = fm.stringWidth(labelFormat.format(maximumX));
 
 		axisArea.setFrame(componentArea);
 		axisArea.width -= labelsArea.width + labelsInsets.right
@@ -133,8 +133,8 @@ public class Chart extends JComponent {
 	}
 
 	private void computeComponentArea() {
-		Dimension size = getSize();
-		Insets insets = getInsets();
+		final Dimension size = getSize();
+		final Insets insets = getInsets();
 		if (insets == null) {
 			componentArea.setFrame(0, 0, size.width, size.height);
 		} else {
@@ -150,7 +150,7 @@ public class Chart extends JComponent {
 	 * @param x
 	 * @param y
 	 */
-	private void computePoint(Point point, double x, double y) {
+	private void computePoint(final Point point, final double x, final double y) {
 		point.x = (int) Math.round((x - baselineX) * scaleX);
 		point.y = chartArea.height - (int) Math.round((y - baselineY) * scaleY);
 	}
@@ -161,7 +161,7 @@ public class Chart extends JComponent {
 	 * @param row
 	 * @param col
 	 */
-	private void computePoint(Point point, int row, int col) {
+	private void computePoint(final Point point, final int row, final int col) {
 		computePoint(point, table.getValue(row, 0), table.getValue(row, col));
 	}
 
@@ -171,8 +171,8 @@ public class Chart extends JComponent {
 	 * @param maximum
 	 * @return
 	 */
-	private double computeStep(double baseline, double maximum) {
-		double range = maximum - baseline;
+	private double computeStep(final double baseline, final double maximum) {
+		final double range = maximum - baseline;
 		if (range > 0)
 			return Math.pow(10, Math.ceil(Math.log10(range)) - 1);
 		if (Math.abs(baseline) > 0)
@@ -187,15 +187,15 @@ public class Chart extends JComponent {
 	private void paintAxis(Graphics2D gr) {
 		gr = (Graphics2D) gr.create();
 		gr.translate(chartArea.x, chartArea.y);
-		Point p0 = new Point();
-		FontMetrics fm = gr.getFontMetrics();
+		final Point p0 = new Point();
+		final FontMetrics fm = gr.getFontMetrics();
 		gr.setColor(Color.BLACK);
-		int n = (int) Math.round((maximumX - baselineX) / stepX);
-		int m = (int) Math.round((maximumY - baselineY) / stepY);
-		NumberFormat labelFormat = new DecimalFormat(labelPattern);
+		final int n = (int) Math.round((maximumX - baselineX) / stepX);
+		final int m = (int) Math.round((maximumY - baselineY) / stepY);
+		final NumberFormat labelFormat = new DecimalFormat(labelPattern);
 		for (int i = 0; i <= n; ++i) {
-			int tick = i % 10;
-			double x = baselineX + i * stepX;
+			final int tick = i % 10;
+			final double x = baselineX + i * stepX;
 			computePoint(p0, x, baselineY);
 			if (tick == 0)
 				gr.drawLine(p0.x, p0.y + MAJOR_TICK_LENGTH, p0.x, p0.y);
@@ -204,16 +204,16 @@ public class Chart extends JComponent {
 			else
 				gr.drawLine(p0.x, p0.y + MINOR_TICK_LENGTH, p0.x, p0.y);
 			if (tick == 0) {
-				String txt = labelFormat.format(x);
-				int w = fm.stringWidth(txt);
+				final String txt = labelFormat.format(x);
+				final int w = fm.stringWidth(txt);
 				gr.drawString(txt, p0.x - w / 2, p0.y + MAJOR_TICK_LENGTH
 						+ LABEL_TICK_VGAP + fm.getAscent());
 			}
 		}
 
 		for (int i = 0; i <= m; ++i) {
-			int tick = i % 10;
-			double y = baselineY + i * stepY;
+			final int tick = i % 10;
+			final double y = baselineY + i * stepY;
 			computePoint(p0, baselineX, y);
 			if (y == 0)
 				gr.setColor(Color.BLACK);
@@ -226,14 +226,14 @@ public class Chart extends JComponent {
 			else
 				gr.drawLine(p0.x - MINOR_TICK_LENGTH, p0.y, p0.x, p0.y);
 			if (tick == 0) {
-				String txt = labelFormat.format(y);
-				int w = fm.stringWidth(txt);
+				final String txt = labelFormat.format(y);
+				final int w = fm.stringWidth(txt);
 				gr.setColor(Color.BLACK);
 				gr.drawString(txt, p0.x - MAJOR_TICK_LENGTH - LABEL_TICK_HGAP
 						- w, p0.y);
 			}
 		}
-		String txt = table.getLabel(0);
+		final String txt = table.getLabel(0);
 		gr.drawString(txt, (chartArea.width - fm.stringWidth(txt)) / 2,
 				chartArea.height + fm.getHeight() + fm.getAscent()
 						+ MAJOR_TICK_LENGTH + LABEL_TICK_VGAP);
@@ -249,10 +249,10 @@ public class Chart extends JComponent {
 		// chartArea.height);
 		gr = (Graphics2D) gr.create();
 		gr.translate(chartArea.x, chartArea.y);
-		int cols = table.getColumns();
-		Point p0 = new Point();
-		Point p1 = new Point();
-		int rows = table.getRows();
+		final int cols = table.getColumns();
+		final Point p0 = new Point();
+		final Point p1 = new Point();
+		final int rows = table.getRows();
 		gr.setStroke(new BasicStroke(lineWidth));
 		for (int col = 1; col < cols; ++col) {
 			computePoint(p0, 0, col);
@@ -269,8 +269,8 @@ public class Chart extends JComponent {
 	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
 	 */
 	@Override
-	protected void paintComponent(Graphics g) {
-		Graphics2D g2 = (Graphics2D) g;
+	protected void paintComponent(final Graphics g) {
+		final Graphics2D g2 = (Graphics2D) g;
 		computeComponentArea();
 		g2.setColor(getBackground());
 		g2.fill(componentArea);
@@ -300,13 +300,14 @@ public class Chart extends JComponent {
 	 * @param step
 	 * @param tickColor
 	 */
-	private void paintGrid(Graphics2D gr, int step, Color tickColor) {
-		Point p0 = new Point();
-		Point p1 = new Point();
-		int n = (int) Math.round((maximumX - baselineX) / stepX);
-		int m = (int) Math.round((maximumY - baselineY) / stepY);
+	private void paintGrid(final Graphics2D gr, final int step,
+			final Color tickColor) {
+		final Point p0 = new Point();
+		final Point p1 = new Point();
+		final int n = (int) Math.round((maximumX - baselineX) / stepX);
+		final int m = (int) Math.round((maximumY - baselineY) / stepY);
 		for (int i = 0; i <= n; i += step) {
-			double x = baselineX + i * stepX;
+			final double x = baselineX + i * stepX;
 			computePoint(p0, x, baselineY);
 			computePoint(p1, x, maximumY);
 			if (Math.abs(x) < stepX / 2)
@@ -316,7 +317,7 @@ public class Chart extends JComponent {
 			gr.drawLine(p0.x, p0.y, p1.x, p1.y);
 		}
 		for (int i = 0; i <= m; i += step) {
-			double y = baselineY + i * stepY;
+			final double y = baselineY + i * stepY;
 			computePoint(p0, baselineX, y);
 			computePoint(p1, maximumX, y);
 			if (Math.abs(y) < stepY / 2)
@@ -334,9 +335,9 @@ public class Chart extends JComponent {
 	private void paintLabels(Graphics2D gr) {
 		gr = (Graphics2D) gr.create(labelsArea.x, labelsArea.y,
 				labelsArea.width, labelsArea.height);
-		int cols = table.getColumns();
-		FontMetrics fm = gr.getFontMetrics();
-		int fh = fm.getHeight();
+		final int cols = table.getColumns();
+		final FontMetrics fm = gr.getFontMetrics();
+		final int fh = fm.getHeight();
 		int y = fm.getAscent();
 		for (int i = 1; i < cols; ++i) {
 			gr.setColor(chartColor[i - 1]);
@@ -352,7 +353,7 @@ public class Chart extends JComponent {
 	 * @param table
 	 *            the table to set
 	 */
-	public void setTable(ChartData table) {
+	public void setTable(final ChartData table) {
 		if (this.table != null)
 			table.removeCharDataListner(listener);
 		this.table = table;
@@ -367,8 +368,8 @@ public class Chart extends JComponent {
 	private void update() {
 		if (table == null)
 			return;
-		int rowCount = table.getRows();
-		int colCount = table.getColumns();
+		final int rowCount = table.getRows();
+		final int colCount = table.getColumns();
 		baselineX = baselineY = Double.POSITIVE_INFINITY;
 		maximumX = maximumY = Double.NEGATIVE_INFINITY;
 		for (int i = 0; i < rowCount; ++i) {
@@ -387,8 +388,8 @@ public class Chart extends JComponent {
 		stepX /= 10;
 
 		stepY = computeStep(baselineY, maximumY);
-		double b = Math.floor(baselineY / stepY) * stepY;
-		double m = Math.ceil(maximumY / stepY) * stepY;
+		final double b = Math.floor(baselineY / stepY) * stepY;
+		final double m = Math.ceil(maximumY / stepY) * stepY;
 		if ((m - b) / stepY >= MIN_GRID_COUNT) {
 			baselineY = b;
 			maximumY = m;

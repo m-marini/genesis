@@ -43,7 +43,7 @@ public class AttackRule {
 	 * @param attackEnergy
 	 *            the attackEnergy to set
 	 */
-	public void setAttackEnergy(double attackEnergy) {
+	public void setAttackEnergy(final double attackEnergy) {
 		this.attackEnergy = attackEnergy;
 	}
 
@@ -51,7 +51,7 @@ public class AttackRule {
 	 * @param attackProbability
 	 *            the attackProbability to set
 	 */
-	public void setAttackProbability(double attackProbability) {
+	public void setAttackProbability(final double attackProbability) {
 		this.attackProbability = attackProbability;
 	}
 
@@ -59,7 +59,7 @@ public class AttackRule {
 	 * @param heavyProbability
 	 *            the heavyProbability to set
 	 */
-	public void setHeavyProbability(double heavyProbability) {
+	public void setHeavyProbability(final double heavyProbability) {
 		this.heavyProbability = heavyProbability;
 	}
 

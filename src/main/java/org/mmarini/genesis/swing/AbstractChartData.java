@@ -13,7 +13,7 @@ import java.util.List;
 public abstract class AbstractChartData implements ChartData {
 
 	private List<ChartDataListener> listeners;
-	private ChartDataEvent event;
+	private final ChartDataEvent event;
 
 	/**
 	 * 
@@ -27,7 +27,7 @@ public abstract class AbstractChartData implements ChartData {
 	 *      .swing.ChartDataListener)
 	 */
 	@Override
-	public void addCharDataListner(ChartDataListener l) {
+	public void addCharDataListner(final ChartDataListener l) {
 		List<ChartDataListener> ls = listeners;
 		if (ls == null) {
 			ls = new ArrayList<ChartDataListener>(1);
@@ -44,10 +44,10 @@ public abstract class AbstractChartData implements ChartData {
 	 * 
 	 */
 	protected void fireDataChanged() {
-		List<ChartDataListener> ls = listeners;
+		final List<ChartDataListener> ls = listeners;
 		if (ls == null)
 			return;
-		for (ChartDataListener l : ls) {
+		for (final ChartDataListener l : ls) {
 			l.dataChanged(event);
 		}
 	}
@@ -57,7 +57,7 @@ public abstract class AbstractChartData implements ChartData {
 	 *      .genesis.swing.ChartDataListener)
 	 */
 	@Override
-	public void removeCharDataListner(ChartDataListener l) {
+	public void removeCharDataListner(final ChartDataListener l) {
 		List<ChartDataListener> ls = listeners;
 		if (ls == null || !ls.contains(l))
 			return;

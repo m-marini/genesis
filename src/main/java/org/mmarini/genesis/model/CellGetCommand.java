@@ -11,7 +11,7 @@ public interface CellGetCommand {
 	public static CellGetCommand WATER_COMMAND = new CellGetCommand() {
 
 		@Override
-		public double retrieveData(Cell cell) {
+		public double retrieveData(final Cell cell) {
 			return cell.getWater();
 		}
 	};
@@ -19,7 +19,7 @@ public interface CellGetCommand {
 	public static CellGetCommand OXYGEN_COMMAND = new CellGetCommand() {
 
 		@Override
-		public double retrieveData(Cell cell) {
+		public double retrieveData(final Cell cell) {
 			return cell.getOxygen();
 		}
 	};
@@ -27,7 +27,7 @@ public interface CellGetCommand {
 	public static CellGetCommand GLUCOSE_COMMAND = new CellGetCommand() {
 
 		@Override
-		public double retrieveData(Cell cell) {
+		public double retrieveData(final Cell cell) {
 			return cell.getGlucose();
 		}
 	};
@@ -35,7 +35,7 @@ public interface CellGetCommand {
 	public static CellGetCommand CARBON_DIOXIDE_COMMAND = new CellGetCommand() {
 
 		@Override
-		public double retrieveData(Cell cell) {
+		public double retrieveData(final Cell cell) {
 			return cell.getCarbonDioxide();
 		}
 	};

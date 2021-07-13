@@ -29,16 +29,16 @@ public class SimulationParameters implements SimulationConstants {
 	private double reactionInterval;
 	private double updateInterval;
 
-	private double maxGlucoseLevel;
-	private double maxProbability;
-	private double maxRate;
-	private double maxSynthesisRate;
+	private final double maxGlucoseLevel;
+	private final double maxProbability;
+	private final double maxRate;
+	private final double maxSynthesisRate;
 
-	private double absorbingConsumtion;
-	private double maxAbsorbingRate;
+	private final double absorbingConsumtion;
+	private final double maxAbsorbingRate;
 	private double moveEnergy;
-	private double consumptionRate;
-	private Random random;
+	private final double consumptionRate;
+	private final Random random;
 
 	/**
 	 * 
@@ -62,7 +62,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param time
 	 * @return
 	 */
-	public double computeAbsorbingConsumption(double time) {
+	public double computeAbsorbingConsumption(final double time) {
 		return time * absorbingConsumtion;
 	}
 
@@ -72,7 +72,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param time
 	 * @return
 	 */
-	public double computeMaxAbsorbingGlucose(double time) {
+	public double computeMaxAbsorbingGlucose(final double time) {
 		return time * maxAbsorbingRate;
 	}
 
@@ -80,7 +80,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * 
 	 * @param genotype
 	 */
-	public void generateAbsorbingCode(Genotype genotype) {
+	public void generateAbsorbingCode(final Genotype genotype) {
 		int i = Genotype.ABSORBING_GENE_INDEX;
 		genotype.setCode(i++, 0);
 		genotype.setCode(i++, CODE_SYMBOLS - 1);
@@ -91,7 +91,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * 
 	 * @param genotype
 	 */
-	public void generateAttackCode(Genotype genotype) {
+	public void generateAttackCode(final Genotype genotype) {
 		int i = Genotype.ATTACK_GENE_INDEX;
 		genotype.setCode(i++, 0);
 		genotype.setCode(i++, 0);
@@ -108,7 +108,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * 
 	 * @param genotype
 	 */
-	public void generateBreedCode(Genotype genotype) {
+	public void generateBreedCode(final Genotype genotype) {
 		int i = Genotype.BREED_GENE_INDEX;
 		genotype.setCode(i++, 0);
 		genotype.setCode(i++, 1);
@@ -125,7 +125,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * 
 	 * @param genotype
 	 */
-	public void generateCloneCode(Genotype genotype) {
+	public void generateCloneCode(final Genotype genotype) {
 		int i = Genotype.CLONE_GENE_INDEX;
 		genotype.setCode(i++, 0);
 		genotype.setCode(i++, 1);
@@ -150,7 +150,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * 
 	 * @param genotype
 	 */
-	public void generateDefenseCode(Genotype genotype) {
+	public void generateDefenseCode(final Genotype genotype) {
 		int i = Genotype.DEFENSE_GENE_INDEX;
 		genotype.setCode(i++, 0);
 		genotype.setCode(i++, 0);
@@ -165,7 +165,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param code
 	 * @return
 	 */
-	public double generateGlucoseLevel(int code) {
+	public double generateGlucoseLevel(final int code) {
 		return code * maxGlucoseLevel / (CODE_SYMBOLS - 1);
 	}
 
@@ -173,7 +173,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * 
 	 * @param genotype
 	 */
-	public void generateGlucoseMoveCode(Genotype genotype) {
+	public void generateGlucoseMoveCode(final Genotype genotype) {
 		int i = Genotype.GLUCOSE_MOVE_GENE_INDEX;
 		genotype.setCode(i++, 0);
 		genotype.setCode(i++, 0);
@@ -187,7 +187,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * 
 	 * @return
 	 */
-	public double generateProbability(int code) {
+	public double generateProbability(final int code) {
 		return code * maxProbability / (CODE_SYMBOLS - 1);
 	}
 
@@ -195,7 +195,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * 
 	 * @return
 	 */
-	public double generateRate(int code) {
+	public double generateRate(final int code) {
 		return code * maxRate / (CODE_SYMBOLS - 1);
 	}
 
@@ -203,7 +203,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * 
 	 * @param genotype
 	 */
-	public void generateSynthesisCode(Genotype genotype) {
+	public void generateSynthesisCode(final Genotype genotype) {
 		int i = 0;
 		genotype.setCode(i++, CODE_SYMBOLS - 1);
 		genotype.setCode(i++, CODE_SYMBOLS - 1);
@@ -216,7 +216,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * 
 	 * @param genotype
 	 */
-	public void generateSynthesisMoveCode(Genotype genotype) {
+	public void generateSynthesisMoveCode(final Genotype genotype) {
 		int i = Genotype.SYNTHESIS_MOVE_GENE_INDEX;
 		genotype.setCode(i++, 0);
 		genotype.setCode(i++, 0);
@@ -231,7 +231,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param code
 	 * @return
 	 */
-	public double generateSynthesisRate(int code) {
+	public double generateSynthesisRate(final int code) {
 		return code * maxSynthesisRate / (CODE_SYMBOLS - 1);
 	}
 
@@ -240,7 +240,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param genotype
 	 * @return
 	 */
-	public Genotype generateTestCode(Genotype genotype) {
+	public Genotype generateTestCode(final Genotype genotype) {
 		// Synthesis rules
 		generateSynthesisCode(genotype);
 
@@ -388,7 +388,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param probability
 	 * @return
 	 */
-	public boolean hasChance(double probability) {
+	public boolean hasChance(final double probability) {
 		return random.nextDouble() < probability;
 	}
 
@@ -397,8 +397,8 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param time
 	 * @return
 	 */
-	public boolean hasReaction(double time) {
-		double pr = -Math.expm1(-time / reactionInterval);
+	public boolean hasReaction(final double time) {
+		final double pr = -Math.expm1(-time / reactionInterval);
 		return hasChance(pr);
 	}
 
@@ -415,13 +415,13 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param probabilities
 	 * @return
 	 */
-	public int nextRandomInt(double[] probabilities) {
+	public int nextRandomInt(final double[] probabilities) {
 		double tot = 0;
-		for (double v : probabilities)
+		for (final double v : probabilities)
 			tot += v;
-		double p = random.nextDouble() * tot;
+		final double p = random.nextDouble() * tot;
 		tot = 0;
-		int n = probabilities.length - 1;
+		final int n = probabilities.length - 1;
 		for (int i = 0; i < n; ++i) {
 			tot += probabilities[i];
 			if (p < tot)
@@ -435,7 +435,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param n
 	 * @return
 	 */
-	public int nextRandomInt(int n) {
+	public int nextRandomInt(final int n) {
 		return random.nextInt(n);
 	}
 
@@ -443,7 +443,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param breedEnergy
 	 *            the breedEnergy to set
 	 */
-	public void setBreedEnergy(double breedEnergy) {
+	public void setBreedEnergy(final double breedEnergy) {
 		this.breedEnergy = breedEnergy;
 	}
 
@@ -451,7 +451,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param co2Level
 	 *            the co2Level to set
 	 */
-	public void setCarbonDioxideLevel(double co2Level) {
+	public void setCarbonDioxideLevel(final double co2Level) {
 		this.carbonDioxideLevel = co2Level;
 	}
 
@@ -459,7 +459,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param carbonDioxideSpread
 	 *            the carbonDioxideSpread to set
 	 */
-	public void setCarbonDioxideSpread(double carbonDioxideSpread) {
+	public void setCarbonDioxideSpread(final double carbonDioxideSpread) {
 		this.carbonDioxideSpread = carbonDioxideSpread;
 	}
 
@@ -467,7 +467,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param cloneEnergy
 	 *            the cloneEnergy to set
 	 */
-	public void setCloneEnergy(double cloneEnergy) {
+	public void setCloneEnergy(final double cloneEnergy) {
 		this.cloneEnergy = cloneEnergy;
 	}
 
@@ -475,7 +475,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param cols
 	 *            the cols to set
 	 */
-	public void setCols(int cols) {
+	public void setCols(final int cols) {
 		this.cols = cols;
 	}
 
@@ -483,7 +483,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param energyLevel
 	 *            the energyLevel to set
 	 */
-	public void setEnergyLevel(double energyLevel) {
+	public void setEnergyLevel(final double energyLevel) {
 		this.energyLevel = energyLevel;
 	}
 
@@ -491,7 +491,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param glucoseSpread
 	 *            the glucoseSpread to set
 	 */
-	public void setGlucoseSpread(double glucoseSpread) {
+	public void setGlucoseSpread(final double glucoseSpread) {
 		this.glucoseSpread = glucoseSpread;
 	}
 
@@ -499,7 +499,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param moveEnergy
 	 *            the moveEnergy to set
 	 */
-	public void setMoveEnergy(double moveEnergy) {
+	public void setMoveEnergy(final double moveEnergy) {
 		this.moveEnergy = moveEnergy;
 	}
 
@@ -507,7 +507,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param mutationProbability
 	 *            the mutationProbability to set
 	 */
-	public void setMutationProbability(double mutationProbability) {
+	public void setMutationProbability(final double mutationProbability) {
 		this.mutationProbability = mutationProbability;
 	}
 
@@ -515,7 +515,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param oxygenSpread
 	 *            the oxygenSpread to set
 	 */
-	public void setOxygenSpread(double oxygenSpread) {
+	public void setOxygenSpread(final double oxygenSpread) {
 		this.oxygenSpread = oxygenSpread;
 	}
 
@@ -523,7 +523,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param reactionInterval
 	 *            the reactionInterval to set
 	 */
-	public void setReactionInterval(double reactionInterval) {
+	public void setReactionInterval(final double reactionInterval) {
 		this.reactionInterval = reactionInterval;
 	}
 
@@ -531,7 +531,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param rows
 	 *            the rows to set
 	 */
-	public void setRows(int rows) {
+	public void setRows(final int rows) {
 		this.rows = rows;
 	}
 
@@ -539,7 +539,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param seed
 	 * @see java.util.Random#setSeed(long)
 	 */
-	public void setSeed(long seed) {
+	public void setSeed(final long seed) {
 		random.setSeed(seed);
 	}
 
@@ -547,7 +547,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param updateInterval
 	 *            the timeInterval to set
 	 */
-	public void setUpdateInterval(double updateInterval) {
+	public void setUpdateInterval(final double updateInterval) {
 		this.updateInterval = updateInterval;
 	}
 
@@ -555,7 +555,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param h2oLevel
 	 *            the h2oLevel to set
 	 */
-	public void setWaterLevel(double h2oLevel) {
+	public void setWaterLevel(final double h2oLevel) {
 		this.waterLevel = h2oLevel;
 	}
 
@@ -563,7 +563,7 @@ public class SimulationParameters implements SimulationConstants {
 	 * @param waterSpread
 	 *            the waterSpread to set
 	 */
-	public void setWaterSpread(double waterSpread) {
+	public void setWaterSpread(final double waterSpread) {
 		this.waterSpread = waterSpread;
 	}
 

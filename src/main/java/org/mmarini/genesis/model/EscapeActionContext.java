@@ -35,7 +35,7 @@ public class EscapeActionContext {
 	 * @param risk
 	 *            the risk to set
 	 */
-	public void setRisk(double risk) {
+	public void setRisk(final double risk) {
 		this.risk = risk;
 	}
 
@@ -43,7 +43,7 @@ public class EscapeActionContext {
 	 * @param target
 	 *            the target to set
 	 */
-	public void setTarget(Cell target) {
+	public void setTarget(final Cell target) {
 		this.target = target;
 	}
 

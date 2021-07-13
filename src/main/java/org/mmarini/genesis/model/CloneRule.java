@@ -35,7 +35,7 @@ public class CloneRule {
 	 * @param cloneEnergy
 	 *            the cloneEnergy to set
 	 */
-	public void setGlucoseRate(double cloneEnergy) {
+	public void setGlucoseRate(final double cloneEnergy) {
 		this.glucoseRate = cloneEnergy;
 	}
 
@@ -43,7 +43,7 @@ public class CloneRule {
 	 * @param probability
 	 *            the probability to set
 	 */
-	public void setProbability(double probability) {
+	public void setProbability(final double probability) {
 		this.probability = probability;
 	}
 

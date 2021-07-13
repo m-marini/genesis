@@ -40,33 +40,33 @@ public class Main {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
-//		try {
-//			UIManager
-//					.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel"); //$NON-NLS-1$
-//		} catch (Exception e) {
-//			log.error(e.getMessage(), e);
-//		}
-		Main main = new Main();
+	public static void main(final String[] args) {
+		// try {
+		// UIManager
+		//					.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel"); //$NON-NLS-1$
+		// } catch (Exception e) {
+		// log.error(e.getMessage(), e);
+		// }
+		final Main main = new Main();
 		main.start();
 	}
 
-	private JFrame frame;
-	private AbstractAction startAction;
-	private AbstractAction stopAction;
-	private AbstractAction resumeAction;
-	private AbstractAction exitAction;
-	private SimParamPane simParamPane;
-	private SimulationHandler handler;
-	private ActionListener timeAction;
-	private Timer timer;
-	private MonitorPane monitorPane;
+	private final JFrame frame;
+	private final AbstractAction startAction;
+	private final AbstractAction stopAction;
+	private final AbstractAction resumeAction;
+	private final AbstractAction exitAction;
+	private final SimParamPane simParamPane;
+	private final SimulationHandler handler;
+	private final ActionListener timeAction;
+	private final Timer timer;
+	private final MonitorPane monitorPane;
 	private long last;
 	private Thread threadSimulator;
-	private Chart chemicalChartsPane;
-	private ChemicalChartData chemicalChartsData;
-	private Chart popChartsPane;
-	private PopulationChartData popChartsData;
+	private final Chart chemicalChartsPane;
+	private final ChemicalChartData chemicalChartsData;
+	private final Chart popChartsPane;
+	private final PopulationChartData popChartsData;
 	private double snapshotTimer;
 
 	/**
@@ -84,7 +84,7 @@ public class Main {
 		timeAction = new ActionListener() {
 
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				notifyTime();
 			}
 		};
@@ -97,7 +97,7 @@ public class Main {
 			private static final long serialVersionUID = -2368134504226456856L;
 
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				startNewSimulation();
 			}
 		};
@@ -109,7 +109,7 @@ public class Main {
 			private static final long serialVersionUID = -2368134504226456856L;
 
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				stopSimulation();
 			}
 		};
@@ -121,7 +121,7 @@ public class Main {
 			private static final long serialVersionUID = -2368134504226456856L;
 
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				System.exit(0);
 			}
 		};
@@ -133,7 +133,7 @@ public class Main {
 			private static final long serialVersionUID = -2368134504226456856L;
 
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				resume();
 			}
 		};
@@ -160,8 +160,8 @@ public class Main {
 		exitAction.putValue(Action.ACCELERATOR_KEY, KeyStroke
 				.getKeyStroke(Messages.getString("Main.exit.keystroke"))); //$NON-NLS-1$
 
-		JMenuBar menuBar = new JMenuBar();
-		JMenu menu = new JMenu();
+		final JMenuBar menuBar = new JMenuBar();
+		final JMenu menu = new JMenu();
 		menu.setText(Messages.getString("Main.fileMenu.label")); //$NON-NLS-1$
 
 		menu.add(new JMenuItem(startAction));
@@ -176,9 +176,9 @@ public class Main {
 		frame.setTitle(Messages.getString("Main.title")); //$NON-NLS-1$
 		frame.setSize(1024, 768);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		Container c = frame.getContentPane();
+		final Container c = frame.getContentPane();
 		c.setLayout(new BorderLayout());
-		JTabbedPane tabPane = new JTabbedPane();
+		final JTabbedPane tabPane = new JTabbedPane();
 		tabPane.add(Messages.getString("Main.monitor.label"), monitorPane); //$NON-NLS-1$
 		tabPane.add(
 				Messages.getString("Main.chemical.label"), chemicalChartsPane); //$NON-NLS-1$
@@ -199,13 +199,13 @@ public class Main {
 	 * 
 	 */
 	private void notifyTime() {
-		long now = System.currentTimeMillis();
+		final long now = System.currentTimeMillis();
 		monitorPane.setRefreshRate(MILLISEC / (now - last));
 		last = now;
 		monitorPane.refresh();
-		GridSnapshot snapshot = monitorPane.getSnapshot();
+		final GridSnapshot snapshot = monitorPane.getSnapshot();
 		if (snapshot.getTime() >= snapshotTimer) {
-			Snapshot data = snapshot.getSnapshot().clone();
+			final Snapshot data = snapshot.getSnapshot().clone();
 			chemicalChartsData.add(data);
 			popChartsData.add(data);
 			snapshotTimer += SNAPSHOT_INTERVAL;
@@ -224,17 +224,18 @@ public class Main {
 	private void performSimulation() {
 		log.info("Start simulation"); //$NON-NLS-1$
 		long last = System.currentTimeMillis();
-		double updateInterval = handler.getParameters().getUpdateInterval();
-		long interval = Math.round(updateInterval * MILLISEC);
+		final double updateInterval = handler.getParameters()
+				.getUpdateInterval();
+		final long interval = Math.round(updateInterval * MILLISEC);
 		long next = last + interval;
-		Thread currentThread = Thread.currentThread();
+		final Thread currentThread = Thread.currentThread();
 		try {
 			while (threadSimulator == currentThread) {
-				long now = System.currentTimeMillis();
+				final long now = System.currentTimeMillis();
 				if (now < next) {
 					Thread.sleep(next - now);
 				} else {
-					double time = (now - last) / MILLISEC;
+					final double time = (now - last) / MILLISEC;
 					handler.update(updateInterval);
 					monitorPane.setUpdateRate(1 / time);
 					if (handler.isEmpty()) {
@@ -244,7 +245,7 @@ public class Main {
 					next = now + interval;
 				}
 			}
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			log.error(e.getMessage(), e);
 		}
 		log.info("Simulation completed"); //$NON-NLS-1$
@@ -271,7 +272,7 @@ public class Main {
 	 *  
 	 */
 	private void startNewSimulation() {
-		int selection = JOptionPane
+		final int selection = JOptionPane
 				.showConfirmDialog(
 						null,
 						simParamPane,

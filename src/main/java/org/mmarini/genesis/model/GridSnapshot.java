@@ -9,7 +9,7 @@ package org.mmarini.genesis.model;
  */
 public class GridSnapshot {
 	private GridData[][] dataGrid;
-	private Snapshot snapshot;
+	private final Snapshot snapshot;
 
 	/**
 	 * 
@@ -116,7 +116,7 @@ public class GridSnapshot {
 	 * @param absorberCounter
 	 * @see org.mmarini.genesis.model.Snapshot#setAbsorberCounter(int)
 	 */
-	public void setAbsorberCounter(int absorberCounter) {
+	public void setAbsorberCounter(final int absorberCounter) {
 		snapshot.setAbsorberCounter(absorberCounter);
 	}
 
@@ -124,7 +124,7 @@ public class GridSnapshot {
 	 * @param carbonDioxide
 	 * @see org.mmarini.genesis.model.Snapshot#setCarbonDioxide(double)
 	 */
-	public void setCarbonDioxide(double carbonDioxide) {
+	public void setCarbonDioxide(final double carbonDioxide) {
 		snapshot.setCarbonDioxide(carbonDioxide);
 	}
 
@@ -132,7 +132,7 @@ public class GridSnapshot {
 	 * @param dataGrid
 	 *            the dataGrid to set
 	 */
-	public void setDataGrid(GridData[][] dataGrid) {
+	public void setDataGrid(final GridData[][] dataGrid) {
 		this.dataGrid = dataGrid;
 	}
 
@@ -140,7 +140,7 @@ public class GridSnapshot {
 	 * @param glucose
 	 * @see org.mmarini.genesis.model.Snapshot#setGlucose(double)
 	 */
-	public void setGlucose(double glucose) {
+	public void setGlucose(final double glucose) {
 		snapshot.setGlucose(glucose);
 	}
 
@@ -148,7 +148,7 @@ public class GridSnapshot {
 	 * @param livingBeingsGlucose
 	 * @see org.mmarini.genesis.model.Snapshot#setLivingBeingsGlucose(double)
 	 */
-	public void setLivingBeingsGlucose(double livingBeingsGlucose) {
+	public void setLivingBeingsGlucose(final double livingBeingsGlucose) {
 		snapshot.setLivingBeingsGlucose(livingBeingsGlucose);
 	}
 
@@ -156,7 +156,7 @@ public class GridSnapshot {
 	 * @param oxygen
 	 * @see org.mmarini.genesis.model.Snapshot#setOxygen(double)
 	 */
-	public void setOxygen(double oxygen) {
+	public void setOxygen(final double oxygen) {
 		snapshot.setOxygen(oxygen);
 	}
 
@@ -164,7 +164,7 @@ public class GridSnapshot {
 	 * @param predatorCounter
 	 * @see org.mmarini.genesis.model.Snapshot#setPredatorCounter(int)
 	 */
-	public void setPredatorCounter(int predatorCounter) {
+	public void setPredatorCounter(final int predatorCounter) {
 		snapshot.setPredatorCounter(predatorCounter);
 	}
 
@@ -172,7 +172,7 @@ public class GridSnapshot {
 	 * @param synthesizerCounter
 	 * @see org.mmarini.genesis.model.Snapshot#setSynthesizerCounter(int)
 	 */
-	public void setSynthesizerCounter(int synthesizerCounter) {
+	public void setSynthesizerCounter(final int synthesizerCounter) {
 		snapshot.setSynthesizerCounter(synthesizerCounter);
 	}
 
@@ -180,7 +180,7 @@ public class GridSnapshot {
 	 * @param time
 	 * @see org.mmarini.genesis.model.Snapshot#setTime(double)
 	 */
-	public void setTime(double time) {
+	public void setTime(final double time) {
 		snapshot.setTime(time);
 	}
 
@@ -188,7 +188,7 @@ public class GridSnapshot {
 	 * @param water
 	 * @see org.mmarini.genesis.model.Snapshot#setWater(double)
 	 */
-	public void setWater(double water) {
+	public void setWater(final double water) {
 		snapshot.setWater(water);
 	}
 

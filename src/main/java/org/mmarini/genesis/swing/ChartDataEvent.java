@@ -16,7 +16,7 @@ public class ChartDataEvent extends EventObject {
 	/**
 	 * @param source
 	 */
-	public ChartDataEvent(Object source, ChartData chartData) {
+	public ChartDataEvent(final Object source, final ChartData chartData) {
 		super(source);
 		this.chartData = chartData;
 	}
@@ -33,7 +33,7 @@ public class ChartDataEvent extends EventObject {
 	 * 
 	 * @param chartData
 	 */
-	public void setChartData(ChartData chartData) {
+	public void setChartData(final ChartData chartData) {
 		this.chartData = chartData;
 	}
 }

@@ -35,7 +35,7 @@ public class MoveActionContext {
 	 * @param preference
 	 *            the preference to set
 	 */
-	public void setPreference(double preference) {
+	public void setPreference(final double preference) {
 		this.preference = preference;
 	}
 
@@ -43,7 +43,7 @@ public class MoveActionContext {
 	 * @param target
 	 *            the target to set
 	 */
-	public void setTarget(Cell target) {
+	public void setTarget(final Cell target) {
 		this.target = target;
 	}
 

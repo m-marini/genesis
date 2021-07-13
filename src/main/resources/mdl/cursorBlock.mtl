@@ -1,0 +1,11 @@
+# Blender MTL File: 'cursorBlock.blend'
+# Material Count: 1
+
+newmtl wallMat
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.630757 0.630757 0.630757
+Ks 0.274426 0.274426 0.274426
+Ni 1.000000
+d 0.500000
+illum 2

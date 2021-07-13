@@ -52,19 +52,19 @@ public class SimParamPane extends DataPanel {
 	private static final double MAX_SPREAD_TIME = 10.;
 	private static final double SPREAD_TIME_STEP = 10e-3;
 
-	private SpinnerNumberModel numCols;
-	private SpinnerNumberModel numRows;
-	private SpinnerNumberModel carbonDioxideLevel;
-	private SpinnerNumberModel waterLevel;
-	private SpinnerNumberModel energyLevel;
-	private SpinnerNumberModel waterSpread;
-	private SpinnerNumberModel oxygenSpread;
-	private SpinnerNumberModel glucoseSpread;
-	private SpinnerNumberModel carbonDioxideSpread;
-	private SpinnerNumberModel mutationProbability;
-	private SpinnerNumberModel reactionInterval;
-	private SpinnerNumberModel updateInterval;
-	private SimulationParameters parameters;
+	private final SpinnerNumberModel numCols;
+	private final SpinnerNumberModel numRows;
+	private final SpinnerNumberModel carbonDioxideLevel;
+	private final SpinnerNumberModel waterLevel;
+	private final SpinnerNumberModel energyLevel;
+	private final SpinnerNumberModel waterSpread;
+	private final SpinnerNumberModel oxygenSpread;
+	private final SpinnerNumberModel glucoseSpread;
+	private final SpinnerNumberModel carbonDioxideSpread;
+	private final SpinnerNumberModel mutationProbability;
+	private final SpinnerNumberModel reactionInterval;
+	private final SpinnerNumberModel updateInterval;
+	private final SimulationParameters parameters;
 
 	/**
 	 * 

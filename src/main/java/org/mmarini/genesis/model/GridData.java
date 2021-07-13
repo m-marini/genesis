@@ -43,7 +43,7 @@ public class GridData {
 	 * @param background
 	 *            the background to set
 	 */
-	public void setBackground(double background) {
+	public void setBackground(final double background) {
 		this.background = background;
 	}
 
@@ -51,7 +51,7 @@ public class GridData {
 	 * @param foreground
 	 *            the foreground to set
 	 */
-	public void setForeground(double foreground) {
+	public void setForeground(final double foreground) {
 		this.foreground = foreground;
 	}
 
@@ -59,7 +59,7 @@ public class GridData {
 	 * @param livingBean
 	 *            the livingBean to set
 	 */
-	public void setLivingBean(boolean livingBean) {
+	public void setLivingBean(final boolean livingBean) {
 		this.livingBean = livingBean;
 	}
 

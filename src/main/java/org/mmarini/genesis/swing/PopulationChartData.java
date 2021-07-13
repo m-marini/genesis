@@ -32,7 +32,7 @@ public class PopulationChartData extends AbstractSimChartData {
 	 * @see org.mmarini.genesis.swing.ChartData#getLabel(int)
 	 */
 	@Override
-	public String getLabel(int col) {
+	public String getLabel(final int col) {
 		return LABELS[col];
 	}
 
@@ -41,7 +41,7 @@ public class PopulationChartData extends AbstractSimChartData {
 	 *      .model.Snapshot, int)
 	 */
 	@Override
-	protected double getVaule(Snapshot snapshot, int col) {
+	protected double getVaule(final Snapshot snapshot, final int col) {
 		switch (col) {
 		case 0:
 			return snapshot.getTime();

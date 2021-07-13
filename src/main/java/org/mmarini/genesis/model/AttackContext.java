@@ -35,7 +35,7 @@ public class AttackContext {
 	 * @param headyPrey
 	 *            the headyPrey to set
 	 */
-	public void setHeavyPrey(LivingBeing headyPrey) {
+	public void setHeavyPrey(final LivingBeing headyPrey) {
 		this.heavyPrey = headyPrey;
 	}
 
@@ -43,7 +43,7 @@ public class AttackContext {
 	 * @param lightPrey
 	 *            the lightPrey to set
 	 */
-	public void setLightPrey(LivingBeing lightPrey) {
+	public void setLightPrey(final LivingBeing lightPrey) {
 		this.lightPrey = lightPrey;
 	}
 

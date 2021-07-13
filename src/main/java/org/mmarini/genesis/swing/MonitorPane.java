@@ -37,32 +37,32 @@ public class MonitorPane extends JPanel {
 
 	private static final long serialVersionUID = 1424128424156001994L;
 
-	private MonitorGrid grid;
-	private JRadioButton oxygenButton;
-	private JRadioButton waterButton;
-	private JRadioButton carbonDioxideButton;
-	private JRadioButton glucoseButton;
-	private JCheckBox showLivingBeingButton;
-	private AbstractAction showLivingBeingAction;
-	private AbstractAction oxygenAction;
-	private AbstractAction waterAction;
-	private AbstractAction carbonDioxideAction;
-	private AbstractAction glucoseAction;
-	private ButtonGroup monitorSelection;
-	private JFormattedTextField waterField;
-	private JFormattedTextField oxygenField;
-	private JFormattedTextField glucoseField;
-	private JFormattedTextField carbonDioxideField;
-	private JFormattedTextField refreshRateField;
-	private JFormattedTextField updateRateField;
-	private JFormattedTextField beingGlucoseField;
-	private JFormattedTextField beingField;
-	private JFormattedTextField synthesierField;
-	private JFormattedTextField predatorField;
-	private JFormattedTextField absorberField;
+	private final MonitorGrid grid;
+	private final JRadioButton oxygenButton;
+	private final JRadioButton waterButton;
+	private final JRadioButton carbonDioxideButton;
+	private final JRadioButton glucoseButton;
+	private final JCheckBox showLivingBeingButton;
+	private final AbstractAction showLivingBeingAction;
+	private final AbstractAction oxygenAction;
+	private final AbstractAction waterAction;
+	private final AbstractAction carbonDioxideAction;
+	private final AbstractAction glucoseAction;
+	private final ButtonGroup monitorSelection;
+	private final JFormattedTextField waterField;
+	private final JFormattedTextField oxygenField;
+	private final JFormattedTextField glucoseField;
+	private final JFormattedTextField carbonDioxideField;
+	private final JFormattedTextField refreshRateField;
+	private final JFormattedTextField updateRateField;
+	private final JFormattedTextField beingGlucoseField;
+	private final JFormattedTextField beingField;
+	private final JFormattedTextField synthesierField;
+	private final JFormattedTextField predatorField;
+	private final JFormattedTextField absorberField;
 
 	private SimulationHandler handler;
-	private GridSnapshot snapshot;
+	private final GridSnapshot snapshot;
 	private CellGetCommand command;
 
 	/**
@@ -104,7 +104,7 @@ public class MonitorPane extends JPanel {
 			private static final long serialVersionUID = 7344936185806310085L;
 
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				grid.setShowLivingBeing(showLivingBeingButton.isSelected());
 				grid.repaint();
 			}
@@ -117,7 +117,7 @@ public class MonitorPane extends JPanel {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				command = CellGetCommand.GLUCOSE_COMMAND;
 				grid.repaint();
 			}
@@ -130,7 +130,7 @@ public class MonitorPane extends JPanel {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				command = CellGetCommand.WATER_COMMAND;
 				grid.repaint();
 			}
@@ -143,7 +143,7 @@ public class MonitorPane extends JPanel {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				command = CellGetCommand.OXYGEN_COMMAND;
 				grid.repaint();
 			}
@@ -156,7 +156,7 @@ public class MonitorPane extends JPanel {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(final ActionEvent e) {
 				command = CellGetCommand.CARBON_DIOXIDE_COMMAND;
 				grid.repaint();
 			}
@@ -234,8 +234,9 @@ public class MonitorPane extends JPanel {
 	 * @param gbc
 	 * @param c
 	 */
-	private void addComponentToGrid(GridBagConstraints gbc, Component c) {
-		GridBagLayout gbl = (GridBagLayout) getLayout();
+	private void addComponentToGrid(final GridBagConstraints gbc,
+			final Component c) {
+		final GridBagLayout gbl = (GridBagLayout) getLayout();
 		gbl.setConstraints(c, gbc);
 		add(c);
 	}
@@ -245,9 +246,9 @@ public class MonitorPane extends JPanel {
 	 */
 	private void createContent() {
 
-		GridBagLayout gbl = new GridBagLayout();
+		final GridBagLayout gbl = new GridBagLayout();
 		setLayout(gbl);
-		GridBagConstraints gbc = new GridBagConstraints();
+		final GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridheight = GridBagConstraints.REMAINDER;
 		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.fill = GridBagConstraints.BOTH;
@@ -255,7 +256,7 @@ public class MonitorPane extends JPanel {
 		gbc.weighty = 1;
 		addComponentToGrid(gbc, grid);
 
-		Box vb1 = Box.createVerticalBox();
+		final Box vb1 = Box.createVerticalBox();
 		vb1.setBorder(BorderFactory.createTitledBorder(Messages
 				.getString("MonitorPane.gridMapControl.label"))); //$NON-NLS-1$
 		vb1.add(showLivingBeingButton);
@@ -265,7 +266,7 @@ public class MonitorPane extends JPanel {
 		vb1.add(glucoseButton);
 		vb1.add(oxygenButton);
 
-		DataPanel pan = new DataPanel();
+		final DataPanel pan = new DataPanel();
 		pan.setBorder(BorderFactory.createTitledBorder(Messages
 				.getString("MonitorPane.info.label"))); //$NON-NLS-1$
 
@@ -337,7 +338,7 @@ public class MonitorPane extends JPanel {
 	 * @param handler
 	 *            the handler to set
 	 */
-	public void setHandler(SimulationHandler handler) {
+	public void setHandler(final SimulationHandler handler) {
 		this.handler = handler;
 	}
 
@@ -345,7 +346,7 @@ public class MonitorPane extends JPanel {
 	 * 
 	 * @param d
 	 */
-	public void setRefreshRate(double refreshRate) {
+	public void setRefreshRate(final double refreshRate) {
 		refreshRateField.setValue(refreshRate);
 	}
 
@@ -353,7 +354,7 @@ public class MonitorPane extends JPanel {
 	 * 
 	 * @param d
 	 */
-	public void setUpdateRate(double refreshRate) {
+	public void setUpdateRate(final double refreshRate) {
 		updateRateField.setValue(refreshRate);
 	}
 }
