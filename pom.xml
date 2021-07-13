@@ -4,6 +4,9 @@
 	<groupId>org.mmarini</groupId>
 	<artifactId>genesis</artifactId>
 	<version>2.2.1</version>
+	<properties>
+		<java.version>11</java.version>
+	</properties>
 	<build>
 		<resources>
 			<resource>
@@ -23,15 +26,13 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
+				<version>3.8.1</version>
 				<configuration>
-					<source>1.11</source>
-					<target>1.11</target>
+					<release>${java.version}</release>
 				</configuration>
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.4</version>
 				<configuration>
 					<descriptor>src/assemble/dep.xml</descriptor>
 				</configuration>
@@ -39,7 +40,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
 				<configuration>
 					<archive>
 						<manifest>
