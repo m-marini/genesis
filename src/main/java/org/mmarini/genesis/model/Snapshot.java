@@ -1,217 +1,217 @@
 /**
- * 
+ *
  */
 package org.mmarini.genesis.model;
 
 /**
  * @author US00852
- * 
+ *
  */
 public class Snapshot implements Cloneable {
-	private double time;
-	private double glucose;
-	private double water;
-	private double carbonDioxide;
-	private double oxygen;
-	private double livingBeingsGlucose;
-	private int synthesizerCounter;
-	private int predatorCounter;
-	private int absorberCounter;
+    private double time;
+    private double glucose;
+    private double water;
+    private double carbonDioxide;
+    private double oxygen;
+    private double livingBeingsGlucose;
+    private int synthesizerCounter;
+    private int predatorCounter;
+    private int absorberCounter;
 
-	/**
-	 * 
-	 */
-	public Snapshot() {
-	}
+    /**
+     *
+     */
+    public Snapshot() {
+    }
 
-	/**
-	 * 
-	 * @param snapshot
-	 */
-	public Snapshot(Snapshot snapshot) {
-		setSnapshot(snapshot);
-	}
+    /**
+     *
+     * @param snapshot
+     */
+    public Snapshot(Snapshot snapshot) {
+        setSnapshot(snapshot);
+    }
 
-	/**
-	 * @see java.lang.Object#clone()
-	 */
-	@Override
-	public Snapshot clone() {
-		return new Snapshot(this);
-	}
+    /**
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Snapshot clone() {
+        return new Snapshot(this);
+    }
 
-	/**
-	 * @return the absorberCounter
-	 */
-	public int getAbsorberCounter() {
-		return absorberCounter;
-	}
+    /**
+     * @return the absorberCounter
+     */
+    public int getAbsorberCounter() {
+        return absorberCounter;
+    }
 
-	/**
-	 * @return the carbonDioxide
-	 */
-	public double getCarbonDioxide() {
-		return carbonDioxide;
-	}
+    /**
+     * @param absorberCounter
+     *            the absorberCounter to set
+     */
+    public void setAbsorberCounter(int absorberCounter) {
+        this.absorberCounter = absorberCounter;
+    }
 
-	/**
-	 * @return the glucose
-	 */
-	public double getGlucose() {
-		return glucose;
-	}
+    /**
+     * @return the carbonDioxide
+     */
+    public double getCarbonDioxide() {
+        return carbonDioxide;
+    }
 
-	/**
-	 * @return the livingBeingsGlucose
-	 */
-	public double getLivingBeingsGlucose() {
-		return livingBeingsGlucose;
-	}
+    /**
+     * @param carbonDioxide
+     *            the carbonDioxide to set
+     */
+    public void setCarbonDioxide(double carbonDioxide) {
+        this.carbonDioxide = carbonDioxide;
+    }
 
-	/**
-	 * @return the oxygen
-	 */
-	public double getOxygen() {
-		return oxygen;
-	}
+    /**
+     * @return the glucose
+     */
+    public double getGlucose() {
+        return glucose;
+    }
 
-	/**
-	 * @return the predatorCounter
-	 */
-	public int getPredatorCounter() {
-		return predatorCounter;
-	}
+    /**
+     * @param glucose
+     *            the glucose to set
+     */
+    public void setGlucose(double glucose) {
+        this.glucose = glucose;
+    }
 
-	/**
-	 * @return the synthesizerCounter
-	 */
-	public int getSynthesizerCounter() {
-		return synthesizerCounter;
-	}
+    /**
+     * @return the livingBeingsGlucose
+     */
+    public double getLivingBeingsGlucose() {
+        return livingBeingsGlucose;
+    }
 
-	/**
-	 * @return the time
-	 */
-	public double getTime() {
-		return time;
-	}
+    /**
+     * @param livingBeingsGlucose
+     *            the livingBeingsGlucose to set
+     */
+    public void setLivingBeingsGlucose(double livingBeingsGlucose) {
+        this.livingBeingsGlucose = livingBeingsGlucose;
+    }
 
-	/**
-	 * 
-	 * @return
-	 */
-	public int getTotalBeingCount() {
-		return absorberCounter + synthesizerCounter + predatorCounter;
-	}
+    /**
+     * @return the oxygen
+     */
+    public double getOxygen() {
+        return oxygen;
+    }
 
-	/**
-	 * @return the water
-	 */
-	public double getWater() {
-		return water;
-	}
+    /**
+     * @param oxygen
+     *            the oxygen to set
+     */
+    public void setOxygen(double oxygen) {
+        this.oxygen = oxygen;
+    }
 
-	/**
-	 * @param absorberCounter
-	 *            the absorberCounter to set
-	 */
-	public void setAbsorberCounter(int absorberCounter) {
-		this.absorberCounter = absorberCounter;
-	}
+    /**
+     * @return the predatorCounter
+     */
+    public int getPredatorCounter() {
+        return predatorCounter;
+    }
 
-	/**
-	 * @param carbonDioxide
-	 *            the carbonDioxide to set
-	 */
-	public void setCarbonDioxide(double carbonDioxide) {
-		this.carbonDioxide = carbonDioxide;
-	}
+    /**
+     * @param predatorCounter
+     *            the predatorCounter to set
+     */
+    public void setPredatorCounter(int predatorCounter) {
+        this.predatorCounter = predatorCounter;
+    }
 
-	/**
-	 * @param glucose
-	 *            the glucose to set
-	 */
-	public void setGlucose(double glucose) {
-		this.glucose = glucose;
-	}
+    /**
+     * @return the synthesizerCounter
+     */
+    public int getSynthesizerCounter() {
+        return synthesizerCounter;
+    }
 
-	/**
-	 * @param livingBeingsGlucose
-	 *            the livingBeingsGlucose to set
-	 */
-	public void setLivingBeingsGlucose(double livingBeingsGlucose) {
-		this.livingBeingsGlucose = livingBeingsGlucose;
-	}
+    /**
+     * @param synthesizerCounter
+     *            the synthesizerCounter to set
+     */
+    public void setSynthesizerCounter(int synthesizerCounter) {
+        this.synthesizerCounter = synthesizerCounter;
+    }
 
-	/**
-	 * @param oxygen
-	 *            the oxygen to set
-	 */
-	public void setOxygen(double oxygen) {
-		this.oxygen = oxygen;
-	}
+    /**
+     * @return the time
+     */
+    public double getTime() {
+        return time;
+    }
 
-	/**
-	 * @param predatorCounter
-	 *            the predatorCounter to set
-	 */
-	public void setPredatorCounter(int predatorCounter) {
-		this.predatorCounter = predatorCounter;
-	}
+    /**
+     * @param time
+     *            the time to set
+     */
+    public void setTime(double time) {
+        this.time = time;
+    }
 
-	/**
-	 * 
-	 * @param snapshot
-	 */
-	private void setSnapshot(Snapshot snapshot) {
-		time = snapshot.time;
-		glucose = snapshot.glucose;
-		water = snapshot.water;
-		carbonDioxide = snapshot.carbonDioxide;
-		oxygen = snapshot.oxygen;
-		livingBeingsGlucose = snapshot.livingBeingsGlucose;
-		synthesizerCounter = snapshot.synthesizerCounter;
-		predatorCounter = snapshot.predatorCounter;
-		absorberCounter = snapshot.absorberCounter;
-	}
+    /**
+     *
+     * @return
+     */
+    public int getTotalBeingCount() {
+        return absorberCounter + synthesizerCounter + predatorCounter;
+    }
 
-	/**
-	 * @param synthesizerCounter
-	 *            the synthesizerCounter to set
-	 */
-	public void setSynthesizerCounter(int synthesizerCounter) {
-		this.synthesizerCounter = synthesizerCounter;
-	}
+    /**
+     * @return the water
+     */
+    public double getWater() {
+        return water;
+    }
 
-	/**
-	 * @param time
-	 *            the time to set
-	 */
-	public void setTime(double time) {
-		this.time = time;
-	}
+    /**
+     * @param water
+     *            the water to set
+     */
+    public void setWater(double water) {
+        this.water = water;
+    }
 
-	/**
-	 * @param water
-	 *            the water to set
-	 */
-	public void setWater(double water) {
-		this.water = water;
-	}
+    /**
+     *
+     * @param snapshot
+     */
+    private void setSnapshot(Snapshot snapshot) {
+        time = snapshot.time;
+        glucose = snapshot.glucose;
+        water = snapshot.water;
+        carbonDioxide = snapshot.carbonDioxide;
+        oxygen = snapshot.oxygen;
+        livingBeingsGlucose = snapshot.livingBeingsGlucose;
+        synthesizerCounter = snapshot.synthesizerCounter;
+        predatorCounter = snapshot.predatorCounter;
+        absorberCounter = snapshot.absorberCounter;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "Snapshot [time=" + time + ", glucose=" + glucose + ", water="
-				+ water + ", carbonDioxide=" + carbonDioxide + ", oxygen="
-				+ oxygen + ", livingBeingsGlucose=" + livingBeingsGlucose
-				+ ", synthesizerCounter=" + synthesizerCounter
-				+ ", predatorCounter=" + predatorCounter + ", absorberCounter="
-				+ absorberCounter + "]";
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "Snapshot [time=" + time + ", glucose=" + glucose + ", water="
+                + water + ", carbonDioxide=" + carbonDioxide + ", oxygen="
+                + oxygen + ", livingBeingsGlucose=" + livingBeingsGlucose
+                + ", synthesizerCounter=" + synthesizerCounter
+                + ", predatorCounter=" + predatorCounter + ", absorberCounter="
+                + absorberCounter + "]";
+    }
 
 }

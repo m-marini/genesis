@@ -1,3 +1,9 @@
 /.idea/
 /genesis.iml
 /target/
+/docs/*.aux
+/docs/*.synctex.gz
+/docs/*.log
+/docs/*.toc
+/docs/*.bbl
+/docs/*.blg

@@ -1,0 +1,187 @@
+---
+mass:
+  H: 1
+  OH: 17
+  NH4: 18
+  O2: 32
+  CO2: 44
+  ACT: 59
+  GLY: 74
+  PIR: 87
+  PO4: 95
+  GLU: 180
+  AMP: 345
+  ADP: 424
+  ATP: 503
+  LUX: 0
+  ERG: 0
+
+# distribuzione della massa corporea acqua 65%, proteine 16%, lipidi 19%
+# peso medio 75Kg
+# acqua 49Kg
+# proteine 12Kg
+# lipidi 14Kg
+# 6e3 mol di acqua per cella
+# 108 Kg di acqua per cella
+genes:
+  # name
+  photosynthesis:
+    # Definizione di reazione chimica.
+    # Permette di determinare la massima velocità di produzione
+    # per una determinata cella in base allo stato di concentrazione
+    # di sostanze.
+    # L'algoritmo associato permette di calcolare la massima variazione di
+    # concentrazione di una specifica sostanza in un dato intervallo di tempo:
+    #
+    # Calcoliamo la massima variazione di concentrazione di riferimento
+    # limitata dalla velocità di produzione
+    # dc1 = min(substances * speed) * dt
+    #
+    # Calcoliamo la massima variazione di concentrazione di riferimento
+    # limitata dalla disponibilità dei reagenti
+    # dc2 = min(min(substances - threshold, 0) * alpha)
+    #
+    # Calcoliamo la massima variazione di concentrazione di riferimento
+    # effettiva
+    # dc = min(dc1, dc2)
+    #
+    # Le variazioni di concentrazione delle sostanze sono calcolate
+    # per produrre una determinata sostanza sono
+    # come dc = alpha * q / alpha(ref)
+    #
+    type: SubstanceGene
+    ref: ATP
+    minLevel: 1
+    maxLevel: 10
+    reaction:
+      # coefficienti di variazione
+      reagents:
+        ADP: 1
+        PO4: 1
+        OH: 1
+        H: 1
+      products:
+        ATP: 1
+        O2: 1
+        H: 2
+      # Soglie delle concentrazioni per l'innesco.
+      # La reazione ingaggerà al massimo la differenza tra la concentrazione
+      # attuale e la soglia, mantenendo alla fine della reazione concentrazione
+      # non inferiori alle soglie dei reagenti.
+      thresholds:
+        ADP: 0.1
+        PO4: 0.1
+        OH: 0.1
+        H: 0.1
+      # Velocità di reazione 1/s per concentrazione di sostanze
+      speeds:
+        GLY: 1
+        LUX: 1
+species:
+  vegetal:
+    consumptionSpeed: 0.1
+    genotype:
+      - photosynthesis
+    diffusion:
+      O2: 100
+      CO2: 100
+  herbivore:
+    consumptionSpeed: 0.1
+    genotype:
+      - photosynthesis
+    diffusion:
+      O2: 100
+      CO2: 100
+
+individuals:
+  - species: vegetal
+    location: 0
+    # distribuzione della massa corporea acqua 65%, proteine 16%, lipidi 19%
+    # peso medio 75Kg
+    # acqua 49Kg
+    # proteine 12Kg
+    # lipidi 14Kg
+    # 6e3 mol di acqua per cella
+    # 108 Kg di acqua per cella
+    substances:
+      H: 6000
+      OH: 6000
+      # 30e-6 mol/l di sangue per 5 litri
+      # 150e-6 mol di ammonio
+      NH4: 150e-6
+      # 1420 g/m^3
+      # 20% in aria
+      # 284 g/m^3
+      # 8.84 mol/m^3
+      # consideriamo 10 m^3 di aria
+      # 88.4 mol
+      O2: 88.4
+      # 390 ppm = 390e-6
+      # 34.5e-3 mol
+      CO2: 34.5e-3
+      # 350e-3 g
+      # 5.93e-3 mol
+      ACT: 5.93e-3
+      # 12 Kg di proteine
+      # 160 mol di proteine
+      GLY: 160
+      # 350e-3 g
+      # 4.02e-3 mol
+      PIR: 4.02e-3
+      # 15e-6 g/l su 100 l di acqua
+      # 1.3e-3 g
+      # 14e-6 mol
+      PO4: 14e-6
+      # 70e-3 g/l per 5 l sangue
+      # 350e-3 g
+      # 2 mol
+      #
+      # Se consideriamo 14 Kg di lipidi
+      # 77 mol
+      GLU: 77
+      # 3e9 nucleotidi per cellula
+      # 65e12 cellule
+      # 195e21 nucleotidi
+      # 195e21 / 6e23 = 325e-3 mol di nucleotidi
+      # 112 g di nucleotidi
+      AMP: 325e-3
+      # Ipotesi di 100g di ADP nel corpo
+      # 0.235 mol nel corpo
+      ADP: 235e-3
+      # 100g di ATP nel corpo
+      # 0.6 mol nel corpo
+      ATP: 0.2
+environ:
+  width: 30
+  height: 30
+  length: 2
+  resources:
+    H: 6000
+    OH: 6000
+    NH4: 150e-6
+    PO4: 14e-6
+    O2: 88.4
+    CO2: 34.5e-3
+    LUX: 1
+  diffusion:
+    H: 10
+    OH: 10
+    NH4: 10
+    O2: 100
+    CO2: 100
+    ACT: 10
+    GLY: 10
+    PIR: 10
+    PO4: 10
+    GLU: 10
+    AMP: 10
+    ADP: 10
+    ATP: 10
+    LUX: 0.1
+    ERG: 100
+energyRef: ERG
+
+ipgenes: {}
+eipgenes: {}
+pipgenes: {}
+populations: []

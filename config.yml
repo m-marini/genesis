@@ -1,0 +1,148 @@
+---
+# massa per uità di sostanza
+mass:
+  Erg: 0
+  Organic: 2
+environ:
+  width: 30
+  height: 30
+  length: 2
+  # unità di risorse nell'ambiente
+  resources: {}
+  # Coefficiente di difusione delle sostanze
+  # unità trasferite in un secondo per una differenza di concentrazione di una unita per metro)
+  # tempo di equilibrio = 5 / diffusion
+  diffusion: {}
+photoGenes:
+  photoSynthesis:
+    ref: Erg
+    minLevel: 10
+    maxLevel: 100
+    speed: 1
+    reaction:
+      reagents: {}
+      products:
+        Erg: 1
+      thresholds: {}
+      speeds:
+        Organic: 2
+eipgenes: { }
+ipgenes: { }
+pipgenes: { }
+
+# Sotanza energetica di riferimento
+energyRef: Erg
+
+populations:
+  # Vegetable
+  - species:
+      # Consumo metabolico al secondo per massa
+      basalMetabolicRate: 0.1
+      # Massa mimima di sopravvivenza
+      surviveMass: 0.2
+      # Coefficente area per massa
+      fractalDimension: 2
+      photoGenes:
+        - photoSynthesis
+      IPGenes: [ ]
+      EIPGenes: []
+      PIPGenes: [ ]
+    individuals:
+      - location: 2
+        resources:
+          Organic: 2
+          Erg: 10
+        photoSignals:
+          - [ 0.5 ]
+        IPSignals: [ ]
+        EIPSignals: []
+        PIPSignals: [ ]
+      - location: 4
+        resources:
+          Organic: 0.1
+          Erg: 10
+        photoSignals:
+          - [ 0.5 ]
+        IPSignals: [ ]
+        EIPSignals: []
+        PIPSignals: [ ]
+
+---
+eipgenes:
+  absorbe:
+    # intervallo di controllo del gene per sostanza
+    minLevels:
+      Water: 0.1
+      Fertilizer: 0.1
+      Organic: 10
+      Lux: 1
+      Erg: 1
+    maxLevels:
+      Water: 10
+      Fertilizer: 10
+      Organic: 100
+      Lux: 1
+      Erg: 10
+    # unità trasferite in un secondo per una differenza di concentrazione di una unita
+    # per unita di superficie
+    # tempo di equilibrio = 5/rate
+    rates:
+      Water: 5
+      Fertilizer: 5
+      Organic: 0.1
+      Lux: 10
+      Erg: 0.01
+
+ipgenes:
+  photosynthesis:
+    # sostanza di riferimento
+    ref: Organic
+    # intervallo della sostanza di riferimento controllata dal gene
+    minLevel: 1
+    maxLevel: 100
+    reaction:
+      # Unità di sostanze consumate per unità di sostanza di riferimento
+      reagents:
+        Water: 1
+        Fertilizer: 1
+      # Unità di sostanze prodotte per unità di sostanza di riferimento
+      products:
+        Organic: 1
+      # Soglie di attivazione della reazione (quantità minima dei reagenti)
+      thresholds:
+        Water: 0.1
+        Fertilizer: 0.1
+      # Quantità di sostanza di riferimento prodotto per unità di tempo
+      # e per unità di massa della sostanza di controllo
+      speeds:
+        Lux: 1
+        Organic: 0.1
+
+pipgenes: { }
+
+populations:
+  # Vegetable
+  - species:
+      # Consumo metabolico al secondo per massa
+      basalMetabolicRate: 0.1
+      # Massa mimima di sopravvivenza
+      surviveMass: 0.2
+      # Coefficente area per massa
+      areaByMass: 1.4
+      IPGenes:
+        - photosynthesis
+      EIPGenes:
+        - absorbe
+      PIPGenes: [ ]
+    individuals:
+      - location: 2
+        resources:
+          Water: 1
+          Fertilizer: 1
+          Organic: 1
+          Erg: 10
+        IPSignals:
+          - [ 0.5 ]
+        EIPSignals:
+          - [ 0.5 ]
+        PIPSignals: [ ]
