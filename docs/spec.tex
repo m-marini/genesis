@@ -1,48 +1,697 @@
 \documentclass[a4paper,twoside]{article}
 \usepackage[italian]{babel}
 \usepackage[latin1]{inputenc}
+\usepackage{url}
+
 \begin{document}
-\title{Specifiche Genesis\thanks{\$Id: spec.tex,v 1.3 2011/12/27 23:13:06 marco Exp $ $}}
+\title{Specifiche Genesis}
 \author{Marco Marini}
-\maketitle
+\maketitle{}
+\tableofcontents
+
 \part{Principi}
+
+\section {Simulazione}
+
+Il modello di simulazione di un ecosistema si basa su una rappresentazione
+bidimensionale dello spazio divisa in celle.
+Ad ogni cella sono associate le quantità di sostanze significative presenti
+nell'ambiente e gli individui presenti nella cella.
+
+Ogni individuo interagisce con l'ambiente con attività base metaboliche e
+cataboliche per cercare di sopravvivere e riprodursi (clonazione).
+Interagisce anche con gli individui vicini in competizione per il consumo delle
+risorse (alimentazione, predazione) e per accoppiarsi.
+
+Il primo modello ipotizzava di avere un singolo individuo per cella.
+Ciò comportava che l'interazione con gli altri individui doveva considerare la
+topologia spaziale (celle adiacenti).
+
+Il secondo modello ipotizza la presenza di più individui nella stessa cella con
+interazione degli individui limitata alla singola cella.
+Le risorse (sostanze) all'interno della cella saranno quindi condivise tra tutti
+gli individui.
+
+L'evoluzione temporale del modello procede attraverso vari processi di
+variazione delle quantità di risorse nell'ambiente e degli individui.
+
+\subsection{PA - Processi ambientali}
+
+I processi ambientali modificano solamente le quantità di risorse presenti
+nell'ambiente.
+
+Il processo di diffusione delle risorse modifica la quantità di risorse delle
+singole celle in base alle celle adiacenti secondo la legge di difusione che
+determnia lo spostamenteo di sostanze da zone a concentrazione maggiore verso
+quelle a concentrazione minore.
+
+\[
+	\Delta Q_i = \alpha_1 \sum_j \frac{\partial Q_i}{\partial x_j} \Delta t
+\]
+
+\subsection{PI - Processi individuali}
+
+I processi individuali modificano solamente le quantità di risorse presenti nei
+singoli individui.
+
+Il processo di mantenimento degli individui invece modifica la quantità di
+energia di ogni singolo individuo dovuto al metabolismo basale.
+E' un processo non controllato dagli individui.
+
+
+Il processi di metabolismo e catabolismo trasformano le risorse cambiando le
+quantità di risorse degli individui.
+
+Il processo di movimento degli individui modifica la posizione degli individui
+nello spazio a spese dell'energia accumulata dagli individui.
+
+Il processo di fotosintesi trasforma risorse usando la luce.
+
+\subsubsection{Distribuzione della luce per individuo}
+La luce disponibile è proporzionale alla superficie esposta al sole
+dell'individuo.
+La superficie può essere determinata dalla dimensione frattale
+$ \delta $
+
+ \[ S_i = \lambda M_i^{\frac{\delta_i}{3}} \]
+dove $\delta_i$ è un indice morfologico specifico per ogni individuo nel range $(2, \dots, 3)$ e
+rappresenta la dimensione frattale.
+
+Nel nostro modello assumiamo che tale indice così come la densità
+sia specifico per ogni singola specie.
+
+La luce disponibile per ogni individuo sarà quindi
+\[ E_i = \frac{\lambda M_i^{\frac{\delta_i}{3}}}{\sum_j \lambda M_j^\frac{\delta_j}{3}} \Phi dt
+=  \frac{ M_i^{\frac{\delta_i}{3}}}{\sum_j M_j^\frac{\delta_j}{3}} \Phi dt\]
+
+con $ \Phi $ il flusso di luce per unità di tempo per superfice unitaria.
+
+
+\subsection{PAI - Processi ambiente-individui}
+
+I processi ambiente-individui modificano le quantità di risorse tra ambiente e
+individuo.
+
+I processo di scambio risorse avviene tra gli individui nella stessa cella
+cedendo le risorse eccedente all'ambiente e assorbendo risorse dall'ambiente.
+Possiamo pensare che l'accesso alle risorse sia in qualche modo proporzionale
+alla superficie dell'individuo (le risorse possono essere scambiate con
+l'ambiente attraverso l'area superficiale dell'individuo, ad esempio pelle,
+foglie, polmoni).
+La superficie è proporzionale alla quadrato della radice cubica del volume e
+quindi alla massa su densità quindi
+
+\[ S_i = K_i M_i^{\frac{2}{3}} \]
+
+dove $K$ è un indice morfologico specifico per ogni individuo e rappresenta
+il rapporto tra superfice e massa.
+Nel nostro modello assumiamo che tale indice così come la densità
+sia specifico per ogni singola specie.
+
+Le risorse saranno quindi distribuite in base alla massa secondo la formula
+\[
+	R_i = R \frac{K_i M_i^\frac{2}{3}}{
+		\sum_j K_j M_j^\frac{2}{3}}
+\]
+
+La velocità di assorbimento delle risorse da parte dell'individuo è costante e
+dipende esclusivamente dalla specie.
+
+La quantità effettiva di assorbimento è controllata dal codice genetico
+dell'individuo in modo da mantenere costante la quantità nel corpo.
+\footnote{Alternativa è il controllo della concentrazione di risorse nel corpo
+che dovrebbe mantnere più equilibrati i rapporti di quantità tra risorse
+indipendentemente dalle dimensioni del individuo (da verificare)}
+
+Se $Q_T$ è il livello desiderato di risorse, $Q_I$ il livello attuale
+dell'individuo, $Q_E$ il livello di risorse nella cella a disposizione
+dell'individuo, $R$ il rateo di consumo per unità di tempo, la quantità di
+risorse dell'individuo è data da:
+\[
+	\Delta Q_I = \min(Q_T - Q_I, Q_A) R\Delta t
+\]
+
+\subsection{PPA - Processi popolazione-ambiente}
+
+I processi popolazione ambiente modificano le risorse ambientali e la
+popolazione (numero di individui).
+
+Il processo di sopravvivenza elimina gli individui con energia inferiore ad una
+determinata soglia trasferendo tutte le risorse dell'individuo nell'ambiente.
+E' un processo non controllato dagli individui.
+
+\subsection{PIP - Processi individuo - popolazione}
+
+I processi individuo-popolazione modificano le risorse dei singoli individui e
+modificano la popolazione stessa.
+
+Il processo di clonazione di un individuo consiste nella generazione di un
+nuovo individuo della stessa specie con codice genetico copiato dall'individuo
+originale e mutato casualmente in modo di generare varietà individuali.
+Il nuovo individuo può posizionarsi nella cella del genitore o in celle
+adiacenti per permettere la diffusione spaziale della specie, una parte delle
+risorse del genitore viene trasferita al nuovo individuo.
+
+La clonazione avviene solo se l'energia e la massa di un individuo superano le
+soglie minime delle energie e masse restatnti dopo la clonazione determinate
+dal codice genetico.
+
+La probabilità di clonazione è la minima probabilità tra la probabilità dovuta
+dalla massa e la probabilità determinata dall'energia:
+\[
+	P(clonazione) = \min(1 - e^{-\alpha_M (M-M_t) \Delta t}, 1
+	- e^{\alpha_E (E-E_t) \Delta t})
+\]
+
+\subsection{PII - Processi interindividuali}
+
+I processi interindividuali-popolazione modificano le quantità di risorse di
+individui nella stessa cella.
+
+I processi di predazione modificano le risorse degli individui interagenti solo
+all'interno della cella diminuendo l'energia del predatore e della preda e nel
+caso di risultato a favore del predatore aumentando le risorse del predatore a
+scapito delle risorse della preda.
+Esempi: erbivoro vs vegetale, carnivoro vs erbivoro.
+
+\subsection{PIIP - Processi interindividuali-popolazione}
+
+I processi interindividuali-popolazione modificano le quantità di risorse di
+individui nella stessa cella e possono variano la popolazione.
+
+I processi di riproduzione sessuale avvengono tra individui della stessa specie
+e producono una nuovo individuo della stessa specie con codice genetico preso
+casualmente dai genitori e mutato casualmente.
+Il nuovo individuo può posizionarsi nella cella dei genitori o in celle
+adiacenti per permettere la diffusione spaziale della specie, una parte delle
+risorse dei genitori viene trasferita al nuovo individuo.
+
+\section {Sostanze di base}
+
+Nella simulazione vengono considerate alcune sostanze base:
+
+\subsection{Acqua $ H^+$, $ OH^-$ }
+
+L'acqua $H_2O$ è la sostanza a più basso valore di energia con massa
+$ 18 \, g/mol$.
+Nel simulatore l'acqua viene mantenuta come quantità di ioni $H^+$ e
+$OH^-$ separatamente per poter calcolare l'acidità.
+
+\[ pH = 7 + \log_{10} \frac{OH^-}{H^+}\]
+
+\subsection{Ossigeno $O_2$}
+
+L'ossigeno è un gas molto reattivo con massa $32 \, g/mol$.
+
+\subsection{Anidride carbonica $CO_2$}
+
+L'anidride carbonica è una sostanze a più basso valore di
+energia con massa $44 \, g/mol$.
+Viene convertita in glucosio nell'attività di sintesi e rilasciata
+nell'attività di combustione.
+
+\subsection{Ammonio $NH_4^+$}
+
+L'azoto è presente nel sistema sotto forma di ioni di ammonio 
+sciolti in acqua con massa $18 \, g/mol$.
+
+Viene utilizzato dalle piante per produrre composti azotati quali acidi
+nucleici e proteine cioè la struttura degli esseri viventi.
+
+\subsection{Fosfato $PO_4^{3-}$ }
+
+Il fosforo è presente nel sistema sotto forma di ioni fosfato
+sciolti in acqua con massa $95 \, g/mol$.
+
+Vengono utilizzati dalle piante per produrre acidi nucleici e proteine
+cioè la struttura degli esseri viventi e immagazzinare e rilasciare
+energia chimica.
+
+\subsection{Glucosio $GLU$}
+
+Il glucosio $C_6H_{12}O_6$ è la sostanza ad alto valore energetico.
+Viene sintetizzato dai vegetali assorbendo energia, acqua e anidride
+carbonica dall'ambiente nell'attività di fotosintesi e viene bruciato
+nell'attività di respirazione producendo energia meccanica o chimica
+(biosintesi).
+Il glucosio ha massa $180 \, g/mol$.
+
+\subsection{Piruvato $PIR^-$}
+
+lo ione piruvato $C_3H_3O_3^-$ viene prodotto dalla catabolizzazione
+del glucosio, ha massa $87 \, g/mol$.
+
+\subsection{Acetico $ACT^-$}
+
+Lo ione acetico $C_2H_3O_2^-$ viene prodotto dalla catabolizzazione
+del piruvato, ha una massa di $59 \, g/mol$.
+Nell'aceto la percentuale di massa di acido acetico è pari a
+$30 \cdot 10^{-3} \, g/g$ pari a $510 \cdot 10^{-6} \, mol/g$ o
+$9.15 \cdot 10^{-3} \, mol/mol$.
+
+\subsection{Acidi nucleici $AMP^-$, $ADP^{2-}$, $ATP^{3-}$}
+
+Per semplicità nella simulazione si considerano 3 tipi di acidi
+nucleici.
+
+\subsubsection{$AMP^-$}
+
+L'adenosinmonofosfato $C_{10}H_{12}N_5O_{6}P^-$ è un nucleotide dei RNA
+e ha massa molare $345 \, g/mol$.
+
+\subsubsection{$ADP^{2-}$}
+
+L'adenosindifosfato ADP $C_{10}H_{15}N_5O_{10}P_2^{2-}$ è prodotto dalla
+metabolizzazione dell'ATP ha massa molare $424 \, g/mol$.
+
+\subsubsection{$ATP^{3-}$}
+
+L'adenosintrifosfato $C_{10}H_{16}N_5O_{13}P_3^{3-}$ usato come fonte di
+energia ha massa molare $503 \, g/mol$.
+
+\subsection{Aminoacidi e proteine $GLY^-$}
+Servono come base strutturale degli esseri viventi
+
+$C_2H_4NO_2 + R $
+
+Per semplificazione useremo come sostanza proteica la glicina
+$ C_2H_4NO_2^-$ con massa molare di $74 \, g/mol$
+
+\section{Ambiente}
+
+La quantità di acqua nel terreno normalmente è mediamente il 45\%
+della massa secca \cite{itwiki:101769184}.
+La densità del terreno argilloso umido è di $2000 \, Kg/m^3$
+\cite{ 7053-peso-specifico-terreno} quindi la concentrazione di acqua
+nel terreno è di $\frac{0.45\cdot 2000}{1.45} = 620 \, g/m^3$ pari a
+$34.5 \, mol/m^3$.
+
+Prendiamo come ambiente di simulazione la rizosfera ad una profondità
+di 50 cm quindi abbiamo $0.5 \, m^3/m^2$ di terreno.
+La concentrazione di acqua è di $17 \, mol/m^2$.
+
+%Nel terreno sono presenti fosfati sciolti in acqua con concentrazione 
+%$15 \cdot 10^{-6} g/l$ pari a $158 \cdot 10^{-9} mol/l$ l'acqua nel terreno è di $13.8 mol/m^2$ quindi la concetrazione di fosfati è 
+%$ 158 \cdot 10^{-9} \cdot 13.8 \cdot 18 \cdot 10^{-3} = 39 \cdot 10^{-9} mol/m^2$
+
+Nel terreno sono presenti fosfati in concetrazione di 
+$20 \cdot 10^{-6} \, g/g$ \cite{analisi-del-terreno} pari a
+$211 \cdot 10^{-9} \, mol/g$ con una densità quindi di
+${0.422 \, mol/m^3}$ rapportato alla superfice quivale a
+$0.211 \, mol/m^2$.
+
+Nel terreno sono presenti sali di ammonio utili
+\cite{masoni2010azoto} con concentrazione di $65 \, Kg/ha$
+pari a $6.5 \, g/m^2$ equivalenti a $361 \cdot 10^{-3} \, mol/m^2$
+
+L'aria ha una densità di $1225 g/m^3$ \cite{itwiki:121399934} con una
+massa molare di circa $29 g/mol$ quindi ha una densità molare di
+$42 \, mol/m^3$
+
+Nell'aria a 25 gradi e tasso di umidità del 75\% l'umidità specifica è
+di $15 \, mg/g$ \cite{itwiki:115757880} corrispondente a
+$ 830 \cdot 10^{-6} \, mol/g $ o $1.08 \, mol/m^3$.
+
+Consideriamo nel nostro sistema l'aria fino ad un'altezza di 10m
+quindi un volume di $10 \, m^2/m^2$
+
+La quantità di acqua è quindi pari a $ 17 + 10.8 = 27.8 \, mol/m^2 $
+
+L'aria è formata per il 20.9\% di ossigeno \cite{itwiki:121437340}
+quindi con una concetrazione di $9.45 \, mol/m^3$ e nell'elemento di
+volume considerato nel modello è $94.5 \, mol/m^2$.
+
+La concetrazione di $CO_2$ nell'aria è di $412 \, ppm$
+\cite{itwiki:121437340} quindi
+$45 \cdot 412 \cdot 10^{-6} = 19 \cdot 10^{-3} \, mol/m^3$
+pari a $190 \cdot 10^{-3} \, mol/m^2$.
+
+Riassumendo abbiamo
+
+\begin{tabular}{|c|c|}
+	\hline
+	$O_2$ & $94.5 \, mol/m^2$ \\
+	\hline
+	$H^+$ & $ 27.8 \, mol/m^2 $ \\
+	\hline
+	$OH^-$ & $ 27.8 \, mol/m^2 $ \\
+	\hline	
+	$NH4^+$ & $0.361 \, mol/m^2$ \\
+	\hline
+	$PO_4^{3-}$ & $0.211 \, mol/m^2$ \\
+	\hline
+	$CO_2$ & $0.190 \, mol/m^2$ \\
+	\hline
+	$GLY^-$ & ? \\
+	\hline
+	$GLU$ & ? \\
+	\hline
+	$AMP^{2-}$ & ? \\
+	\hline	
+	$ATP^{4-}$ & ? \\
+	\hline
+	$ADP^{3-}$ & ? \\
+	\hline
+	$PIR^-$ & ? \\
+	\hline	
+	$ACT^-$ & ? \\
+	\hline	
+\end{tabular}
+
+\section{Vegetali}
+
+Prendiamo come modello un bosco con una densità di legname di
+$ 95 \, m^3/ha $ \cite{massa-ad-ettaro} pari a
+ $9.5 \cdot 10^{-3} \, m^3/m^2 $.
+Prendendo come massa volumetrica la media delle specie
+$ 900 \, Kg/m^3 $ \cite{massa-volumica} abbiamo che un bosco contiene
+$ 9.5 \cdot 10^{-3} \cdot 900 \cdot 10^3 = 8550 \, g/m^2$ di legname.
+
+La quantità di acqua è del 30\% \cite{itwiki:122344025} quindi abbiamo
+$ \frac{8550 \cdot 0.3}{18} = 143 \, mol/m^2$ di acqua.
+
+La componente secca del legno è formata dal 45\% di cellulosa,
+30\% di emicellulosa e 23\% di lignina \cite{itwiki:121932045}.
+La cellulosa e l'emicellulosa sono dei polisaccaridi
+mentre la lignina è una polimero con monomeri differenti ma comunque
+formati da carboidrati quindi rappresentarti da glucosio con
+concentrazione pari a $0.45 + 0.3 + 0.23 = 0.98$ .
+La concentrazione quindi di glucosio è pari a
+$\frac{8550 \cdot 0.7 \cdot 0.98}{180} = 33 \,  mol/m^2$.
+
+La rimanente componente sono proteine rappresentate dalla glicina $GLY^-$
+$\frac{8550 \cdot 0.7 \cdot 0.02}{74} = 1.6 \, mol/m^2$.
+
+Riassumendo abbiamo
+
+\begin{tabular}{|c|c|}
+	\hline
+	$H^+$ & $ 143.8 \, mol/m^2 $ \\
+	\hline
+	$OH^-$ & $ 143.8 \, mol/m^2 $ \\
+	\hline
+	$GLU$ & $ 33 \, mol/m^2$ \\
+	\hline
+	$GLY^-$ & $1.6 \, mol/m^2$ \\
+	\hline
+	$O_2$ & ? \\
+	\hline	
+	$NH4^+$ & ? \\
+	\hline
+	$PO_4^{3-}$ & ? \\
+	\hline
+	$CO_2$ & ? \\
+	\hline
+	$AMP^{2-}$ & ? \\
+	\hline	
+	$ATP^{4-}$ & ? \\
+	\hline
+	$ADP^{3-}$ & ? \\
+	\hline
+	$PIR^-$ & ? \\
+	\hline	
+	$ACT^-$ & ? \\
+	\hline	
+\end{tabular}
+
+
+\section{Il corpo umano}
+
+Il corpo umano pesa mediamnete $75 \, Kg$ ed è formato
+\cite{corpo-umano} da
+\begin{description}
+	\item[Acqua] 65\%
+	\item[Proteine] 16\%
+	\item[Lipidi e carboidrati] 14\%
+	\item[Sali minerali] 5\%
+\end{description}
+
+Le altre sostanza hanno una concentrazione molto bassa e ininfulente
+sulla costituzione della massa corporea.
+
+Nel nostro modello le proteine sono rappresentate da glicina e i
+lipidi da glucosio:
+
+Le concetrazioni quindi delle sostanza principali sono
+\begin{description}
+	\item[Acqua] $\frac{0.65}{18} = 36 \cdot 10^{-3} \, mol/g$
+	\item[GLY] $\frac{0.16}{74} = 2.16 \cdot 10^{-3} \, mol/g$
+	\item[GLU] $\frac{0.14}{180} =  780 \cdot 10^{-6} \, mol/g$
+\end{description}
+
+Le sostanze minori presente nel corpo umano possono essere
+rappresentate dalle concentrazini presenti nel sangue.
+Il corpo umano contiene mediamente $5.5 \, l$ di sangue con una
+densità di $1060 \, g/l$ \cite{sangue}
+
+La concentrazione di ammonio nel sangue è mediamente di
+$35 \cdot 10^{-6} \, mol/l$ \cite{ammonio-sangue} pari a
+$\frac{35 \cdot 10^{-6}}{1060} = 33 \cdot 10^{-9} \, mol/g$.
+
+La concentrazione di fosfati nel sangue è mediamente $3.5 \, mg/dl$
+\cite{fosforo-sangue} pari a $35 \cdot 10^{-3} \, g/l$ quindi
+$ \frac{35 \cdot 10^{-3}}{1060 \cdot 95} = 350 \cdot 10^{-9} \, mol/g$.
+
+Il piruvato è presente nel sangue ad una concentrazione di
+$15 \cdot 10^{-6} \, g/l$ \cite{} pari a 
+Il piruvato ha una concentrazione di nel sangue $0.6 \, mg/ml$ ovvero
+$0.6 \cdot 10^{-6} \, g/l$ pari a $6.9 \cdot 10^{-9} \, mol/l$
+
+Possiamo stimare che ogni cellula abbia $3 \cdot 10^{9}$ nucleotidi
+e che il corpo umano sia formato da $65 \cdot 10^{12}$ cellule
+\cite{dna} pari quindi a $195 \cdot 10^{21}$ nucleotidi totali
+equivalenti a $325 \cdot 10^{-3} \, mol$ di nucleotidi.
+Quindi con un peso medio di 75 Kg la concentrazione di AMP è di
+$4.3 \cdot 10^{-6} \, mol/g$.
+
+La concentrazione di ADP nel corpo è di $2.32 \cdot 10^{-6} \, mol/l$
+in condizioni di sforzo moderato.
+La densità del corpo umano e di $1010 \, g/l$ quindi la concetrazione
+di ADP è di $ 2.28 \cdot 10^{-9} \, mol/g$
+
+Nei corpo abbiamo mediamente la presenza di $100 g\, $ di ATP nel
+corpo \cite{atp-corpo} pari ad una concentrazione di
+$ \frac{100}{75000} = 1.3 \cdot 10^{-3} \, g/g$ ovvero
+$2.65 \cdot 10^{-6} \, mol/g$.
+
+La quantità di ossigeno presente nel sangue dipende dalla quantità di
+emoblobina e dal tasso di saturazione.
+L'emoglobina nel sangue ha una concentrazione di $21 \, mmol/l$
+\cite{itwiki:118598134}.
+Al 100\% di saturazione ogni molecola di emoglobina porta 4 molecole
+di ossigeno $O_2$ \cite{itwiki:122280476} quindi la concentrazione di
+ossigeno al 98\% \cite{saturazione} sarebbe di 
+$ \frac{21 \cdot 10^{-3} \cdot 4 \cdot 0.98}{1060} =  77 \cdot 10^{-6} \, mol/g$.
+
+La quantità di $CO_2$ nel sangue è di $45 \, mmHg$ \cite{co2-sangue}
+pari a $ \frac{P}{RT} = \frac{133}{8.31 \cdot (278+37)\cdot 1000 \cdot 1060} = 48 \cdot 10^{-9} \, mol/g$
+
+Riassumendo abbiamo
+
+\begin{tabular}{|c|c|}
+	\hline
+	$H^+$ & $33 \cdot 10^{-3} \, mol/g$ \\
+	\hline
+	$OH^-$ & $33 \cdot 10^{-3} \, mol/g$ \\
+	\hline
+	$GLY^-$ & $2.16 \cdot 10^{-3} \, mol/g$\\
+	\hline
+	$GLU$ & $780 \cdot 10^{-6} \, mol/g$\\
+	\hline
+	$O_2$ & $77 \cdot 10^{-6} \, mol/g$\\
+	\hline
+	$AMP^{2-}$ & $4.3 \cdot 10^{-6} \, mol/g$\\
+	\hline	
+	$ATP^{4-}$ & $2.65 \cdot 10^{-6} \, mol/g$\\
+	\hline
+	$PO_4^{3-}$ & $ 350 \cdot 10^{-9} \, mol/g$\\
+	\hline
+	$CO_2$ & $48 \cdot 10^{-9} \, mol/g$\\
+	\hline	
+	$NH4^+$ & $33 \cdot 10^{-9} \, mol/g$\\
+	\hline
+	$ADP^{3-}$ & $ ?$\\
+	\hline
+	$PIR^-$ & ?\\
+	\hline	
+	$ACT^-$ & ?\\
+	\hline	
+\end{tabular}
+
+Il metabolismo basale umano mediamente è di $1800 \, Kcal/g$ \cite{mb}
+pari a $\frac{1800 \cdot 4184}{24 \cdot 60 \cdot 60} = 87 \, W$.
+
+Mentre quello totale per un lavoro medio è di $141 \, W$
+\cite{itwiki:120891425}.
+
 \section{Reazioni chimiche}
-Le reazioni chimiche simulate sono due:
 
-\subsection{Sintesi}
-La sintesi produce glucosio assorbendo l'energia dal sistema. Durante la sintesi l'anidride carbonica si unisce all'acqua e viene prodotto glucosio e ossigeno.
+Le reazioni chimiche simulate sono:
 
-anidride carbonica + acqua + energia = glucosio + ossigeno
+\subsection{Metabolismo basale}
 
-$6 \, CO_2 +6 \,  H_2O + energia = C_6 H_{12}O_6 + 6 \, O_2 $
+Le attività di base dell'essere vivente necessitano di una quantità di
+energia che viene prodotta bruciano glucosio (reazione di
+ossidazione).
+Se l'essere non ha sufficiente glucosio per sopravvivere l'essere
+muore.
+L'essere vivente non ha controllo del consumo di energia che è
+automatico.
 
-\subsection{Combustione}
-La combustione brucia glucosio creando energia.
-Durante la combustione il glucosio si unisce all'ossigeno e produce l'acqua e anidride carbonica.
+\subsection{Fotosintesi}
 
- glucosio + ossigeno = anidride carbonica  + acqua + energia 
- 
-$ C_6 H_{12}O_6 + 6 \, O_2 = 6 \, CO_2 + 6 \,  H_2O + energia $
+L'intesità luminosa del sole è stimata in $200 \cdot 10^{3} \, lux$
+\cite{luce-sole}, pari a $200 \cdot 10^{3} \, lum/m^2$
+pari a $\frac{200 \cdot 10^3}{683} ~= 292 \, W/m^2$.
 
-L'ossigeno e l'anidride carbonica sono allo stato gassoso, l'acqua è allo stato liquido e il glucosio allo stato liquido
+Il rendimento della fotosintesi si stima essere intorno al 1 \% \cite{rendimento-fotosintesi} con
+una quantità effettiva di energia trasformata
+pari a $2.9 \, W/m^2$.
+
+Per produrre una mole di ATP sono necessari 30.5 KJ
+quindi la quantità di ATP prodotta è di
+$ \frac{2.9}{30.5 \cdot 10^3} = 95 \cdot 10^{-6} \, mol/(m^2 \cdot s) $
+
+$H^+ + OH^- + PO_4^-3 + ADP^-3 + 30.5 KJ \rightarrow ATP^{3-} + O_2 + 2H^+$
+
+\subsection{Glicosintesi}
+
+Solo vegetali
+
+$38 ATP^{4-} + 6 CO_2 + 32 OH^-
+\rightarrow
+C_6H_{12}O_6 + 38 ADP^{3-} + 38 PO_4^{3-} + 20 H^+$
+
+\subsection{Glicolisi}
+Tutti
+
+$ GLU + 2 ATP^{4-} + 4 ADP^{3-} + 2 PO4^{3-}
+\rightarrow
+2 PIR^- + 4 ATP^{4-} + 2 ADP^{3-} + 4 H^+ + 2 OH^-
+$
+
+\subsection{Decarbossilazione piruvato}
+Tutti
+
+$E_c$ = 30.5 KJ/mol
+
+$PIR^- + H^2 + OH^-
+\rightarrow
+ACT^- + CO_2 + 2 H^+ + E_c
+$
+
+\subsection{Ciclo di Krebs}
+Tutti
+
+$ACT^- + 6 O_2 + 17 H^+
+\rightarrow
+2 CO_2 + 10 H^+ + 10 OH- + 17 E_c
+$
+
+\subsection{Sintesi ATP}
+Tutti
+
+$ADP^{3-} + PO4^{3-} + 2H^+ + E_c
+\rightarrow
+ATP^{-4} + H^+ + OH^-$
+
+\subsection{Idrolisi ATP}
+
+L'ATP viene convertita in ADP producendo energia libera
+
+$ATP + OH^- \rightarrow ADP + PO_4 + H^+ + 30.5 \cdot 10^{3} J/mol $
+\cite{itwiki:120880065}
+
+Nel corpo è presente ATP ad una densità di
+$2.65 \cdot 10^{-6} \, mol/g$ che possono essere convertiti in
+energia in circa 1 s \cite{lavoro-muscolare}.
+La velocità della reazione chimica per unità di massa è quindi di
+$2.65 \cdot 10^{-6} \, mol/(s \cdot g)$ equivalente a
+$2.65 \cdot 10^{-6} \cdot 30.5 \cdot 10^{3} = 81 \cdot 10^{-3} \, W/g$.
+
+Di questa energia il 40\% viene dissipato in calore
+\cite{energia-meccanica} e il rimanente convertito in energia
+meccanica quindi l'energia meccanica prodotta è
+$ 81 \cdot 10^{-3} \cdot 0.6 = 48.6 \cdot 10^{-3} \, W/g$
+
+\subsection{Sintesi AMP}
+
+Per idrolisi tutti
+
+$ATP + 2 OH^- \rightarrow AMP + 2 PO_4^{3-} + 2 H^+$
+
+\subsection{Amminazione ADP}
+
+Solo vegetali
+
+$GLU + 2 ACT^- + 5 NH_4^+ + 2 PO_4^{3-}
+\rightarrow
+ADP^{3-} + 8 OH^- + 18 H^+ $
+
+\subsection{Deamminazione ADP}
+
+Solo animali
+
+$ADP + 8 OH^- + 18 H^+
+\rightarrow
+GLU + 2 ACT^- + 5 NH_4^+ + 2 PO_4^{3-}$
+
+\subsection{Sintesi GLY}
+
+Per idrolisi tutti
+
+$ADP^{3-} + 8 OH^- \rightarrow 5 GLY^- + 2PO_4^{3-} $
+
+\subsection{Catabolizzazione GLY}
+
+Per idrolisi tutti
+
+$5 GLY^- + 2PO_4^{3-} \rightarrow ADP^{3-} + 8 OH^- $
+
+\part{Tipologie di esseri viventi}
+Gli esseri viventi vengono classificati in tre tipi:
+\begin{itemize}
+	\item Vegetali
+	\item Erbivori
+	\item Carnivori
+\end{itemize}
+
+\section{Vegetali}
+
+I vegetali sono essere viventi stazionari che assorbono le sostanze
+presenti nel proprio spazio (cella) e la convertono in glucosio.
 
 \part{Attività}
-Ogni essere vivente reagisce in base ai segnali che arrivano dall'ambiente.
+Ogni essere vivente reagisce in base ai segnali che arrivano
+dall'ambiente.
 
 Possiamo identificare alcune azioni base:
 
 \section{Produzione di energia}
-Le attività di base dell'essere vivente necessitano di una quantità di energia che viene prodotta bruciano glucosio (reazione di ossidazione). Se l'essere non ha sufficiente glucosio per sopravvivere l'essere muore. L'essere vivente non ha controllo sulla produzione di energia che è automatica.
+
+Le attività di base dell'essere vivente necessitano di una quantità di
+energia che viene prodotta bruciano glucosio (reazione di ossidazione).
+Se l'essere non ha sufficiente glucosio per sopravvivere l'essere
+muore.
+L'essere vivente non ha controllo sulla produzione di energia che è
+automatica.
 
 \section{Sintesi}
-L'essere viviente assorbe energia dal e la converte in glucosio, ogni essere vivente può regolare la quantità di energia assorbita quindi l'azione disponiible è la modifica del parametro di controllo ovvero la velocità di sintesi del glucosio $S$
+
+L'essere viviente assorbe energia dal sistema e la converte in
+glucosio, ogni essere vivente può regolare la quantità di energia
+assorbita quindi l'azione disponiible è la modifica del parametro di
+controllo ovvero la velocità di sintesi del glucosio $S$
 \begin{equation}
 \Delta G = S \, \Delta t
 \end{equation}
 
-L'attività di sintesi cambia lo stato accumulando glucosio nel corpo, quindi è utile all'essere vivente conoscere la quantità di glucosio  $G$ presente.
+L'attività di sintesi cambia lo stato accumulando glucosio nel corpo,
+quindi è utile all'essere vivente conoscere la quantità di glucosio
+$GLU$ presente.
 
-Ci sono tre regole che controllano la velocità di sintesi in base a tre fascie di glucosio:
+Ci sono tre regole che controllano la velocità di sintesi in base a tre
+fascie di glucosio:
 \begin{eqnarray}
 	0 \le G < G_1 \Rightarrow S = S_1
 	\\	
@@ -51,10 +700,15 @@ Ci sono tre regole che controllano la velocità di sintesi in base a tre fascie d
 	G \ge G_2 \Rightarrow  S = S_3
 \end{eqnarray}
 
-I valori $G_1, G_2, S_1, S_2, S_3$ sono determinati dal codice genetico dell'essere vivente.
+I valori $G_1, G_2, S_1, S_2, S_3$ sono determinati dal codice genetico
+dell'essere vivente.
 
 \section{Clonazione}
-L'essere vivente può creare una copia di se stesso, la posizione del nuovo essere vivente è nei dintorni del genitore. Questà attività necessita di energia aggiuntiva altre a quella di sopravvivenza.
+
+L'essere vivente può creare una copia di se stesso, la posizione del
+nuovo essere vivente è nei dintorni del genitore.
+Questà attività necessita di energia aggiuntiva altre a quella di
+sopravvivenza.
 
 L'equazione energetica della clonazione è:
 \begin{eqnarray}
@@ -62,16 +716,22 @@ L'equazione energetica della clonazione è:
 \\
 G_c=K (G - E_0)
 \end{eqnarray}
-dove $E_0$ è l'energia di clonazione, $G_c$ è il glucosio ceduto al clone, $K$ è la percentuale di glucosio cedibile al clone.
+dove $E_0$ è l'energia di clonazione, $G_c$ è il glucosio ceduto al
+clone, $K$ è la percentuale di glucosio cedibile al clone.
 
 La condizione utile per clonare è
 \begin{equation}
 G >E_0
 \end{equation}
 
-L'attività di clonazione riduce la quantità di glucosio quindi è utile per conoscere il livello di glucosio dell'essere. I parametri controllati dall'essere che guidano l'attività di clonazione sono due: la percentuale di glucosio ceduto al clone e la probabilità di clonazione.
+L'attività di clonazione riduce la quantità di glucosio quindi è utile
+per conoscere il livello di glucosio dell'essere.
+I parametri controllati dall'essere che guidano l'attività di
+clonazione sono due: la percentuale di glucosio ceduto al clone e la
+probabilità di clonazione.
 
-In questo caso possiamo definire tre regole di clonazione funzione del livello di glucosio:
+In questo caso possiamo definire tre regole di clonazione funzione del
+livello di glucosio:
 \begin{eqnarray}
 0 \le G < G_1 \Rightarrow P(c)=P_1, K = K_1
 \\
@@ -81,28 +741,45 @@ G \ge G_2 \Rightarrow P(c)=P_3, K = K_3
 \end{eqnarray}
 Dove P(c) la probabilità di clonazione.
 
-I valori $G_1, G_2, P_1, P_2, P_3, K_1, K_2, K_3$ sono determinati dal codice genetico. 
+I valori $G_1, G_2, P_1, P_2, P_3, K_1, K_2, K_3$ sono determinati dal
+codice genetico. 
 
 \section{Accoppiamento}
-L'essere vivente può accopiarsi con un'altro essere vivente nel'intorno della cella e creare un nuovo essere vivente. Il patrimonio genetico dei due genitori viene mescolato casualmente. Questta attività necessita di energia aggiuntiva. L'equazione energetica dell'accoppiamento è 
+
+L'essere vivente può accopiarsi con un'altro essere vivente nel'intorno
+della cella e creare un nuovo essere vivente.
+Il patrimonio genetico dei due genitori viene mescolato casualmente.
+Questta attività necessita di energia aggiuntiva.
+L'equazione energetica dell'accoppiamento è 
 \begin{eqnarray}
 \Delta G = -E_0 - G_a
 \\
 G_a=K (G-E_0)
 \end{eqnarray}
 
-dove $E_0$ è l'energia di accoppiamento, $G_a$ è il glucosio ceduto al figlio, $K$ è la percentuale di glucosio ceduta dal genitore.
+dove $E_0$ è l'energia di accoppiamento, $G_a$ è il glucosio ceduto al
+figlio, $K$ è la percentuale di glucosio ceduta dal genitore.
 
 La condizione per accoppiarsi è
 \begin{equation}
 	G_1>E_0
 \end{equation}
 
-La logica di selezione del genitore potrebbe essere quella di favorire gli individui con maggior livello di glucosio secondo la logica per cui la probabilità di sopravvivenza dovrebbe essere proporzionale alla capacità di accumulo del glucosio. In pratica la probabilità di selezionare un individuo nei dintorni dovrebbe essere proporzionale al livello di glucosio.
+La logica di selezione del genitore potrebbe essere quella di favorire
+gli individui con maggior livello di glucosio secondo la logica per cui
+la probabilità di sopravvivenza dovrebbe essere proporzionale alla
+capacità di accumulo del glucosio.
+In pratica la probabilità di selezionare un individuo nei dintorni
+dovrebbe essere proporzionale al livello di glucosio.
 
-L'attività di accoppiamento riduce la quantità di energia quindi è utile conoscere il livello di glucosio dell'essere. I parametri controllati dall'essere che guidano l'accoppiamento sono due: la percentuale di glucosio ceduto al figlio e la probabilità di clonazione, altro.
+L'attività di accoppiamento riduce la quantità di energia quindi è
+utile conoscere il livello di glucosio dell'essere.
+I parametri controllati dall'essere che guidano l'accoppiamento sono
+due: la percentuale di glucosio ceduto al figlio e la probabilità di
+clonazione, altro.
 
-In questo caso possiamo definire tre regole di accoppiamento, funzione del livello di glucosio:
+In questo caso possiamo definire tre regole di accoppiamento, funzione
+del livello di glucosio:
 \begin{eqnarray}
 0 \le G < G_1 \Rightarrow P(a)=P_1, K = K_1
 \\
@@ -113,11 +790,17 @@ G \ge G_2 \Rightarrow P(a)=P_3, K = K_3
 
 \section{Assorbimento}
 
-L'essere vivente può assorbire il glucosio presente nell'ambiente. Questà attività necessita di energia aggiuntiva oltre a quella di sopravvivenza. L'equazione energetica dell'assorbimento è
+L'essere vivente può assorbire il glucosio presente nell'ambiente.
+Questà attività necessita di energia aggiuntiva oltre a quella di
+sopravvivenza.
+L'equazione energetica dell'assorbimento è
 \begin{equation}
 \Delta G= -\pi_0 \Delta t+ min(G_t, \pi_x \Delta t) 
 \end{equation}
-$\pi_0$ è l'energia necessaria per assorbire il glucosio, $G_t$ il glucosio nel terreno e $\pi_x$ il limite massimo di assorbimento. L'azione a disposizione è quella di modifica della probabilità di assorbimento $P(a)$.
+$\pi_0$ è l'energia necessaria per assorbire il glucosio, $G_t$ il
+glucosio nel terreno e $\pi_x$ il limite massimo di assorbimento.
+L'azione a disposizione è quella di modifica della probabilità di
+assorbimento $P(a)$.
 
 L'assorbimento è utile quando
 \begin{equation}
@@ -129,7 +812,10 @@ G_t>\pi_0  \Delta t
 \end{array}
 \end{equation}
 
-L'assorbimento consumando energia deve valutare il rapporto costi/benefici tra lo spendere le energie per assorbire e l'energia assorbita, per questo è necessario misurare la quantità di glucosio presente nel terreno e rapportarla con la quantità assorbibile.
+L'assorbimento consumando energia deve valutare il rapporto
+costi/benefici tra lo spendere le energie per assorbire e l'energia
+assorbita, per questo è necessario misurare la quantità di glucosio
+presente nel terreno e rapportarla con la quantità assorbibile.
 \begin{equation}
 \rho = \frac{G_t}{\pi_0 \Delta t+G_t}, \; \rho=0\dots 1
 \end{equation}
@@ -139,7 +825,8 @@ Quindi l'assorbimento è utile quando
 	\rho \ge \frac{1}{2}
 \end{equation}
 
-In questo caso possiamo definire due regole di accoppiamento, funzione del livello di glucosio nel terreno:
+In questo caso possiamo definire due regole di accoppiamento, funzione
+del livello di glucosio nel terreno:
 \begin{eqnarray}
 0 \le G_t < G_1 \Rightarrow P(a)=P_1
 \\
@@ -148,11 +835,17 @@ G_t \ge G_1 \Rightarrow P(a)=P_2
 
 
 \section{Attacco}
-L'essere vivente può attacccare un'altro essere vivente nel'intorno della cella. In caso di attacco viene consumata dell'energia sia da chi attacca che da chi si difende. La probabilità di vincita è definita da
+
+L'essere vivente può attacccare un'altro essere vivente nel'intorno
+della cella.
+In caso di attacco viene consumata dell'energia sia da chi attacca che
+da chi si difende.
+La probabilità di vincita è definita da
 \begin{equation}
 	P(v)=\frac{E_a}{E_a+E_d}
 \end{equation}
-$E_a$ è l'energia usata per l'attacco e $E_d$ quella usata per la difesa.
+$E_a$ è l'energia usata per l'attacco e $E_d$ quella usata per la
+difesa.
 
 L'equazione energetica dell'attacco è 
 \begin{eqnarray}
@@ -160,15 +853,27 @@ L'equazione energetica dell'attacco è
 \\
 \Delta G_d = E_d = K_d G_d
 \end{eqnarray}
-dove $K_a$ è la percentuale di energia da destinare all'attacco e $K_d$ la percentuale da destinare alla difesa.
+dove $K_a$ è la percentuale di energia da destinare all'attacco e $K_d$
+la percentuale da destinare alla difesa.
 
-In caso di più prede presenti l'attaccante deve decidere quale preda attaccare. E' ammesso un solo attacco per ciclo. L'attaccante può decidere se attaccare la preda più grossa o più piccola controllando la probabilità tra le due strategie $P(x)$.
+In caso di più prede presenti l'attaccante deve decidere quale preda
+attaccare.
+E' ammesso un solo attacco per ciclo.
+L'attaccante può decidere se attaccare la preda più grossa o più
+piccola controllando la probabilità tra le due strategie $P(x)$.
 
-I parametri di controllo sono quindi la probabilità di attivazione $P(a)$, la probabilità di attacco della preda più grossa, la quantità di energia per l'attacco $K_a$ e la quantità di energia per la difesa $K_d$.
+I parametri di controllo sono quindi la probabilità di attivazione
+$P(a)$, la probabilità di attacco della preda più grossa, la quantità
+di energia per l'attacco $K_a$ e la quantità di energia per la difesa
+$K_d$.
 
-In caso di vincita l'attaccante acquisisce il glucosio della preda altrimenti non succede nulla. L'attaccante conosce solo la quantità di energia che può consumare e la quantità di glucosio della preda (minimo e massimo).
+In caso di vincita l'attaccante acquisisce il glucosio della preda
+altrimenti non succede nulla. L'attaccante conosce solo la quantità di
+energia che può consumare e la quantità di glucosio della preda (minimo
+e massimo).
 
-Si possono quindi identificare 3 parametri e costruire quindi 8 regole per l'attacco:
+Si possono quindi identificare 3 parametri e costruire quindi 8 regole
+per l'attacco:
 \begin{eqnarray}
 	E_a < E_1, G_x < G_1, G_m<G_2 \Rightarrow P(a)=P_{11}, P(x)=P_{12}, K_a = K_1 
 \\	E_a < E_1, G_x < G_1, G_m\ge G_2 \Rightarrow P(a)=P_{11}, P(x)=P_{22}, K_a = K_2 
@@ -190,7 +895,11 @@ Le regole di difesa invece sono quattro:
 
 
 \section{Movimento}
-L'essere vivente può spostarsi nel'intorno della cella per cercare condizioni favorevoli o per scappare da qualche predatore. Questà attività necessita di energia aggiuntiva oltre a quella di sopravvivenza.
+
+L'essere vivente può spostarsi nel'intorno della cella per cercare
+condizioni favorevoli o per scappare da qualche predatore.
+Questa attività necessita di energia aggiuntiva oltre a quella di
+sopravvivenza.
 
 L'equazione energetica è:
 \begin{equation}
@@ -198,9 +907,15 @@ L'equazione energetica è:
 \end{equation}
 $E_m$ è l'energia necessaria a muoversi.
 
-Condizioni necessaria per muoversi è che ci siano celle libere nei dintorni e che ci sia energia per muoversi $G > E_m$. Sono definiti tre comportamenti base per muoversi: fuga, ricerca glucosio, ricerca di condizioni per sintetizzare, ricerca condizioni per la respirazione.
+Condizioni necessaria per muoversi è che ci siano celle libere nei
+dintorni e che ci sia energia per muoversi $G > E_m$.
+Sono definiti tre comportamenti base per muoversi: fuga, ricerca
+glucosio, ricerca di condizioni per sintetizzare, ricerca condizioni
+per la respirazione.
 
-La scelta del comportamento può quindi essere regolato dalla combinazione di quattro insiemi di regole ogniuno delle quali definisce la preferenza comportamentale:
+La scelta del comportamento può quindi essere regolato dalla
+combinazione di quattro insiemi di regole ogniuno delle quali definisce
+la preferenza comportamentale:
 \begin{eqnarray}
 P(fuga)=\frac{p_f}{p_f+p_g+p_s+p_r+p_i}
 \\P(glucosio)=\frac{p_g}{p_f+p_g+p_s+p_r+p_i}
@@ -209,22 +924,29 @@ P(fuga)=\frac{p_f}{p_f+p_g+p_s+p_r+p_i}
 
 Se $p_f+p_g+p_s+p_i=0$ allora non ci sarà alcun movimento.
 
-
 \subsection{Fuga}
-La fuga consiste nello spostarsi in una cella libera più possibilmente lontana da grossi predatori. Il sistema cerca la cella adiacente la cui somma di glucosio degli esseri viventi confinanti sia minore. Questo valore dà un'indicazione del rischio di attacco.
+
+La fuga consiste nello spostarsi in una cella libera più possibilmente
+lontana da grossi predatori.
+Il sistema cerca la cella adiacente la cui somma di glucosio degli
+esseri viventi confinanti sia minore.
+Questo valore dà un'indicazione del rischio di attacco.
 \begin{equation}
 	R_i = \sum_{a \in A_i} G_a
 \end{equation}
 dove $A_i$ sono le celle adiacenti a i.
 
-Rapportare tale rischio al quello della posizione corrente dà l'indicatore normalizzato che può identficare la situazione di fuga.
+Rapportare tale rischio al quello della posizione corrente dà
+l'indicatore normalizzato che può identficare la situazione di fuga.
 \begin{equation}
 	Pi = \frac{R_i}{R_i + R_j}
 \end{equation}
 dove $j$ è la cella con minor rischio.
 
-Quando $P<\frac{1}{2}$ significa che la cella attuale è a rischio minore di quella di fuga, se invece 
-$P>\frac{1}{2}$ la cella attuale ha un rischio maggiore di quella di fuga.
+Quando $P<\frac{1}{2}$ significa che la cella attuale è a rischio
+minore di quella di fuga, se invece 
+$P>\frac{1}{2}$ la cella attuale ha un rischio maggiore di quella di
+fuga.
 
 Le regole quindi sono
 \begin{eqnarray}
@@ -235,7 +957,12 @@ Le regole quindi sono
 \end{eqnarray}
 
 \subsection{Ricerca glucosio}
-In questo caso l'essere si sposta verso la cella con maggior quantità di glucosio. E' interessante conoscere in questo caso se la cella migliore esiste o se la cella corrente è migliore della destinataria e la quantità di glucosio presente nella posizione destinataria.
+
+In questo caso l'essere si sposta verso la cella con maggior quantità
+di glucosio.
+E' interessante conoscere in questo caso se la cella migliore esiste o
+se la cella corrente è migliore della destinataria e la quantità di
+glucosio presente nella posizione destinataria.
 
 Le regole quindi sono
 \begin{eqnarray}
@@ -246,7 +973,13 @@ Le regole quindi sono
 \end{eqnarray}
 
 \subsection{Ricerca sintesi}
-In questo caso l'essere si sposta verso la cella con maggior quantità di glucosio sintetizzabile (valore minimo tra anidride carbonica e acqua). E' interessante conoscere in questo caso se la cella migliore esiste o se la cella corrente è migliore della destinataria e la quantità di glucosio sitetizzabile presente nella posizione destinataria.
+
+In questo caso l'essere si sposta verso la cella con maggior quantità
+di glucosio sintetizzabile (valore minimo tra anidride carbonica e
+acqua).
+E' interessante conoscere in questo caso se la cella migliore esiste o
+se la cella corrente è migliore della destinataria e la quantità di
+glucosio sitetizzabile presente nella posizione destinataria.
 
 Le regole quindi sono
 \begin{eqnarray}
@@ -258,43 +991,61 @@ Le regole quindi sono
   
 \part{Codice genetico}
 
-Il codice genetico deve codificare le regole di comportamento degli essere. Si sono identificati vari parametri sia di riconoscimento che di controllo. Per semplificazione il codice genetico codifica valori discreti di questi parametri.
+Il codice genetico deve codificare le regole di comportamento degli
+essere.
+Si sono identificati vari parametri sia di riconoscimento che di
+controllo.
+Per semplificazione il codice genetico codifica valori discreti di
+questi parametri.
 \begin{itemize}
 \item
-I livelli assoluti di glucosio si codificano in 10 possibili livelli da 0 a $G_{max}$.
+I livelli assoluti di glucosio si codificano in 10 possibili livelli da
+0 a $G_{max}$.
 \item
-Le probabilità si codificano in cinque possibili valori $P(x)=\{0, 0.25, 0.5, 0.75, 1\}$
+Le probabilità si codificano in cinque possibili valori
+$P(x)=\{0, 0.25, 0.5, 0.75, 1\}$
 \item
-Le percentuali si codificano in cinque possibili valori $K=\{0\%, 25\%, 50\%, 75\%, 100\%\}$
+Le percentuali si codificano in cinque possibili valori
+$K=\{0\%, 25\%, 50\%, 75\%, 100\%\}$
 \item
-Le percentuali si codificano in cinque possibili valori $K=\{0\%, 25\%, 50\%, 75\%, 100\%\}$
+Le percentuali si codificano in cinque possibili valori
+$K=\{0\%, 25\%, 50\%, 75\%, 100\%\}$
 \end{itemize}
 
-Il processo di clonazione consiste nel generare un nuovo essere clonando i parametri genetici.
-Durante la clonazione di ogni parametro può generarsi una mutazione genetica con probabilità
+Il processo di clonazione consiste nel generare un nuovo essere
+clonando i parametri genetici.
+Durante la clonazione di ogni parametro può generarsi una mutazione
+genetica con probabilità
 \begin{equation}
 P(mutazione) = P
 \end{equation}
-definita nella sessione di simulazione. In caso di mutazione il parametro viene modificato casualmente.
+definita nella sessione di simulazione. In caso di mutazione il
+parametro viene modificato casualmente.
 
   \part{Test di simulazione}
   
   \section{Test di simulazione}
-  L'obiettivo \`e analizzare il comportamento basato sull'alimentazione e
-  ricerca del cibo di reti elementari.
+  L'obiettivo \`e analizzare il comportamento basato sull'alimentazione
+  e ricerca del cibo di reti elementari.
   
   \section{Test di evoluzione}
-  L'obiettivo \`e analizzare l'evoluzione delle reti neurali genetiche in
-  ambiente di pura alimentazione e ricerca cibo.
+  L'obiettivo \`e analizzare l'evoluzione delle reti neurali genetiche
+  in ambiente di pura alimentazione e ricerca cibo.
   
-  \`E necessario definire degli indicatori per verificare quando e quanto viene
-  utilizzato un comportamento e l'associazione del comportamento con lo stato
+  \`E necessario definire degli indicatori per verificare quando e
+  quanto viene utilizzato un comportamento e l'associazione del
+  comportamento con lo stato
   dell'ambiente.
   
   Come schema di valutazione possiamo usare una griglia con le classi di
   ambiente (input) e i comportamenti intrapresi (output).
   
-  
   \`E importante monitorare anche il tasso di mortalita naturale, se il sistema
   evolve questo dovrebbe diminuire.
+
+\part{Bibliografia}
+
+\bibliographystyle{plain}
+\bibliography{spec.bib}
+
 \end{document}
