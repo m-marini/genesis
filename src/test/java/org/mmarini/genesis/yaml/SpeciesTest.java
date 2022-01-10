@@ -63,7 +63,7 @@ class SpeciesTest {
                         "#2",
                         "surviveMass: 0.2",
                         "fractalDimension: 1.4",
-                        "IPGenes:",
+                        "reactionProcesses:",
                         "  - ipgene",
                         "EIPGenes:",
                         "  - eipgene",
@@ -74,7 +74,7 @@ class SpeciesTest {
                         "#3",
                         "basalMetabolicRate: 0.1",
                         "fractalDimension: 1.4",
-                        "IPGenes:",
+                        "reactionProcesses:",
                         "  - ipgene",
                         "EIPGenes:",
                         "  - eipgene",
@@ -85,7 +85,7 @@ class SpeciesTest {
                         "#4",
                         "basalMetabolicRate: 0.1",
                         "surviveMass: 0.2",
-                        "IPGenes:",
+                        "reactionProcesses:",
                         "  - ipgene",
                         "EIPGenes:",
                         "  - eipgene",
@@ -97,21 +97,21 @@ class SpeciesTest {
                         "basalMetabolicRate: 0.1",
                         "surviveMass: 0.2",
                         "fractalDimension: 1.4",
-                        "photoGenes:",
+                        "photoProcesses:",
                         "  - photo",
-                        "EIPGenes:",
+                        "EreactionProcesses:",
                         "  - eipgene",
                         "PIPGenes:",
                         "  - pipgene"
-                ), "/IPGenes is missing"
+                ), "/reactionProcesses is missing"
         ), Arguments.of(text(
                         "#6",
                         "basalMetabolicRate: 0.1",
                         "surviveMass: 0.2",
                         "fractalDimension: 1.4",
-                        "photoGenes:",
+                        "photoProcesses:",
                         "  - photo",
-                        "IPGenes:",
+                        "reactionProcesses:",
                         "  - ipgene",
                         "PIPGenes:",
                         "  - pipgene"
@@ -121,9 +121,9 @@ class SpeciesTest {
                         "basalMetabolicRate: 0.1",
                         "surviveMass: 0.2",
                         "fractalDimension: 1.4",
-                        "photoGenes:",
+                        "photoProcesses:",
                         "  - photo",
-                        "IPGenes:",
+                        "reactionProcesses:",
                         "  - ipgene",
                         "EIPGenes:",
                         "  - eipgene"
@@ -133,23 +133,23 @@ class SpeciesTest {
                         "basalMetabolicRate: 0.1",
                         "surviveMass: 0.2",
                         "fractalDimension: 1.4",
-                        "photoGenes:",
+                        "photoProcesses:",
                         "  - photo",
-                        "IPGenes:",
+                        "reactionProcesses:",
                         "  - ipgene1",
                         "EIPGenes:",
                         "  - eipgene",
                         "PIPGenes:",
                         "  - pipgene"
-                ), "/IPGenes/0 must match a value in \\[ipgene\\] \\(ipgene1\\)"
+                ), "/reactionProcesses/0 must match a value in \\[ipgene\\] \\(ipgene1\\)"
         ), Arguments.of(text(
                         "#9",
                         "basalMetabolicRate: 0.1",
                         "surviveMass: 0.2",
                         "fractalDimension: 1.4",
-                        "photoGenes:",
+                        "photoProcesses:",
                         "  - photo",
-                        "IPGenes:",
+                        "reactionProcesses:",
                         "  - ipgene",
                         "EIPGenes:",
                         "  - eipgene1",
@@ -161,9 +161,9 @@ class SpeciesTest {
                         "basalMetabolicRate: 0.1",
                         "surviveMass: 0.2",
                         "fractalDimension: 1.4",
-                        "photoGenes:",
+                        "photoProcesses:",
                         "  - photo",
-                        "IPGenes:",
+                        "reactionProcesses:",
                         "  - ipgene",
                         "EIPGenes:",
                         "  - eipgene",
@@ -175,27 +175,27 @@ class SpeciesTest {
                         "basalMetabolicRate: 0.1",
                         "surviveMass: 0.2",
                         "fractalDimension: 1.4",
-                        "IPGenes:",
+                        "reactionProcesses:",
                         "  - ipgene",
                         "EIPGenes:",
                         "  - eipgene",
                         "PIPGenes:",
                         "  - pipgene"
-                ), "/photoGenes is missing"
+                ), "/photoProcesses is missing"
         ), Arguments.of(text(
                         "#12",
                         "basalMetabolicRate: 0.1",
                         "surviveMass: 0.2",
                         "fractalDimension: 1.4",
-                        "photoGenes:",
+                        "photoProcesses:",
                         "  - photo1",
-                        "IPGenes:",
+                        "reactionProcesses:",
                         "  - ipgene",
                         "EIPGenes:",
                         "  - eipgene",
                         "PIPGenes:",
                         "  - pipgene"
-                ), "/photoGenes/0 must match a value in \\[photo\\] \\(photo1\\)"
+                ), "/photoProcesses/0 must match a value in \\[photo\\] \\(photo1\\)"
         ));
     }
 
@@ -205,22 +205,6 @@ class SpeciesTest {
                         Matrix.of(1, 2),
                         Matrix.of(log(3), log(2)),
                         Matrix.of(0.5, 1.5)
-                )
-        );
-    }
-
-    static Map<String, ? extends IPGene> createIPGenes() {
-        return Map.of(
-                "ipgene", new ResourceGene(
-                        0,
-                        1,
-                        log(10),
-                        Reaction.create(
-                                Matrix.of(1, 0),
-                                Matrix.of(0, 2),
-                                Matrix.of(0.5, 0),
-                                Matrix.of(0.1, 0)
-                        )
                 )
         );
     }
@@ -238,9 +222,25 @@ class SpeciesTest {
         );
     }
 
-    private Map<String, ? extends PhotoProcess> createPhotoGenes() {
+    static Map<String, ? extends ReactionProcess> createReactionProcesses() {
         return Map.of(
-                "photo", PhotoProcess.create(0,
+                "ipgene", ReactionProcess.create(
+                        0,
+                        1,
+                        log(10),
+                        Reaction.create(
+                                Matrix.of(1, 0),
+                                Matrix.of(0, 2),
+                                Matrix.of(0.5, 0),
+                                Matrix.of(0.1, 0)
+                        )
+                )
+        );
+    }
+
+    private Map<String, ? extends PhotoReactionProcess> createphotoProcesses() {
+        return Map.of(
+                "photo", PhotoReactionProcess.create(0,
                         3,
                         1, 2,
                         Reaction.create(
@@ -259,49 +259,49 @@ class SpeciesTest {
                 "basalMetabolicRate: 0.1",
                 "surviveMass: 0.2",
                 "fractalDimension: 1.4",
-                "photoGenes:",
+                "photoProcesses:",
                 "  - photo",
-                "IPGenes:",
+                "reactionProcesses:",
                 "  - ipgene",
                 "EIPGenes:",
                 "  - eipgene",
                 "PIPGenes:",
                 "  - pipgene"
         ));
-        Map<String, ? extends PhotoProcess> photoGenes = createPhotoGenes();
-        Map<String, ? extends IPGene> ipGenes = createIPGenes();
+        Map<String, ? extends PhotoReactionProcess> photoProcesses = createphotoProcesses();
+        Map<String, ? extends ReactionProcess> reactionProcesses = createReactionProcesses();
         Map<String, ? extends EIPGene> eipGenes = createEIPGenes();
         Map<String, ? extends PIPGene> pipGenes = createPIPGenes();
         SchemaValidators.species()
                 .apply(root())
-                .andThen(CrossValidators.species(photoGenes.keySet(), ipGenes.keySet(), eipGenes.keySet(), pipGenes.keySet())
+                .andThen(CrossValidators.species(photoProcesses.keySet(), reactionProcesses.keySet(), eipGenes.keySet(), pipGenes.keySet())
                         .apply(root()))
                 .accept(root);
 
-        Species species = Parsers.species(root, photoGenes, ipGenes, eipGenes, pipGenes);
+        Species species = Parsers.species(root, photoProcesses, reactionProcesses, eipGenes, pipGenes);
         assertNotNull(species);
         assertThat(species.getBasalMetabolicRate(), equalTo(BASAL_METABOLIC_RATE));
 
         assertThat(species.getSurvivingMass(), equalTo(SURVIVING_MASS));
         assertThat(species.getFractalDimension(), equalTo(AREA_BY_MASS));
 
-        assertThat(species.getIpGenes(), contains(ipGenes.get("ipgene")));
+        assertThat(species.getReactionProcesses(), contains(reactionProcesses.get("ipgene")));
         assertThat(species.getEipGenes(), contains(eipGenes.get("eipgene")));
         assertThat(species.getPipGenes(), contains(pipGenes.get("pipgene")));
-        assertThat(species.getPhotoProcess(), contains(photoGenes.get("photo")));
+        assertThat(species.getPhotoProcesses(), contains(photoProcesses.get("photo")));
     }
 
     @ParameterizedTest
     @MethodSource("argsForErrors")
     void validateErrors(String text, String expectedPattern) throws IOException {
-        Map<String, ? extends PhotoProcess> photoGenes = createPhotoGenes();
-        Map<String, ? extends IPGene> ipGenes = createIPGenes();
+        Map<String, ? extends PhotoReactionProcess> photoProcesses = createphotoProcesses();
+        Map<String, ? extends ReactionProcess> reactionProcesses = createReactionProcesses();
         Map<String, ? extends EIPGene> eipGenes = createEIPGenes();
         Map<String, ? extends PIPGene> pipGenes = createPIPGenes();
         final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
                 SchemaValidators.species()
                         .apply(root())
-                        .andThen(CrossValidators.species(photoGenes.keySet(), ipGenes.keySet(), eipGenes.keySet(), pipGenes.keySet())
+                        .andThen(CrossValidators.species(photoProcesses.keySet(), reactionProcesses.keySet(), eipGenes.keySet(), pipGenes.keySet())
                                 .apply(root()))
                         .accept(fromText(text)));
         assertThat(ex.getMessage(), matchesPattern(expectedPattern));

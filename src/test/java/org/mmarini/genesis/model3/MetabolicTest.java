@@ -78,6 +78,9 @@ class MetabolicTest {
 
     SimStatus result;
 
+    /*
+    @TODO il test salta per morte prima del previsto
+     */
     @ParameterizedTest
     @MethodSource("arguments")
     void survive(double dt,
@@ -89,7 +92,10 @@ class MetabolicTest {
         and food sufficient for n step
         */
 
+        // Energy required for n steps of dt interval for the mass of individuals for a consumption rate
         // energy = rate dt n mass
+
+        // Food required:
         // food EP / FC = rate dt n (food FM + bodyMass)
         // food EP / FC = rate dt n food FM + rate dt n bodyMass
         // food (EP / FC - rate dt n FM) = rate dt n bodyMass
@@ -117,7 +123,6 @@ class MetabolicTest {
         );
         final Topology topology = Topology3.create(WIDTH, HEIGHT, LENGTH);
         final Matrix diffusion = zeros(NUM_RESOURCES, 1);
-        final Matrix resourceFlows = zeros(NUM_RESOURCES, 1);
         final SimEngine engine = new SimEngine(masses, topology, diffusion, ENERGY_REF);
 
         final Matrix quantities = zeros(NUM_RESOURCES, topology.getNoCells());
@@ -154,12 +159,11 @@ class MetabolicTest {
                 conversionRate
         );
         final Reaction reaction = Reaction.create(reagents, products, thresholds, speeds);
-        final List<IPGene> genes = List.of(
-                new ResourceGene(ENERGY_REF, minLevel, log(maxLevel / minLevel), reaction)
-        );
-        final Species species =  Species.create(metabolicRate, SURVIVE_MASS, 0, List.of(), genes, List.of(), List.of());
-        final List<Matrix> genotypes = List.of(of(0.5));
-        final Population population = new Population(individualQties,  List.of(), genotypes, List.of(), List.of(), locations, species);
+        ReactionProcess reactionProcess = ReactionProcess.create(ENERGY_REF, minLevel, maxLevel, reaction);
+        final List<ReactionProcess> genes = List.of(reactionProcess);
+        final Species species = Species.create(metabolicRate, SURVIVE_MASS, 0, List.of(), genes, List.of(), List.of());
+        final List<Matrix> genotypes = List.of(reactionProcess.createTargetLevels(of(0.5)));
+        final Population population = new Population(individualQties, List.of(), genotypes, List.of(), List.of(), locations, species);
         final List<Population> populations = List.of(population);
         final Random random = new Random(SEED);
 
@@ -170,17 +174,16 @@ class MetabolicTest {
         for (int i = 0; i <= noSteps; i++) {
             result = engine.next(result, (i + 1) * dt, random);
         }
-        final int noIndividualsBeforeDeath = new SimStatusProperties(result).noIndividuals();
-        final double energyBeforeDeath = new SimStatusProperties(result).individualsResource(ENERGY_REF);
-        final double foodBeforeDeath = new SimStatusProperties(result).individualsResource(FOOD_REF);
-
-        result = engine.next(result, (noSteps + 2) * dt, random);
-        final int noIndividualsAfterDeath = new SimStatusProperties(result).noIndividuals();
+        SimStatusProperties simStatusProperties = new SimStatusProperties(result);
+        final int noIndividualsBeforeDeath = simStatusProperties.noIndividuals();
 
         /*
          Then the individual should be alive before last step
          */
         assertThat(noIndividualsBeforeDeath, equalTo(1));
+
+        final double energyBeforeDeath = simStatusProperties.individualsResource(ENERGY_REF);
+        final double foodBeforeDeath = simStatusProperties.individualsResource(FOOD_REF);
 
         /*
          And with energy and food insufficient for next step
@@ -189,7 +192,13 @@ class MetabolicTest {
         assertThat(foodBeforeDeath, lessThan(energyByStep * FOOD_CONSUMPTION / ENERGY_PRODUCTION));
 
         /*
-        And no more individuals after the last step
+         When running simulation engine for final step
+         */
+        result = engine.next(result, (noSteps + 2) * dt, random);
+        final int noIndividualsAfterDeath = new SimStatusProperties(result).noIndividuals();
+
+        /*
+        Then no more individuals after the last step
          */
         assertThat(noIndividualsAfterDeath, equalTo(0));
         /*
@@ -206,5 +215,4 @@ class MetabolicTest {
                 new SimStatusProperties(result).environResource(FOOD_REF),
                 lessThan(energyByStep * FOOD_CONSUMPTION / ENERGY_PRODUCTION));
     }
-
 }

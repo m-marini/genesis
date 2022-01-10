@@ -31,16 +31,15 @@ package org.mmarini.genesis.yaml;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.mmarini.genesis.model3.EIPGene;
-import org.mmarini.genesis.model3.IPGene;
 import org.mmarini.genesis.model3.PIPGene;
-import org.mmarini.genesis.model3.PhotoProcess;
+import org.mmarini.genesis.model3.PhotoReactionProcess;
+import org.mmarini.genesis.model3.ReactionProcess;
 import org.mmarini.yaml.schema.Locator;
 import org.mmarini.yaml.schema.Validator;
 
 import java.awt.*;
 import java.util.List;
 import java.util.*;
-import java.util.stream.IntStream;
 
 import static java.util.Objects.requireNonNull;
 import static org.mmarini.Utils.getValue;
@@ -69,18 +68,20 @@ public class CrossValidators {
             Validator populations = deferred((root1, locator1) -> {
                 Dimension size = Parsers.dimension(root.path("environ"));
                 int noCells = size.width * size.height;
-                Map<String, ? extends PhotoProcess> photoGenes = Parsers.photoGenes(root.path("photoGenes"), keys);
-                Map<String, ? extends IPGene> ipGenes = Parsers.ipGenes(root.path("ipgenes"), keys);
+                Map<String, ? extends PhotoReactionProcess> photoProcesses = Parsers.photoGenes(root.path("photoProcesses"), keys);
+                Map<String, ? extends ReactionProcess> reactionProcesses = Parsers.reactionProcesses(root.path("reactionProcesses"), keys);
                 Map<String, ? extends EIPGene> eipGenes = Parsers.eipGenes(root.path("eipgenes"), keys);
                 Map<String, ? extends PIPGene> pipGenes = Parsers.pipGenes(root.path("pipgenes"), keys);
                 return arrayItems(population(keys, noCells,
-                        photoGenes, ipGenes, eipGenes, pipGenes));
+                        photoProcesses, reactionProcesses, eipGenes, pipGenes));
             });
 
             return object(
                     property("energyRef", string(values(keys))),
                     property("environ", environ(keys)),
-                    property("ipgenes", ipGenes(keys)),
+                    property("photoProcesses", photoProcesses(keys)),
+                    property("reactionProcesses", reactionProcesses(keys)),
+//                    property("ipgenes", reactionProcesses(keys)),
                     property("eipgenes", eipGenes(keys)),
                     property("pipgenes", pipGenes(keys)),
                     property("populations", populations)
@@ -133,19 +134,12 @@ public class CrossValidators {
                 property("location", allOf(
                         minimum(0),
                         exclusiveMaximum(noCells))),
-                property("photoSignals", signalsList(photoSignalSizes)),
-                property("IPSignals", signalsList(ipSizes)),
+                property("photoGenes", signalsList(photoSignalSizes)),
+                property("reactionGenes", signalsList(ipSizes)),
                 property("EIPSignals", signalsList(eipSizes)),
                 property("PIPSignals", signalsList(pipSizes)),
                 property("resources", nonNegativeResources(keys))
         );
-    }
-
-    /**
-     * @param keys resource keys
-     */
-    public static Validator ipGenes(List<String> keys) {
-        return additionalProperties(resourceGene(keys));
     }
 
     /**
@@ -160,11 +154,18 @@ public class CrossValidators {
         };
     }
 
-    public static Validator photoGene(List<String> keys) {
+    public static Validator photoProcess(List<String> keys) {
         return allOf(
                 property("ref", values(keys)),
                 property("reaction", reaction(keys))
         );
+    }
+
+    /**
+     * @param keys resource keys
+     */
+    public static Validator photoProcesses(List<String> keys) {
+        return additionalProperties(photoProcess(keys));
     }
 
     public static Validator pipGenes(List<String> keys) {
@@ -172,30 +173,29 @@ public class CrossValidators {
     }
 
     public static Validator population(List<String> keys, int noCells,
-                                       final Map<String, ? extends PhotoProcess> photoProcesses,
-                                       final Map<String, ? extends IPGene> ipGenes,
+                                       final Map<String, ? extends PhotoReactionProcess> photoProcesses,
+                                       final Map<String, ? extends ReactionProcess> reactionProcesses,
                                        final Map<String, ? extends EIPGene> eipGenes,
                                        final Map<String, ? extends PIPGene> pipGenes) {
         Validator deferredIndividual = deferred((root, locator) -> {
             Locator speciesLoc = locator.parent(2).path("species");
-            int numPhotoGenes = (int) speciesLoc.path("photoGenes")
+            int[] photoSizes = speciesLoc.path("photoProcesses")
                     .elements(root)
                     .map(Locator::getPointer)
                     .map(root::at)
                     .map(JsonNode::asText)
                     .map(getValue(photoProcesses))
                     .flatMap(Optional::stream)
-                    .count();
-            int[] photoSizes = IntStream.range(0, numPhotoGenes)
-                    .map(x -> 1)
+                    .mapToInt(x -> 1)
                     .toArray();
-            int[] ipSizes = speciesLoc.path("IPGenes").elements(root)
+            int[] reactionSizes = speciesLoc.path("reactionProcesses")
+                    .elements(root)
                     .map(Locator::getPointer)
                     .map(root::at)
                     .map(JsonNode::asText)
-                    .map(getValue(ipGenes))
+                    .map(getValue(reactionProcesses))
                     .flatMap(Optional::stream)
-                    .mapToInt(IPGene::getNumSignals)
+                    .mapToInt(x -> 1)
                     .toArray();
             int[] eipSizes = speciesLoc.path("EIPGenes").elements(root)
                     .map(Locator::getPointer)
@@ -213,12 +213,12 @@ public class CrossValidators {
                     .flatMap(Optional::stream)
                     .mapToInt(PIPGene::getNumSignals)
                     .toArray();
-            return individual(keys, noCells, photoSizes, ipSizes, eipSizes, pipSizes);
+            return individual(keys, noCells, photoSizes, reactionSizes, eipSizes, pipSizes);
         });
         return allOf(
                 property("species", species(
                         photoProcesses.keySet(),
-                        ipGenes.keySet(),
+                        reactionProcesses.keySet(),
                         eipGenes.keySet(),
                         pipGenes.keySet())),
                 property("individuals",
@@ -260,11 +260,18 @@ public class CrossValidators {
     /**
      * @param keys resource keys
      */
-    public static Validator resourceGene(List<String> keys) {
+    public static Validator reactionProcess(List<String> keys) {
         return allOf(
                 property("ref", values(keys)),
                 property("reaction", reaction(keys))
         );
+    }
+
+    /**
+     * @param keys resource keys
+     */
+    public static Validator reactionProcesses(List<String> keys) {
+        return additionalProperties(reactionProcess(keys));
     }
 
     /**
@@ -293,15 +300,15 @@ public class CrossValidators {
     }
 
     /**
-     * @param photoKeys the ip genes keys
-     * @param ipKeys    the ip genes keys
-     * @param eipKeys   the eip genes keys
-     * @param pipKeys   the pip genes keys
+     * @param photoKeys    the ip genes keys
+     * @param reactionKeys the ip genes keys
+     * @param eipKeys      the eip genes keys
+     * @param pipKeys      the pip genes keys
      */
-    public static Validator species(Collection<String> photoKeys, Collection<String> ipKeys, Collection<String> eipKeys, Collection<String> pipKeys) {
+    public static Validator species(Collection<String> photoKeys, Collection<String> reactionKeys, Collection<String> eipKeys, Collection<String> pipKeys) {
         return allOf(
-                property("photoGenes", items(values(photoKeys))),
-                property("IPGenes", items(values(ipKeys))),
+                property("photoProcesses", items(values(photoKeys))),
+                property("reactionProcesses", items(values(reactionKeys))),
                 property("EIPGenes", items(values(eipKeys))),
                 property("PIPGenes", items(values(pipKeys)))
         );

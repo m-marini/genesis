@@ -44,9 +44,12 @@ public class SimStatusProperties {
     }
 
     public double individualsResource(int row) {
-        return status.getPopulations().stream().mapToDouble(
-                pop -> pop.getResources().extractRow(row).sumCols().get(0, 0)
-        ).sum();
+        return noIndividuals() > 0
+                ? status.getPopulations().stream()
+                .mapToDouble(
+                        pop -> pop.getResources().extractRow(row).sumCols().get(0, 0))
+                .sum()
+                : 0;
     }
 
     public int noIndividuals() {

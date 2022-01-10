@@ -195,7 +195,7 @@ class CloneGeneTest {
         });
         List<PIPGene> pipGenes = List.of(gene);
         final Species species = Species.create(0.0, 0, 0,
-                List.of(), List.of(), List.of(), pipGenes);
+                List.of(),  List.of(), List.of(), pipGenes);
 
         final Population population = Population.create(qties,
                 List.of(), List.of(), List.of(), pipSignals,

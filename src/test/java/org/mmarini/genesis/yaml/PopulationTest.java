@@ -54,33 +54,22 @@ import static org.mmarini.yaml.Utils.fromText;
 import static org.mmarini.yaml.schema.Locator.root;
 
 class PopulationTest {
-    public static final double MIN_LEVEL = 1d;
-    public static final int MAX_LEVEL = 2;
+    static final int NO_CELLS = 4;
+    static final double MIN_LEVEL = 1d;
+    static final int MAX_LEVEL = 2;
     static final double SIGNAL1 = 0.1;
-    public static final double PHOTO_TARGET_LEVEL1 = exp(SIGNAL1 * log(MAX_LEVEL / MIN_LEVEL)) * MIN_LEVEL;
     static final double SIGNAL2 = 0.2;
-    private static final double PHOTO_TARGET_LEVEL2 =  exp(SIGNAL2 * log(MAX_LEVEL / MIN_LEVEL)) * MIN_LEVEL;;
     static final double SIGNAL8 = 0.8;
     static final double SIGNAL9 = 0.9;
+    static final double PHOTO_TARGET_LEVEL1 = exp(SIGNAL1 * log(MAX_LEVEL / MIN_LEVEL)) * MIN_LEVEL;
+    static final double PHOTO_TARGET_LEVEL2 = exp(SIGNAL2 * log(MAX_LEVEL / MIN_LEVEL)) * MIN_LEVEL;
     static final double BASAL_METABOLIC_RATE = 0.1;
     static final double SURVIVING_MASS = 0.2;
-    static final int LOCATION0 = 2;
     static final int LOCATION1 = 0;
+    static final int LOCATION0 = 2;
     static final double SUBSTANCE_A_0 = 6000;
     static final double SUBSTANCE_A_1 = 3000;
     static final double AREA_BY_MASS = 1.4;
-    static final IPGene IP_GENE = new IPGene() {
-
-        @Override
-        public Population execute(Population population, Matrix signals, double dt, Matrix resources, Matrix areas, Matrix masses) {
-            return null;
-        }
-
-        @Override
-        public int getNumSignals() {
-            return 1;
-        }
-    };
     static final EIPGene EIP_GENE = new EIPGene() {
         @Override
         public Population execute(Population population, Matrix signals, double dt, Matrix envResources, Matrix areas, Matrix masses) {
@@ -103,20 +92,29 @@ class PopulationTest {
             return 1;
         }
     };
-    static final List<String> SUBSTANCES = List.of("A", "B");
-    static final int NO_CELLS = 4;
-    static final Map<String, IPGene> IP_GENES = Map.of("ipgene", IP_GENE);
     static final Map<String, EIPGene> EIP_GENES = Map.of("eipgene", EIP_GENE);
     static final Map<String, PIPGene> PIP_GENES = Map.of("pipgene", PIP_GENE);
     static final List<String> KEYS = List.of("A", "B");
-    private static final PhotoProcess PHOTO_GENE = PhotoProcess.create(0, 1, MIN_LEVEL, MAX_LEVEL,
+    static final ReactionProcess REACTION_GENE = ReactionProcess.create(
+            0, MIN_LEVEL, MAX_LEVEL,
             Reaction.create(
                     Matrix.of(0, 0),
                     Matrix.of(0, 0),
                     Matrix.of(0, 0),
                     Matrix.of(0, 0)
             ));
-    static final Map<String, ? extends PhotoProcess> PHOTO_GENES = Map.of("photo", PHOTO_GENE);
+    static final Map<String, ReactionProcess> REACTION_PROCESSES = Map.of("reaction", REACTION_GENE);
+    private static final double REACTION_TARGET1 = exp(SIGNAL1 * log(MAX_LEVEL / MIN_LEVEL)) * MIN_LEVEL;
+    private static final double REACTION_TARGET2 = exp(SIGNAL9 * log(MAX_LEVEL / MIN_LEVEL)) * MIN_LEVEL;
+    private static final PhotoReactionProcess PHOTO_PROCESS = PhotoReactionProcess.create(
+            0, 1, MIN_LEVEL, MAX_LEVEL,
+            Reaction.create(
+                    Matrix.of(0, 0),
+                    Matrix.of(0, 0),
+                    Matrix.of(0, 0),
+                    Matrix.of(0, 0)
+            ));
+    static final Map<String, ? extends PhotoReactionProcess> PHOTO_GENES = Map.of("photo", PHOTO_PROCESS);
 
     static Stream<Arguments> argsForErrors() {
         return Stream.of(Arguments.of(text(
@@ -128,14 +126,14 @@ class PopulationTest {
                         "{}"
                 ), "/species is missing"
         ), Arguments.of(text(
-                        "#2",
+                        "#3",
                         "species:",
                         "  basalMetabolicRate: 0.1",
                         "  surviveMass: 0.2",
                         "  fractalDimension: 1.4",
-                        "  photoGenes:",
+                        "  photoProcesses:",
                         "    - photo",
-                        "  IPGenes:",
+                        "  reactionProcesses:",
                         "    - ipgene",
                         "  EIPGenes:",
                         "    - eipgene",
@@ -143,15 +141,15 @@ class PopulationTest {
                         "    - pipgene"
                 ), "/individuals is missing"
         ), Arguments.of(text(
-                        "#3",
+                        "#4",
                         "species:",
                         "  basalMetabolicRate: 0.1",
                         "  surviveMass: 0.2",
                         "  fractalDimension: 1.4",
-                        "  photoGenes:",
+                        "  photoProcesses:",
                         "    - photo",
-                        "  IPGenes:",
-                        "    - ipgene",
+                        "  reactionProcesses:",
+                        "    - reaction",
                         "  EIPGenes:",
                         "    - eipgene",
                         "  PIPGenes:",
@@ -160,9 +158,9 @@ class PopulationTest {
                         "  - location: 2",
                         "    resources:",
                         "      A: 6000",
-                        "    photoSignals:",
+                        "    photoGenes:",
                         "      - [ ]",
-                        "    IPSignals:",
+                        "    reactionGenes:",
                         "      - [ 0.1 ]",
                         "    EIPSignals:",
                         "      - [ 0.1, 0.2 ]",
@@ -171,15 +169,15 @@ class PopulationTest {
                         "  - location: 0",
                         "    resources:",
                         "      A: 3000",
-                        "    photoSignals:",
+                        "    photoGenes:",
                         "      - [ 0.2 ]",
-                        "    IPSignals:",
+                        "    reactionGenes:",
                         "        - [ 0.9 ]",
                         "    EIPSignals:",
                         "      - [ 0.9, 0.8 ]",
                         "    PIPSignals:",
                         "      - [ 0.9 ]"
-                ), "/individuals/0/photoSignals/0 must have at least 1 items \\(0\\)"
+                ), "/individuals/0/photoGenes/0 must have at least 1 items \\(0\\)"
         ));
     }
 
@@ -191,10 +189,10 @@ class PopulationTest {
                 "  basalMetabolicRate: 0.1",
                 "  surviveMass: 0.2",
                 "  fractalDimension: 1.4",
-                "  photoGenes:",
+                "  photoProcesses:",
                 "    - photo",
-                "  IPGenes:",
-                "    - ipgene",
+                "  reactionProcesses:",
+                "    - reaction",
                 "  EIPGenes:",
                 "    - eipgene",
                 "  PIPGenes:",
@@ -203,9 +201,9 @@ class PopulationTest {
                 "  - location: 2",
                 "    resources:",
                 "      A: 6000",
-                "    photoSignals:",
+                "    photoGenes:",
                 "      - [ 0.1 ]",
-                "    IPSignals:",
+                "    reactionGenes:",
                 "      - [ 0.1 ]",
                 "    EIPSignals:",
                 "      - [ 0.1, 0.2 ]",
@@ -214,9 +212,9 @@ class PopulationTest {
                 "  - location: 0",
                 "    resources:",
                 "      A: 3000",
-                "    photoSignals:",
+                "    photoGenes:",
                 "      - [ 0.2 ]",
-                "    IPSignals:",
+                "    reactionGenes:",
                 "        - [ 0.9 ]",
                 "    EIPSignals:",
                 "      - [ 0.9, 0.8 ]",
@@ -226,20 +224,20 @@ class PopulationTest {
 
         SchemaValidators.population()
                 .apply(root())
-                .andThen(CrossValidators.population(KEYS, NO_CELLS, PHOTO_GENES, IP_GENES, EIP_GENES, PIP_GENES).apply(root()))
+                .andThen(CrossValidators.population(KEYS, NO_CELLS, PHOTO_GENES, REACTION_PROCESSES, EIP_GENES, PIP_GENES).apply(root()))
                 .accept(root);
 
-        Population pop = Parsers.population(root, KEYS, PHOTO_GENES, IP_GENES, EIP_GENES, PIP_GENES);
+        Population pop = Parsers.population(root, KEYS, PHOTO_GENES, REACTION_PROCESSES, EIP_GENES, PIP_GENES);
         assertNotNull(pop);
         Species species = pop.getSpecies();
         assertNotNull(species);
         assertThat(species.getBasalMetabolicRate(), equalTo(BASAL_METABOLIC_RATE));
         assertThat(species.getSurvivingMass(), equalTo(SURVIVING_MASS));
         assertThat(species.getFractalDimension(), equalTo(AREA_BY_MASS));
-        assertThat(species.getPhotoProcess(), hasSize(1));
-        assertThat(species.getPhotoProcess(), contains(PHOTO_GENE));
-        assertThat(species.getIpGenes(), hasSize(1));
-        assertThat(species.getIpGenes(), contains(IP_GENE));
+        assertThat(species.getPhotoProcesses(), hasSize(1));
+        assertThat(species.getPhotoProcesses(), contains(PHOTO_PROCESS));
+        assertThat(species.getReactionProcesses(), hasSize(1));
+        assertThat(species.getReactionProcesses(), contains(REACTION_GENE));
         assertThat(species.getEipGenes(), hasSize(1));
         assertThat(species.getEipGenes(), contains(EIP_GENE));
         assertThat(species.getPipGenes(), hasSize(1));
@@ -256,9 +254,9 @@ class PopulationTest {
                 {PHOTO_TARGET_LEVEL1, PHOTO_TARGET_LEVEL2}
         })));
 
-        assertThat(pop.getIpSignals(), hasSize(1));
-        assertThat(pop.getIpSignals(), contains(matrixCloseTo(new double[][]{
-                {SIGNAL1, SIGNAL9}
+        assertThat(pop.getReactionTargetLevels(), hasSize(1));
+        assertThat(pop.getReactionTargetLevels(), contains(matrixCloseTo(new double[][]{
+                {REACTION_TARGET1, REACTION_TARGET2}
         })));
 
         assertThat(pop.getEipSignals(), hasSize(1));
@@ -279,7 +277,7 @@ class PopulationTest {
         final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
             SchemaValidators.population()
                     .apply(root())
-                    .andThen(CrossValidators.population(KEYS, NO_CELLS, PHOTO_GENES, IP_GENES, EIP_GENES, PIP_GENES).apply(root()))
+                    .andThen(CrossValidators.population(KEYS, NO_CELLS, PHOTO_GENES, REACTION_PROCESSES, EIP_GENES, PIP_GENES).apply(root()))
                     .accept(fromText(text));
         });
 

@@ -41,7 +41,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static java.lang.Math.log;
 import static org.mmarini.Tuple2.toMap;
 import static org.mmarini.Tuple2.zip;
 import static org.mmarini.Utils.*;
@@ -159,31 +158,29 @@ public class Parsers {
     /**
      * Returns the individual from json node
      *
-     * @param node           the jason node
-     * @param keys           the resource keys
-     * @param photoProcesses the list of photo processes
+     * @param node              the jason node
+     * @param keys              the resource keys
+     * @param photoProcesses    the list of photo processes
+     * @param reactionProcesses the list of reaction processes
      */
     public static Individual individual(JsonNode node, List<String> keys,
-                                        List<? extends PhotoProcess> photoProcesses) {
+                                        List<? extends PhotoReactionProcess> photoProcesses,
+                                        List<? extends ReactionProcess> reactionProcesses) {
         int location = node.path("location").asInt(0);
         Matrix resources = Parsers.resources(node.path("resources"), keys);
-        List<Matrix> signals = Parsers.signalsList(node.path("photoSignals"));
-        Matrix[] x = zip(signals, photoProcesses).map(t ->
-                        t._2.createLevels(t._1))
-                .toArray(Matrix[]::new);
-        Matrix photoTargetLevels = Matrix.vstack(x);
-        return Individual.create(location, resources, photoTargetLevels);
-    }
-
-    /**
-     * @param node the json node
-     * @param keys the resource keys
-     */
-    public static Map<String, ? extends IPGene> ipGenes(JsonNode node, List<String> keys) {
-        return iter2List(node.fieldNames())
-                .stream()
-                .map(name -> Tuple2.of(name, Parsers.resourceGene(node.path(name), keys)))
-                .collect(toMap());
+        List<Matrix> photoSignals = Parsers.signalsList(node.path("photoGenes"));
+        List<Matrix> reactionSignals = Parsers.signalsList(node.path("reactionGenes"));
+        Matrix photoTargetLevels = Matrix.vstack(
+                zip(photoSignals, photoProcesses)
+                        .map(t ->
+                                t._2.createTargetLevels(t._1))
+                        .toArray(Matrix[]::new));
+        Matrix reactionTargetLevels1 = Matrix.vstack(
+                zip(reactionSignals, reactionProcesses)
+                        .map(t ->
+                                t._2.createTargetLevels(t._1))
+                        .toArray(Matrix[]::new));
+        return Individual.create(location, resources, photoTargetLevels, reactionTargetLevels1);
     }
 
     /**
@@ -201,13 +198,13 @@ public class Parsers {
      * @param node the json node
      * @param keys the resource keys
      */
-    public static PhotoProcess photoGene(JsonNode node, List<String> keys) {
+    public static PhotoReactionProcess photoGene(JsonNode node, List<String> keys) {
         String ref = node.path("ref").asText("");
         double minLevel = node.path("minLevel").asDouble(0);
         double maxLevel = node.path("maxLevel").asDouble(0);
         double speed = node.path("speed").asDouble(0);
 
-        return PhotoProcess.create(keys.indexOf(ref),
+        return PhotoReactionProcess.create(keys.indexOf(ref),
                 speed,
                 minLevel, maxLevel,
                 reaction(node.path("reaction"), keys));
@@ -217,7 +214,7 @@ public class Parsers {
      * @param node the json node
      * @param keys the resource keys
      */
-    static Map<String, ? extends PhotoProcess> photoGenes(JsonNode node, List<String> keys) {
+    static Map<String, ? extends PhotoReactionProcess> photoGenes(JsonNode node, List<String> keys) {
         return iter2List(node.fieldNames())
                 .stream()
                 .map(name -> Tuple2.of(name, Parsers.photoGene(node.path(name), keys)))
@@ -236,55 +233,67 @@ public class Parsers {
     }
 
     /**
-     * @param node       the population json node
-     * @param keys       the resource keys
-     * @param photoGenes the photo reaction genes
-     * @param ipGenes    the ip genes
-     * @param eipGenes   the eip genes
-     * @param pipGenes   the pip genes
+     * @param node              the population json node
+     * @param keys              the resource keys
+     * @param photoGenes        the photo reaction genes
+     * @param reactionProcesses the ip genes
+     * @param eipGenes          the eip genes
+     * @param pipGenes          the pip genes
      */
     public static Population population(JsonNode node,
                                         List<String> keys,
-                                        Map<? super String, ? extends PhotoProcess> photoGenes, final Map<String, ? extends IPGene> ipGenes,
+                                        Map<? super String, ? extends PhotoReactionProcess> photoGenes,
+                                        final Map<? super String, ? extends ReactionProcess> reactionProcesses,
                                         final Map<String, ? extends EIPGene> eipGenes,
                                         final Map<String, ? extends PIPGene> pipGenes) {
-        Species species = species(node.path("species"), photoGenes, ipGenes, eipGenes, pipGenes);
+        Species species = species(node.path("species"), photoGenes, reactionProcesses, eipGenes, pipGenes);
         List<Individual> individuals = stream(node.path("individuals").elements())
-                .map(n -> individual(n, keys, species.getPhotoProcess()))
+                .map(n -> individual(n, keys,
+                        species.getPhotoProcesses(),
+                        species.getReactionProcesses()
+                ))
                 .collect(Collectors.toList());
         Matrix resources = hstack(individuals.stream()
                 .map(Individual::getResources)
                 .toArray(Matrix[]::new));
         int[] locations = individuals.stream().mapToInt(Individual::getLocation).toArray();
-        Matrix targetLevelMatrix = hstack(individuals.stream()
+
+        // Extracts photo target levels
+        Matrix photoTargetLevelMatrix = hstack(individuals.stream()
                 .map(Individual::getPhotoTargetLevels)
                 .toArray(Matrix[]::new));
-        List<Matrix> targetLevels = IntStream.range(0, targetLevelMatrix.getNumRows())
-                .mapToObj(targetLevelMatrix::extractRow)
+        List<Matrix> photoTargetLevels = IntStream.range(0, photoTargetLevelMatrix.getNumRows())
+                .mapToObj(photoTargetLevelMatrix::extractRow)
+                .collect(Collectors.toList());
+
+        // Extracts reaction target levels
+        Matrix reactionTargetLevelMatrix = hstack(individuals.stream()
+                .map(Individual::getReactionTargetLevels)
+                .toArray(Matrix[]::new));
+        List<Matrix> reactionTargetLevels = IntStream.range(0, reactionTargetLevelMatrix.getNumRows())
+                .mapToObj(reactionTargetLevelMatrix::extractRow)
                 .collect(Collectors.toList());
 
         List<JsonNode> individualNodes = iter2List(node.path("individuals").elements());
 
-        List<Matrix> ipSignals = createSignals(individualNodes,
-                "IPSignals",
-                species.getIpGenes().size());
         List<Matrix> eipSignals = createSignals(individualNodes,
                 "EIPSignals",
                 species.getEipGenes().size());
         List<Matrix> pipSignals = createSignals(individualNodes,
                 "PIPSignals",
                 species.getPipGenes().size());
-        return Population.create(resources, targetLevels, ipSignals, eipSignals, pipSignals,
+        return Population.create(resources, photoTargetLevels, reactionTargetLevels, eipSignals, pipSignals,
                 locations, species);
     }
 
     static List<Population> populations(JsonNode node,
                                         List<String> keys,
-                                        Map<? super String, ? extends PhotoProcess> photoGenes, final Map<String, ? extends IPGene> ipGenes,
+                                        Map<? super String, ? extends PhotoReactionProcess> photoProcesses,
+                                        Map<? super String, ? extends ReactionProcess> reactionProcesses,
                                         final Map<String, ? extends EIPGene> eipGenes,
                                         final Map<String, ? extends PIPGene> pipGenes) {
         return stream(node.elements())
-                .map(nod -> population(nod, keys, photoGenes, ipGenes, eipGenes, pipGenes))
+                .map(nod -> population(nod, keys, photoProcesses, reactionProcesses, eipGenes, pipGenes))
                 .collect(Collectors.toList());
     }
 
@@ -301,17 +310,29 @@ public class Parsers {
     }
 
     /**
+     * Returns the reaction process for a json node
+     *
      * @param node the json node
      * @param keys the resource keys
      */
-    public static ResourceGene resourceGene(JsonNode node, List<String> keys) {
+    public static ReactionProcess reactionProcess(JsonNode node, List<String> keys) {
         String ref = node.path("ref").asText("");
         double minLevel = node.path("minLevel").asDouble(0);
         double maxLevel = node.path("maxLevel").asDouble(0);
-
-        return new ResourceGene(keys.indexOf(ref),
-                minLevel, log(maxLevel / minLevel),
+        return ReactionProcess.create(keys.indexOf(ref),
+                minLevel, maxLevel,
                 reaction(node.path("reaction"), keys));
+    }
+
+    /**
+     * @param node the json node
+     * @param keys the resource keys
+     */
+    public static Map<String, ? extends ReactionProcess> reactionProcesses(JsonNode node, List<String> keys) {
+        return iter2List(node.fieldNames())
+                .stream()
+                .map(name -> Tuple2.of(name, Parsers.reactionProcess(node.path(name), keys)))
+                .collect(toMap());
     }
 
     /**
@@ -358,20 +379,17 @@ public class Parsers {
     }
 
     /**
-     * @param node       the species json node
-     * @param photoGenes the photo reaction genes
-     * @param ipGenes    the ip genes
-     * @param eipGenes   the eip genes
-     * @param pipGenes   the pip genes
+     * @param node              the species json node
+     * @param photoProcesses    the photo reaction processes
+     * @param reactionProcesses the reaction processes
+     * @param eipGenes          the eip genes
+     * @param pipGenes          the pip genes
      */
     public static Species species(JsonNode node,
-                                  Map<? super String, ? extends PhotoProcess> photoGenes, Map<String, ? extends IPGene> ipGenes,
+                                  Map<? super String, ? extends PhotoReactionProcess> photoProcesses,
+                                  Map<? super String, ? extends ReactionProcess> reactionProcesses,
                                   Map<String, ? extends EIPGene> eipGenes,
                                   Map<String, ? extends PIPGene> pipGenes) {
-        List<? extends IPGene> speciesIpGenes = fromArray(node.path("IPGenes"))
-                .map(getValue(ipGenes))
-                .flatMap(Optional::stream)
-                .collect(Collectors.toList());
         List<? extends EIPGene> speciesEipGenes = fromArray(node.path("EIPGenes"))
                 .map(getValue(eipGenes))
                 .flatMap(Optional::stream)
@@ -380,14 +398,18 @@ public class Parsers {
                 .map(getValue(pipGenes))
                 .flatMap(Optional::stream)
                 .collect(Collectors.toList());
-        List<? extends PhotoProcess> photoGene = fromArray(node.path("photoGenes"))
-                .map(getValue(photoGenes))
+        List<? extends PhotoReactionProcess> photoGene = fromArray(node.path("photoProcesses"))
+                .map(getValue(photoProcesses))
+                .flatMap(Optional::stream)
+                .collect(Collectors.toList());
+        List<? extends ReactionProcess> reactionProcesses1 = fromArray(node.path("reactionProcesses"))
+                .map(getValue(reactionProcesses))
                 .flatMap(Optional::stream)
                 .collect(Collectors.toList());
         return Species.create(node.path("basalMetabolicRate").asDouble(0),
                 node.path("surviveMass").asDouble(0),
                 node.path("fractalDimension").asDouble(0),
-                photoGene, speciesIpGenes, speciesEipGenes, speciesPipGenes);
+                photoGene, reactionProcesses1, speciesEipGenes, speciesPipGenes);
     }
 
     /**
@@ -402,8 +424,8 @@ public class Parsers {
         Matrix envResources = resources(environ.path("resources"), keys);
         Matrix resources = ones(1, n).prod(envResources);
 
-        Map<String, ? extends PhotoProcess> photoGenes = photoGenes(node.path("photoGenes"), keys);
-        Map<String, ? extends IPGene> ipgenes = ipGenes(node.path("ipgenes"), keys);
+        Map<String, ? extends PhotoReactionProcess> photoGenes = photoGenes(node.path("photoProcesses"), keys);
+        Map<String, ? extends ReactionProcess> ipgenes = reactionProcesses(node.path("reactionProcesses"), keys);
         Map<String, ? extends EIPGene> eipgenes = eipGenes(node.path("eipgenes"), keys);
         Map<String, ? extends PIPGene> pipgenes = pipGenes(node.path("pipgenes"), keys);
 

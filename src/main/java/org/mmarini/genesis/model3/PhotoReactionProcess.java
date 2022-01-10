@@ -41,18 +41,18 @@ import static java.util.Objects.requireNonNull;
  * by individual surfaces.
  * The signals of the genes is exponential mapped to the target level in the range of minimum and maximum
  */
-public class PhotoProcess {
+public class PhotoReactionProcess {
     /**
      * Returns a photo reaction
      *
      * @param ref      reference resource index
      * @param speed    the reference resource production speed (resource units / sec)
      * @param minLevel the minimum target level
-     * @param maxLevel the minimum target level
+     * @param maxLevel the maximum target level
      * @param reaction the chemical reaction
      */
-    public static PhotoProcess create(int ref, double speed, double minLevel, double maxLevel, Reaction reaction) {
-        return new PhotoProcess(ref, speed, minLevel, maxLevel, reaction);
+    public static PhotoReactionProcess create(int ref, double speed, double minLevel, double maxLevel, Reaction reaction) {
+        return new PhotoReactionProcess(ref, speed, minLevel, maxLevel, reaction);
     }
 
     private final int ref;
@@ -66,11 +66,11 @@ public class PhotoProcess {
      *
      * @param ref      the reference resource index
      * @param speed    the reference resource production speed (resource units / sec)
-     * @param minLevel
-     * @param maxLevel
+     * @param minLevel the minimum target level
+     * @param maxLevel the maximum target level
      * @param reaction the chemical reaction
      */
-    protected PhotoProcess(int ref, double speed, double minLevel, double maxLevel, Reaction reaction) {
+    protected PhotoReactionProcess(int ref, double speed, double minLevel, double maxLevel, Reaction reaction) {
         this.ref = ref;
         this.speed = speed;
         this.minLevel = minLevel;
@@ -81,7 +81,7 @@ public class PhotoProcess {
                 minLevel, maxLevel);
         assert speed > 0
                 : format("speed must be > 0 (%s)",
-                minLevel, maxLevel);
+                speed);
     }
 
     public int getRef() {
@@ -107,7 +107,7 @@ public class PhotoProcess {
     /**
      * Returns the changes of resources for each individual (noResources x noIndividuals)
      *
-     * @param resources    the resources by individuals
+     * @param resources    the resources by individuals (noResources x noIndividuals)
      * @param targetLevel  the reference resource target level by individual (1 x noIndividuals)
      * @param dt           the time interval
      * @param distribution the distribution of speed by individual (1 x noIndividuals)
@@ -133,16 +133,15 @@ public class PhotoProcess {
         // Computes the reference resource changes limited by reaction (1 x noIndividuals)
         Matrix resourceToProduce = reaction.max(ref, resources, maxResourceNeed, dt);
         // Compute the resource changes
-        Matrix delta = reaction.apply(ref, resourceToProduce);
-        return delta;
+        return reaction.apply(ref, resourceToProduce);
     }
 
     /**
-     * Returns the levels for each individuals (1 x noIndividuals)
+     * Returns the levels for each individual (1 x noIndividuals)
      *
-     * @param signals the signals for each individuals (1 x noIndividuals)
+     * @param signals the signals for each individual (1 x noIndividuals)
      */
-    public Matrix createLevels(Matrix signals) {
+    public Matrix createTargetLevels(Matrix signals) {
         requireNonNull(signals);
         assert signals.getNumRows() == 1
                 : format("signals must be (1 x n) (%d x %d)",
@@ -154,7 +153,7 @@ public class PhotoProcess {
     /**
      * Returns the signals for each individuals (1 x noIndividuals)
      *
-     * @param levels the levels for each individuals (1 x noIndividuals)
+     * @param levels the levels for each individual (1 x noIndividuals)
      */
     public Matrix createSignals(Matrix levels) {
         requireNonNull(levels);

@@ -34,14 +34,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mmarini.genesis.model3.PhotoReactionProcess;
 import org.mmarini.genesis.model3.Reaction;
-import org.mmarini.genesis.model3.ResourceGene;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static java.lang.Math.log;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.matchesPattern;
@@ -52,7 +51,7 @@ import static org.mmarini.genesis.yaml.TestUtils.text;
 import static org.mmarini.yaml.Utils.fromText;
 import static org.mmarini.yaml.schema.Locator.root;
 
-class ResourceGeneTest {
+class PhotoReactionProcessTest {
     static final List<String> KEYS = List.of("A", "B");
 
     static Stream<Arguments> argsForError() {
@@ -64,6 +63,7 @@ class ResourceGeneTest {
                         "#2",
                         "  minLevel: 1",
                         "  maxLevel: 2",
+                        "  speed: 3",
                         "  reaction:",
                         "    reagents:",
                         "      B: 1",
@@ -78,6 +78,7 @@ class ResourceGeneTest {
         ), Arguments.of(text(
                         "#3",
                         "  ref: B",
+                        "  speed: 3",
                         "  maxLevel: 2",
                         "  reaction:",
                         "    reagents:",
@@ -93,6 +94,7 @@ class ResourceGeneTest {
         ), Arguments.of(text(
                         "#4",
                         "  ref: D",
+                        "  speed: 3",
                         "  minLevel: 1",
                         "  maxLevel: 2",
                         "  reaction:",
@@ -109,9 +111,43 @@ class ResourceGeneTest {
         ), Arguments.of(text(
                         "#5",
                         "  ref: B",
+                        "  speed: 3",
                         "  minLevel: 1",
                         "  maxLevel: 2"
                 ), "/reaction is missing"
+        ), Arguments.of(text(
+                        "#6",
+                        "  ref: B",
+                        "  minLevel: 1",
+                        "  maxLevel: 2",
+                        "  reaction:",
+                        "    reagents:",
+                        "      B: 1",
+                        "    products:",
+                        "      A: 1",
+                        "    thresholds:",
+                        "      B: 0.2",
+                        "    speeds:",
+                        "      A: 1",
+                        "      B: 2"
+                ), "/speed is missing"
+        ), Arguments.of(text(
+                        "#7",
+                        "  ref: B",
+                        "  minLevel: 1",
+                        "  maxLevel: 2",
+                "  speed: 0",
+                        "  reaction:",
+                        "    reagents:",
+                        "      B: 1",
+                        "    products:",
+                        "      A: 1",
+                        "    thresholds:",
+                        "      B: 0.2",
+                        "    speeds:",
+                        "      A: 1",
+                        "      B: 2"
+                ), "/speed must be > 0.0 \\(0.0\\)"
         ));
     }
 
@@ -122,6 +158,7 @@ class ResourceGeneTest {
                 "  ref: B",
                 "  minLevel: 1",
                 "  maxLevel: 2",
+                "  speed: 3",
                 "  reaction:",
                 "    reagents:",
                 "      B: 1",
@@ -133,17 +170,17 @@ class ResourceGeneTest {
                 "      A: 1",
                 "      B: 2"
         ));
-        SchemaValidators.resourceGene()
+        SchemaValidators.photoProcess()
                 .apply(root())
-                .andThen(CrossValidators.resourceGene(KEYS).apply(root()))
+                .andThen(CrossValidators.photoProcess(KEYS).apply(root()))
                 .accept(root);
 
-        ResourceGene gene = Parsers.resourceGene(root, KEYS);
+        PhotoReactionProcess gene = Parsers.photoGene(root, KEYS);
         assertNotNull(gene);
         assertThat(gene.getRef(), equalTo(1));
         assertThat(gene.getMinLevel(), equalTo(1.0));
-        assertThat(gene.getLevelRate(), equalTo(log((2.0 / 1.0))));
-        assertThat(gene.getNumSignals(), equalTo(1));
+        assertThat(gene.getMaxLevel(), equalTo(2.0));
+        assertThat(gene.getSpeed(), equalTo(3.0));
         Reaction reaction = gene.getReaction();
         assertNotNull(reaction);
         assertThat(reaction.getAlpha(), matrixCloseTo(1, -1));
@@ -156,9 +193,9 @@ class ResourceGeneTest {
     @MethodSource("argsForError")
     void validateErrors(String text, String expectedPattern) {
         final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
-                SchemaValidators.resourceGene()
+                SchemaValidators.photoProcess()
                         .apply(root())
-                        .andThen(CrossValidators.resourceGene(KEYS).apply(root()))
+                        .andThen(CrossValidators.photoProcess(KEYS).apply(root()))
                         .accept(fromText(text)));
         assertThat(ex.getMessage(), matchesPattern(expectedPattern));
     }

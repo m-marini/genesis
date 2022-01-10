@@ -167,8 +167,8 @@ public class SimEngine {
         final SimStatus s1 = diffuse(s0, dt);
         final SimStatus s2 = maintain(s1, dt);
         final SimStatus s3 = survive(s2);
-        final SimStatus s35 = processPhoto(s3, dt);
-        final SimStatus s4 = processIndividuals(s35, dt);
+        final SimStatus s35 = processPhotos(s3, dt);
+        final SimStatus s4 = processReactions(s35, dt);
         final SimStatus s5 = processEnvironIndividuals(s4, dt);
         final SimStatus s6 = processPopulationIndividuals(s5, dt, random);
         return s6.time(t);
@@ -190,35 +190,17 @@ public class SimEngine {
     }
 
     /**
-     * Returns the status after the process individuals.
-     * The genetic code for process individuals are applied.
-     * The individual resources are changed.
-     *
-     * @param status the start status
-     * @param dt     the time interval
-     */
-    SimStatus processIndividuals(final SimStatus status, final double dt) {
-        // Computes the population area for each cell
-        final Matrix areas = status.getTotalIndividualSurface(topology.getNoCells(), masses);
-        // For each species process individual environment
-        for (Population population : status.getPopulations()) {
-            population.processIndividual(dt, areas.extractCols(population.getLocations()), masses);
-        }
-        return status;
-    }
-
-    /**
-     * Returns the status after applying the photo reaction for each individual
+     * Returns the status after applying the photo reactions for each individual
      *
      * @param status the status
      * @param dt     the time interval
      */
-    SimStatus processPhoto(SimStatus status, double dt) {
+    SimStatus processPhotos(SimStatus status, double dt) {
         // competes for lux energy
         // compute the total individual surface by location
         Matrix surfaces = status.getTotalIndividualSurface(topology.getNoCells(), masses);
         for (Population population : status.getPopulations()) {
-            population.processPhoto(dt, surfaces, masses);
+            population.processPhotos(dt, surfaces, masses);
         }
         return status;
     }
@@ -234,6 +216,19 @@ public class SimEngine {
                 pop.performPopulationIndividuals(dt, masses, topology, random)
         ).collect(Collectors.toList());
         return status.setPopulation(pops);
+    }
+
+    /**
+     * Returns the status after applying the reactions for each individual
+     *
+     * @param status the status
+     * @param dt     the time interval
+     */
+    SimStatus processReactions(SimStatus status, double dt) {
+        for (Population population : status.getPopulations()) {
+            population.processReactions(dt);
+        }
+        return status;
     }
 
     /**

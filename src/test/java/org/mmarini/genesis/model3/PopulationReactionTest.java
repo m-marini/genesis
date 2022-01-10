@@ -42,7 +42,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.mmarini.genesis.model3.MatrixMatchers.matrixCloseTo;
 
-class PopulationPhotoTest {
+class PopulationReactionTest {
     public static final double REACTION_SPEED = 1d;
     public static final int REAGENT = 1;
     public static final int PRODUCT = 1;
@@ -58,7 +58,6 @@ class PopulationPhotoTest {
     static final int LOCATION2 = 0;
     static final int RESOURCE2 = 1;
     static final double THRESHOLD = 0.1;
-    static final double SPEED = 0.2;
     static final double MIN_DT = 0.1;
     static final double MAX_DT = 1;
     static final double MIN_TARGET = 1;
@@ -81,7 +80,7 @@ class PopulationPhotoTest {
                        double areasByMass,
                        double dt,
                        double target) {
-        // Given a population with photo process transforming resource1 to resource2
+        // Given a population with reaction process transforming resource1 to resource2
         Matrix resources = Matrix.of(new double[][]{
                 {resource1, resource1},
                 {resource2, resource2}
@@ -94,37 +93,31 @@ class PopulationPhotoTest {
                 Matrix.of(THRESHOLD, 0),
                 Matrix.of(REACTION_SPEED, 0)
         );
-        PhotoReactionProcess photoReactionProcess = PhotoReactionProcess.create(RESOURCE2, SPEED, 1, 2, reaction);
-        List<? extends PhotoReactionProcess> photoProcesses = List.of(photoReactionProcess);
-        Species species = Species.create(0d, 0d, areasByMass, photoProcesses, List.of(), List.of(), List.of());
+        ReactionProcess reactionProcess = ReactionProcess.create(RESOURCE2, 1, 2, reaction);
+        List<? extends ReactionProcess> photoProcesses = List.of(reactionProcess);
+        Species species = Species.create(0d, 0d, areasByMass, List.of(), photoProcesses, List.of(), List.of());
         Population population = Population.create(
                 resources,
-                targetLevels,
                 List.of(),
+                targetLevels,
                 List.of(),
                 List.of(),
                 locations,
                 species
         );
         /*
-        And masses
-        */
-        Matrix masses = Matrix.of(MASS1, MASS2);
-        /*
         When process photo reaction
          */
         double limitedByTarget = max(target - resource2, 0);
-        double limitedByEnergy = SPEED * dt * 0.5;
         double limitedByReagents = max(resource1 - THRESHOLD, 0) * PRODUCT / REAGENT;
         double limitedBySpeed = resource1 * REACTION_SPEED * dt;
         double delta2 = min(limitedByReagents,
-                min(limitedByEnergy,
-                        min(limitedBySpeed, limitedByTarget)));
+                min(limitedBySpeed, limitedByTarget));
         double delta1 = delta2 * REAGENT / PRODUCT;
 
         double expected1 = resource1 - delta1;
         double expected2 = resource2 + delta2;
-        Population result = population.processPhotos(dt, population.getTotalSurface(masses, NUM_CELLS), masses);
+        Population result = population.processReactions(dt);
 
         // Then should return the sum of mass of resource per individual
         assertThat(result, sameInstance(population));

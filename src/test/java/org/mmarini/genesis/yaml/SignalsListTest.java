@@ -95,7 +95,7 @@ class SignalsListTest {
                 "- [ 0, 0.5, 1 ]",
                 "- [ 0.25, 0.75 ]"
         ));
-        SchemaValidators.signalsList()
+        SchemaValidators.geneList()
                 .apply(root())
                 .andThen(CrossValidators.signalsList(3, 2).apply(root()))
                 .accept(root);
@@ -110,7 +110,7 @@ class SignalsListTest {
     @MethodSource("argsForError")
     void validateErrors(String text, String expectedPattern) {
         final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
-                SchemaValidators.signalsList()
+                SchemaValidators.geneList()
                         .apply(root())
                         .andThen(CrossValidators.signalsList(3, 2).apply(root()))
                         .accept(fromText(text)));
