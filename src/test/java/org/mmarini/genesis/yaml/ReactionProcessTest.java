@@ -34,8 +34,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mmarini.genesis.model3.PhotoProcess;
 import org.mmarini.genesis.model3.Reaction;
+import org.mmarini.genesis.model3.ReactionProcess;
 
 import java.io.IOException;
 import java.util.List;
@@ -51,7 +51,9 @@ import static org.mmarini.genesis.yaml.TestUtils.text;
 import static org.mmarini.yaml.Utils.fromText;
 import static org.mmarini.yaml.schema.Locator.root;
 
-class PhotoGeneTest {
+class ReactionProcessTest {
+    public static final double MAX_LEVEL = 2.0;
+    public static final double MIN_LEVEL = 1.0;
     static final List<String> KEYS = List.of("A", "B");
 
     static Stream<Arguments> argsForError() {
@@ -63,7 +65,6 @@ class PhotoGeneTest {
                         "#2",
                         "  minLevel: 1",
                         "  maxLevel: 2",
-                        "  speed: 3",
                         "  reaction:",
                         "    reagents:",
                         "      B: 1",
@@ -78,7 +79,6 @@ class PhotoGeneTest {
         ), Arguments.of(text(
                         "#3",
                         "  ref: B",
-                        "  speed: 3",
                         "  maxLevel: 2",
                         "  reaction:",
                         "    reagents:",
@@ -94,7 +94,6 @@ class PhotoGeneTest {
         ), Arguments.of(text(
                         "#4",
                         "  ref: D",
-                        "  speed: 3",
                         "  minLevel: 1",
                         "  maxLevel: 2",
                         "  reaction:",
@@ -111,43 +110,9 @@ class PhotoGeneTest {
         ), Arguments.of(text(
                         "#5",
                         "  ref: B",
-                        "  speed: 3",
                         "  minLevel: 1",
                         "  maxLevel: 2"
                 ), "/reaction is missing"
-        ), Arguments.of(text(
-                        "#6",
-                        "  ref: B",
-                        "  minLevel: 1",
-                        "  maxLevel: 2",
-                        "  reaction:",
-                        "    reagents:",
-                        "      B: 1",
-                        "    products:",
-                        "      A: 1",
-                        "    thresholds:",
-                        "      B: 0.2",
-                        "    speeds:",
-                        "      A: 1",
-                        "      B: 2"
-                ), "/speed is missing"
-        ), Arguments.of(text(
-                        "#7",
-                        "  ref: B",
-                        "  minLevel: 1",
-                        "  maxLevel: 2",
-                "  speed: 0",
-                        "  reaction:",
-                        "    reagents:",
-                        "      B: 1",
-                        "    products:",
-                        "      A: 1",
-                        "    thresholds:",
-                        "      B: 0.2",
-                        "    speeds:",
-                        "      A: 1",
-                        "      B: 2"
-                ), "/speed must be > 0.0 \\(0.0\\)"
         ));
     }
 
@@ -158,7 +123,6 @@ class PhotoGeneTest {
                 "  ref: B",
                 "  minLevel: 1",
                 "  maxLevel: 2",
-                "  speed: 3",
                 "  reaction:",
                 "    reagents:",
                 "      B: 1",
@@ -170,17 +134,17 @@ class PhotoGeneTest {
                 "      A: 1",
                 "      B: 2"
         ));
-        SchemaValidators.photoGene()
+        SchemaValidators.reactionProcess()
                 .apply(root())
-                .andThen(CrossValidators.photoGene(KEYS).apply(root()))
+                .andThen(CrossValidators.reactionProcess(KEYS).apply(root()))
                 .accept(root);
 
-        PhotoProcess gene = Parsers.photoGene(root, KEYS);
+        ReactionProcess gene = Parsers.reactionProcess(root, KEYS);
         assertNotNull(gene);
         assertThat(gene.getRef(), equalTo(1));
-        assertThat(gene.getMinLevel(), equalTo(1.0));
-        assertThat(gene.getMaxLevel(), equalTo(2.0));
-        assertThat(gene.getSpeed(), equalTo(3.0));
+        assertThat(gene.getMinLevel(), equalTo(MIN_LEVEL));
+        assertThat(gene.getMaxLevel(), equalTo(MAX_LEVEL));
+
         Reaction reaction = gene.getReaction();
         assertNotNull(reaction);
         assertThat(reaction.getAlpha(), matrixCloseTo(1, -1));
@@ -193,9 +157,9 @@ class PhotoGeneTest {
     @MethodSource("argsForError")
     void validateErrors(String text, String expectedPattern) {
         final IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () ->
-                SchemaValidators.photoGene()
+                SchemaValidators.reactionProcess()
                         .apply(root())
-                        .andThen(CrossValidators.photoGene(KEYS).apply(root()))
+                        .andThen(CrossValidators.reactionProcess(KEYS).apply(root()))
                         .accept(fromText(text)));
         assertThat(ex.getMessage(), matchesPattern(expectedPattern));
     }

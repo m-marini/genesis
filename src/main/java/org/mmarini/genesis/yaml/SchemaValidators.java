@@ -94,8 +94,8 @@ public class SchemaValidators {
         return objectPropertiesRequired(Map.of(
                 "mass", resources(),
                 "environ", environ(),
-                "photoGenes", photoGenes(),
-                "ipgenes", ipGenes(),
+                "photoProcesses", photoProcesses(),
+                "reactionProcesses", reactionProcesses(),
                 "eipgenes", eipGenes(),
                 "pipgenes", pipGenes(),
                 "populations", arrayItems(population()),
@@ -103,8 +103,8 @@ public class SchemaValidators {
         ), List.of(
                 "mass",
                 "environ",
-                "photoGenes",
-                "ipgenes",
+                "photoProcesses",
+                "reactionProcesses",
                 "eipgenes",
                 "pipgenes",
                 "populations",
@@ -160,25 +160,18 @@ public class SchemaValidators {
         return objectPropertiesRequired(Map.of(
                 "location", nonNegativeInteger(),
                 "resources", nonNegativeResources(),
-                "photoSignals", signalsList(),
-                "IPSignals", signalsList(),
-                "EIPSignals", signalsList(),
-                "PIPSignals", signalsList()
+                "photoGenes", geneList(),
+                "reactionGenes", geneList(),
+                "EIPSignals", geneList(),
+                "PIPSignals", geneList()
         ), List.of(
                 "location",
                 "resources",
-                "photoSignals",
-                "IPSignals",
+                "photoGenes",
+                "reactionGenes",
                 "EIPSignals",
                 "PIPSignals"
         ));
-    }
-
-    /**
-     *
-     */
-    static Validator ipGenes() {
-        return objectAdditionalProperties(resourceGene());
     }
 
     /**
@@ -188,7 +181,7 @@ public class SchemaValidators {
         return objectAdditionalProperties(nonNegativeNumber());
     }
 
-    public static Validator photoGene() {
+    public static Validator photoProcess() {
         return objectPropertiesRequired(Map.of(
                 "speed", positiveNumber(),
                 "minLevel", positiveNumber(),
@@ -207,8 +200,8 @@ public class SchemaValidators {
     /**
      *
      */
-    static Validator photoGenes() {
-        return objectAdditionalProperties(photoGene());
+    static Validator photoProcesses() {
+        return objectAdditionalProperties(photoProcess());
     }
 
     /**
@@ -217,7 +210,6 @@ public class SchemaValidators {
     static Validator pipGenes() {
         return objectAdditionalProperties(cloneGene());
     }
-
 
     /**
      *
@@ -260,7 +252,7 @@ public class SchemaValidators {
     /**
      *
      */
-    static Validator resourceGene() {
+    static Validator reactionProcess() {
         return objectPropertiesRequired(Map.of(
                 "minLevel", positiveNumber(),
                 "maxLevel", positiveNumber(),
@@ -272,6 +264,13 @@ public class SchemaValidators {
                 "reaction",
                 "ref"
         ));
+    }
+
+    /**
+     *
+     */
+    static Validator reactionProcesses() {
+        return objectAdditionalProperties(reactionProcess());
     }
 
     /**
@@ -291,7 +290,7 @@ public class SchemaValidators {
     /**
      *
      */
-    public static Validator signalsList() {
+    public static Validator geneList() {
         return arrayItems(signals());
     }
 
@@ -303,16 +302,16 @@ public class SchemaValidators {
                         "surviveMass", nonNegativeNumber(),
                         "basalMetabolicRate", positiveNumber(),
                         "fractalDimension", positiveNumber(),
-                        "photoGenes", arrayItems(string()),
-                        "IPGenes", arrayItems(string()),
+                        "photoProcesses", arrayItems(string()),
+                        "reactionProcesses", arrayItems(string()),
                         "EIPGenes", arrayItems(string()),
                         "PIPGenes", arrayItems(string())
                 ), List.of(
                         "surviveMass",
                         "basalMetabolicRate",
                         "fractalDimension",
-                        "photoGenes",
-                        "IPGenes",
+                        "photoProcesses",
+                        "reactionProcesses",
                         "EIPGenes",
                         "PIPGenes"
                 )

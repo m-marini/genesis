@@ -68,7 +68,7 @@ class PopulationTest {
     static Population population(Matrix qties) {
         int[] locations = new int[qties.getNumCols()];
         List<IPGene> genes = List.of();
-        Species species = new Species(CONSUMPTION_SPEED, SURVIVE_MASS, AREAS_BY_MASS, List.of(), genes, List.of(), List.of());
+        Species species = new Species(CONSUMPTION_SPEED, SURVIVE_MASS, AREAS_BY_MASS, List.of(), List.of(), List.of(), List.of());
         return new Population(qties,  List.of(), List.of(), List.of(), List.of(), locations, species);
     }
 

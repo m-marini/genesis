@@ -35,6 +35,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static java.util.Objects.requireNonNull;
 import static org.mmarini.genesis.model3.Matrix.*;
 
 /**
@@ -58,22 +59,22 @@ public class Population {
     /**
      * Returns a population
      *
-     * @param resources         the individual resources (noResources x noIndividuals)
-     * @param photoTargetLevels the target level of each process, a matrix (1 x noIndividuals)
-     * @param ipSignals         the ip signals
-     * @param eipSignals        the eip signals
-     * @param pipSignals        the pip signals
-     * @param locations         the location of individuals
-     * @param species           the species
+     * @param resources            the individual resources (noResources x noIndividuals)
+     * @param photoTargetLevels    the target level of each process, a matrix (1 x noIndividuals)
+     * @param reactionTargetLevels the ip signals
+     * @param eipSignals           the eip signals
+     * @param pipSignals           the pip signals
+     * @param locations            the location of individuals
+     * @param species              the species
      */
-    public static Population create(final Matrix resources, List<Matrix> photoTargetLevels, final List<Matrix> ipSignals, final List<Matrix> eipSignals,
+    public static Population create(final Matrix resources, List<Matrix> photoTargetLevels, final List<Matrix> reactionTargetLevels, final List<Matrix> eipSignals,
                                     List<Matrix> pipSignals, final int[] locations, final Species species) {
-        return new Population(resources, photoTargetLevels, ipSignals, eipSignals, pipSignals, locations, species);
+        return new Population(resources, photoTargetLevels, reactionTargetLevels, eipSignals, pipSignals, locations, species);
     }
 
     private final Matrix resources;
     private final List<Matrix> photoTargetLevels;
-    private final List<Matrix> ipSignals;
+    private final List<Matrix> reactionTargetLevels;
     private final List<Matrix> eipSignals;
     private final List<Matrix> pipSignals;
     private final int[] locations;
@@ -82,33 +83,40 @@ public class Population {
     /**
      * Creates a population
      *
-     * @param resources         the individual resources (noResources x noIndividuals)
-     * @param photoTargetLevels the target level of each process, a matrix (1 x noIndividuals)
-     * @param ipSignals         the individual signals, a matrix (n x m) for each gene
-     * @param eipSignals        the environmental-individual genes
-     * @param pipSignals        the population-individual genes
-     * @param locations         the individual locations
-     * @param species           the species of population
+     * @param resources            the individual resources (noResources x noIndividuals)
+     * @param photoTargetLevels    the target level of each photo process, a matrix (1 x noIndividuals) for each process
+     * @param reactionTargetLevels the target levels of each reaction process, a matrix (1 x noIndividuals) for each process
+     * @param eipSignals           the environmental-individual genes
+     * @param pipSignals           the population-individual genes
+     * @param locations            the individual locations
+     * @param species              the species of population
      */
-    protected Population(final Matrix resources, List<Matrix> photoTargetLevels, final List<Matrix> ipSignals, final List<Matrix> eipSignals,
-                         List<Matrix> pipSignals, final int[] locations, final Species species) {
-        this.photoTargetLevels = photoTargetLevels;
-        this.pipSignals = pipSignals;
-        assert ipSignals.size() == species.getIpGenes().size()
-                : String.format("# ipGenes of individuals != # ipGenes of species: %d != %d",
-                ipSignals.size(), species.getIpGenes().size());
+    protected Population(Matrix resources,
+                         List<Matrix> photoTargetLevels,
+                         List<Matrix> reactionTargetLevels,
+                         List<Matrix> eipSignals,
+                         List<Matrix> pipSignals,
+                         int[] locations,
+                         Species species) {
+        this.resources = requireNonNull(resources);
+        this.photoTargetLevels = requireNonNull(photoTargetLevels);
+        this.reactionTargetLevels = requireNonNull(reactionTargetLevels);
+        this.pipSignals = requireNonNull(pipSignals);
+        this.locations = requireNonNull(locations);
+        this.species = requireNonNull(species);
+        this.eipSignals = requireNonNull(eipSignals);
+        assert photoTargetLevels.size() == species.getPhotoProcesses().size()
+                : String.format("# photoTargetLevels of individuals != # photoTargetLevels of species: %d != %d",
+                reactionTargetLevels.size(), species.getPhotoProcesses().size());
+        assert reactionTargetLevels.size() == species.getReactionProcesses().size()
+                : String.format("# reactionTargetLevels of individuals != # reactionTargetLevels of species: %d != %d",
+                reactionTargetLevels.size(), species.getReactionProcesses().size());
         assert eipSignals.size() == species.getEipGenes().size()
                 : String.format("# eipGenes of individuals != # eipGenes of species: %d != %d",
-                ipSignals.size(), species.getIpGenes().size());
-
+                reactionTargetLevels.size(), species.getEipGenes().size());
         assert resources.getNumCols() == locations.length
                 : String.format("# cols of resources != # of locations: %d != %d",
                 resources.getNumCols(), locations.length);
-        this.resources = resources;
-        this.ipSignals = ipSignals;
-        this.eipSignals = eipSignals;
-        this.locations = locations;
-        this.species = species;
     }
 
     /**
@@ -140,7 +148,7 @@ public class Population {
         final int[] cloneLocations = createCloneLocations(random, locationProb, topology, ind);
 
         // Computes the signals of clones
-        List<Matrix> cloneIp = SignalClone.clone(ipSignals, cloneProb, mutationProb, random, ind);
+        List<Matrix> cloneIp = SignalClone.clone(reactionTargetLevels, cloneProb, mutationProb, random, ind);
         List<Matrix> cloneEip = SignalClone.clone(eipSignals, cloneProb, mutationProb, random, ind);
         List<Matrix> clonePip = SignalClone.clone(pipSignals, cloneProb, mutationProb, random, ind);
 
@@ -200,7 +208,7 @@ public class Population {
      */
     public Population copy() {
         return new Population(resources.copy(),
-                photoTargetLevels, ipSignals.stream().map(Matrix::copy).collect(Collectors.toList()),
+                photoTargetLevels, reactionTargetLevels.stream().map(Matrix::copy).collect(Collectors.toList()),
                 eipSignals.stream().map(Matrix::copy).collect(Collectors.toList()),
                 pipSignals.stream().map(Matrix::copy).collect(Collectors.toList()),
                 Arrays.copyOf(locations, locations.length),
@@ -229,7 +237,7 @@ public class Population {
     }
 
     /**
-     * Returns the proportions of resoruce limited by surface by individual (1 x numIndividuals)
+     * Returns the proportions of resource limited by surface by individual (1 x numIndividuals)
      *
      * @param totalSurface total surface by location (1 x numCells)
      * @param masses       the masses by resources (numResources x 1)
@@ -241,7 +249,7 @@ public class Population {
     }
 
     /**
-     * Returns this population by exchangeing the individual resource with environment resources
+     * Returns this population by exchanging the individual resource with environment resources
      *
      * @param dt                     the time interval
      * @param targets                the resource targets (nr x ni)
@@ -301,13 +309,6 @@ public class Population {
     /**
      *
      */
-    public List<Matrix> getIpSignals() {
-        return ipSignals;
-    }
-
-    /**
-     *
-     */
     public int[] getLocations() {
         return locations;
     }
@@ -333,6 +334,13 @@ public class Population {
      */
     public List<Matrix> getPipSignals() {
         return pipSignals;
+    }
+
+    /**
+     *
+     */
+    public List<Matrix> getReactionTargetLevels() {
+        return reactionTargetLevels;
     }
 
     /**
@@ -491,31 +499,16 @@ public class Population {
     }
 
     /**
-     * Returns the population processing individual genetic codes
-     *
-     * @param dt                the time interval
-     * @param areasByIndividual the surface area
-     * @param molecularMasses   the molecular mass
-     */
-    public Population processIndividual(double dt, Matrix areasByIndividual, Matrix molecularMasses) {
-        final List<? extends IPGene> ipGenes = species.getIpGenes();
-        final int n = ipGenes.size();
-        Population pop = this;
-        for (int i = 0; i < n; i++) {
-            pop = ipGenes.get(i).execute(pop, pop.ipSignals.get(i), dt, null, areasByIndividual, molecularMasses);
-        }
-        return this;
-    }
-
-    /**
-     * Returns the this population with individual resources changed by photo process
+     * Returns this population with individual resources changed by photo process
      *
      * @param dt           the time interval
      * @param totalSurface the total surface by location (1 x noCells)
      * @param masses       the masses by resource (noResources x 1)
      */
-    public Population processPhoto(double dt, Matrix totalSurface, Matrix masses) {
-        final List<? extends PhotoProcess> processes = species.getPhotoProcess();
+    public Population processPhotos(double dt, Matrix totalSurface, Matrix masses) {
+        requireNonNull(totalSurface);
+        requireNonNull(masses);
+        final List<? extends PhotoReactionProcess> processes = species.getPhotoProcesses();
         Matrix distribution = distributeBySurface(totalSurface, masses);
         final int noGenes = photoTargetLevels.size();
         for (int i = 0; i < noGenes; i++) {
@@ -526,18 +519,35 @@ public class Population {
     }
 
     /**
+     * Returns this population with individual resources changed by reaction process
+     *
+     * @param dt           the time interval
+     */
+    public Population processReactions(double dt) {
+        final List<? extends ReactionProcess> processes = species.getReactionProcesses();
+        final int noGenes = reactionTargetLevels.size();
+        for (int i = 0; i < noGenes; i++) {
+            Matrix changes = processes.get(i).computeChanges(getResources(), reactionTargetLevels.get(i), dt);
+            getResources().addi(changes);
+        }
+        return this;
+    }
+
+    /**
      * Returns the population changed by maintenance.
      * Removes the individuals with no energy and no sufficient mass
      * releasing the resource in the environment
      *
-     * @param energyRow       the index of energy substance
-     * @param molecularMasses the molecular mass of substances
-     * @param envResources    the environmental resources
+     * @param energyRow    the index of energy resources
+     * @param masses       the mass of resources
+     * @param envResources the environmental resources
      */
     public Population survive(final int energyRow,
-                              final Matrix molecularMasses,
+                              final Matrix masses,
                               final Matrix envResources) {
-        final Matrix indMasses = getMasses(molecularMasses);
+        requireNonNull(masses);
+        requireNonNull(envResources);
+        final Matrix indMasses = getMasses(masses);
         // Gets the surviving individuals index
         final int[] surviving = IntStream.range(0, locations.length)
                 .filter(j ->
@@ -553,7 +563,7 @@ public class Population {
                         (v, i) -> v + resources.get(i, j)
                 ));
         final Matrix survivedIndResources = resources.extractCols(surviving);
-        final List<Matrix> ipSignals1 = copyGenes(ipSignals, surviving);
+        final List<Matrix> ipSignals1 = copyGenes(reactionTargetLevels, surviving);
         final List<Matrix> eipSignals1 = copyGenes(eipSignals, surviving);
         final List<Matrix> pipSignals1 = copyGenes(pipSignals, surviving);
         final int[] survivedIndLoc = IntStream.of(surviving).map(i -> locations[i]).toArray();

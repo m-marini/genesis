@@ -2,6 +2,8 @@
 # massa per uità di sostanza
 mass:
   Erg: 0
+  Water: 1
+  Fertilizer: 1
   Organic: 2
 environ:
   width: 30
@@ -9,25 +11,43 @@ environ:
   length: 2
   # unità di risorse nell'ambiente
   resources: {}
-  # Coefficiente di difusione delle sostanze
+  # Coefficiente di diffusione delle sostanze
   # unità trasferite in un secondo per una differenza di concentrazione di una unita per metro)
   # tempo di equilibrio = 5 / diffusion
   diffusion: {}
-photoGenes:
+photoProcesses:
   photoSynthesis:
     ref: Erg
     minLevel: 10
     maxLevel: 100
-    speed: 1
+    # produzione W/s
+    speed: 10
     reaction:
       reagents: {}
       products:
         Erg: 1
       thresholds: {}
       speeds:
+        Organic: 3
+reactionProcesses:
+  organicSynthesis:
+    ref: Organic
+    minLevel: 10
+    maxLevel: 100
+    reaction:
+      reagents:
+        Water: 1
+        Fertilizer: 1
+        Erg: 0.1
+      products:
+        Organic: 1
+      thresholds:
+        Water: 0.1
+        Fertilizer: 0.1
+        Erg: 10
+      speeds:
         Organic: 2
 eipgenes: { }
-ipgenes: { }
 pipgenes: { }
 
 # Sotanza energetica di riferimento
@@ -36,34 +56,43 @@ energyRef: Erg
 populations:
   # Vegetable
   - species:
-      # Consumo metabolico al secondo per massa
+      # Consumo metabolico al secondo per massa 0.1 W/g
       basalMetabolicRate: 0.1
       # Massa mimima di sopravvivenza
       surviveMass: 0.2
       # Coefficente area per massa
       fractalDimension: 2
-      photoGenes:
+      photoProcesses:
         - photoSynthesis
-      IPGenes: [ ]
+      reactionProcesses:
+        - organicSynthesis
       EIPGenes: []
       PIPGenes: [ ]
     individuals:
+      # massa iniziale 10+10+2*4 = 24 g
+      # consumo 2.4 W
       - location: 2
         resources:
+          Water: 10
+          Fertilizer: 10
           Organic: 2
           Erg: 10
-        photoSignals:
+        photoGenes:
           - [ 0.5 ]
-        IPSignals: [ ]
+        reactionGenes:
+          - [ 0.5 ]
         EIPSignals: []
         PIPSignals: [ ]
       - location: 4
         resources:
+          Water: 100
+          Fertilizer: 100
           Organic: 0.1
           Erg: 10
-        photoSignals:
+        photoGenes:
           - [ 0.5 ]
-        IPSignals: [ ]
+        reactionGenes:
+          - [ 0.5 ]
         EIPSignals: []
         PIPSignals: [ ]
 

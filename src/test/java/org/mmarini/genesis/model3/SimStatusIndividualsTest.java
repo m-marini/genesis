@@ -91,7 +91,7 @@ class SimStatusIndividualsTest {
                 {qt2, qt3}
         });
         int[] locations2 = new int[]{LOCATION2, LOCATION3};
-        Species species2 = new Species(0, 0, dim2, List.of(), List.of(), List.of(), List.of());
+        Species species2 = Species.create(0, 0, dim2, List.of(), List.of(), List.of(), List.of());
         Population pop2 = new Population(qties2, List.of(), List.of(), List.of(), List.of(), locations2, species2);
         List<Population> populations = List.of(pop1, pop2);
         Matrix quantities = zeros(NUM_RESOURCES, NUM_CELLS);

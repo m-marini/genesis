@@ -47,17 +47,6 @@ import static org.mmarini.genesis.model3.Matrix.zeros;
 import static org.mmarini.genesis.model3.MatrixMatchers.matrixCloseTo;
 
 class PopulationCloneTest {
-    public static final List<IPGene> IP_GENES = List.of(new IPGene() {
-        @Override
-        public Population execute(Population population, Matrix signals, double dt, Matrix resources, Matrix areas, Matrix masses) {
-            return null;
-        }
-
-        @Override
-        public int getNumSignals() {
-            return 0;
-        }
-    });
     public static final List<EIPGene> EIP_GENES = List.of(new EIPGene() {
         @Override
         public Population execute(Population population, Matrix signals, double dt, Matrix envResources, Matrix areas, Matrix masses) {
@@ -81,7 +70,7 @@ class PopulationCloneTest {
         }
     });
     public static final Species SPECIES = Species.create(0.0, 0, 0,
-            List.of(), IP_GENES, EIP_GENES, PIP_GENES);
+            List.of(), List.of(), EIP_GENES, PIP_GENES);
     static final int ENERGY_REF = 1;
     static final int SEED = 1234;
     static final int LOC1 = 0;
@@ -249,7 +238,7 @@ class PopulationCloneTest {
          */
         final double es2 = max(0, min(s2 + change, 1));
         final double es3 = max(0, min(s3 + change, 1));
-        assertThat(result.getIpSignals().get(0), matrixCloseTo(new double[][]{
+        assertThat(result.getReactionTargetLevels().get(0), matrixCloseTo(new double[][]{
                 {s1, s2, s3, es2, es3}
         }));
         assertThat(result.getEipSignals().get(0), matrixCloseTo(new double[][]{
@@ -404,7 +393,7 @@ class PopulationCloneTest {
         /*
         And no gene signal mutations
          */
-        assertThat(result.getIpSignals().get(0), matrixCloseTo(new double[][]{
+        assertThat(result.getReactionTargetLevels().get(0), matrixCloseTo(new double[][]{
                 {s1, s2, s3, s2, s3}
         }));
         assertThat(result.getEipSignals().get(0), matrixCloseTo(new double[][]{
@@ -575,7 +564,7 @@ class PopulationCloneTest {
         /*
         And no gene signal mutations
          */
-        assertThat(result.getIpSignals().get(0), matrixCloseTo(new double[][]{
+        assertThat(result.getReactionTargetLevels().get(0), matrixCloseTo(new double[][]{
                 {s1, s2, s3, s2, s3}
         }));
         assertThat(result.getEipSignals().get(0), matrixCloseTo(new double[][]{

@@ -43,7 +43,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mmarini.genesis.model3.MatrixMatchers.matrixCloseTo;
 
-class SimEnginePhotoTest {
+class SimEngineReactionTest {
 
     static final double FRACTAL_DIMENSION = 2;
     static final int WIDTH = 2;
@@ -59,8 +59,6 @@ class SimEnginePhotoTest {
     static final double MAX_RESOURCE = 10;
     static final double MIN_TARGET = 1;
     static final double MAX_TARGET = 10;
-    static final double MIN_SPEED = 0.2;
-    static final double MAX_SPEED = 2;
     static final double MIN_THRESHOLD = 0.1;
     static final double MAX_THRESHOLD = 2;
     static final double MIN_REACTION_SPEED = 0.1;
@@ -79,7 +77,6 @@ class SimEnginePhotoTest {
                 .exponential(MIN_RESOURCE, MAX_RESOURCE)
                 .exponential(MIN_RESOURCE, MAX_RESOURCE)
                 .exponential(MIN_TARGET, MAX_TARGET)
-                .exponential(MIN_SPEED, MAX_SPEED)
                 .exponential(MIN_THRESHOLD, MAX_THRESHOLD)
                 .exponential(MIN_REACTION_SPEED, MAX_REACTION_SPEED)
                 .exponential(MIN_DT, MAX_DT)
@@ -94,7 +91,6 @@ class SimEnginePhotoTest {
     void photo(double mass1, double mass2,
                double resource11, double resource12,
                double target,
-               double speed,
                double threshold,
                double reactionSpeed,
                double dt,
@@ -122,9 +118,9 @@ class SimEnginePhotoTest {
         Matrix thresholds = Matrix.of(threshold, 0);
         Matrix speeds = Matrix.of(reactionSpeed, 0);
         Reaction reaction = Reaction.create(reagents, products, thresholds, speeds);
-        List<? extends PhotoReactionProcess> photoProcesses = List.of(PhotoReactionProcess.create(ENERGY_REF, speed, 1, 2, reaction));
-        Species species = Species.create(0, 0, FRACTAL_DIMENSION, photoProcesses, List.of(), List.of(), List.of());
-        Population population = Population.create(indResources, targetLevels, List.of(), List.of(), List.of(), location, species);
+        List<? extends ReactionProcess> photoProcesses = List.of(ReactionProcess.create(ENERGY_REF, 1, 2, reaction));
+        Species species = Species.create(0, 0, FRACTAL_DIMENSION, List.of(), photoProcesses, List.of(), List.of());
+        Population population = Population.create(indResources, List.of(), targetLevels, List.of(), List.of(), location, species);
 
         List<Population> populations = List.of(population);
         SimStatus status = SimStatus.create(0, resources, populations);
@@ -132,18 +128,16 @@ class SimEnginePhotoTest {
         /*
         When process photo
          */
-        double maxBySpeed = speed * dt * 0.5;
         double maxByTarget = max(target - resource12, 0);
         double maxByReagent = max(resource11 - threshold, 0) * product / reagent;
         double maxByReaction = resource11 * reactionSpeed * dt;
-        double delta2 = min(maxBySpeed,
-                min(maxByTarget,
-                        min(maxByReaction, maxByReagent))
+        double delta2 = min(maxByTarget,
+                min(maxByReaction, maxByReagent)
         );
         double delta1 = delta2 * reagent / product;
         double expected1 = resource11 - delta1;
         double expected2 = resource12 + delta2;
-        SimStatus result = engine.processPhotos(status, dt);
+        SimStatus result = engine.processReactions(status, dt);
 
         /*
         Then ...

@@ -42,6 +42,7 @@ import static java.util.Objects.requireNonNull;
  * the areas by mass is the area of surface and per mass (gram).
  * Each individual can transform resources using the environment energy (light),
  * the photo processes is the list of such process
+ * Each individual can transform resources with internal processes (chemical reaction)
  */
 public class Species {
     /**
@@ -51,50 +52,50 @@ public class Species {
      * @param survivingMass      the surviving mass unit
      * @param fractalDimension   the fractal dimension of exchange resources surface
      * @param photoProcesses     the list of photo processes
-     * @param ipGenes            the list of ip genes
+     * @param reactionProcesses  the list of reaction processes
      * @param eipGenes           the list of eip genes
      * @param pipGenes           the list of pip genes
      */
     public static Species create(double basalMetabolicRate,
                                  double survivingMass,
                                  double fractalDimension,
-                                 List<? extends PhotoProcess> photoProcesses,
-                                 List<? extends IPGene> ipGenes,
+                                 List<? extends PhotoReactionProcess> photoProcesses,
+                                 List<? extends ReactionProcess> reactionProcesses,
                                  List<? extends EIPGene> eipGenes,
                                  List<? extends PIPGene> pipGenes) {
-        return new Species(basalMetabolicRate, survivingMass, fractalDimension, photoProcesses, ipGenes, eipGenes, pipGenes);
+        return new Species(basalMetabolicRate, survivingMass, fractalDimension, photoProcesses, reactionProcesses, eipGenes, pipGenes);
     }
 
     private final double basalMetabolicRate;
     private final double survivingMass;
     private final double fractalDimension;
-    private final List<? extends PhotoProcess> photoProcesses;
-    private final List<? extends IPGene> ipGenes;
+    private final List<? extends PhotoReactionProcess> photoProcesses;
+    private final List<? extends ReactionProcess> reactionProcesses;
     private final List<? extends EIPGene> eipGenes;
     private final List<? extends PIPGene> pipGenes;
 
     /**
      * Creates a species
-     *
-     * @param basalMetabolicRate basal metabolic rate unit/s/g
+     *  @param basalMetabolicRate basal metabolic rate unit/s/g
      * @param survivingMass      the surviving mass unit
      * @param fractalDimension   the fractal dimension of exchange resources surface
      * @param photoProcesses     the list of photo processes
-     * @param ipGenes            the list of ip genes
+     * @param reactionProcesses  the list of reaction processes
      * @param eipGenes           the list of eip genes
      * @param pipGenes           the list of pip genes
      */
     protected Species(double basalMetabolicRate,
                       double survivingMass,
                       double fractalDimension,
-                      List<? extends PhotoProcess> photoProcesses, List<? extends IPGene> ipGenes,
+                      List<? extends PhotoReactionProcess> photoProcesses,
+                      List<? extends ReactionProcess> reactionProcesses,
                       List<? extends EIPGene> eipGenes,
                       List<? extends PIPGene> pipGenes) {
         this.basalMetabolicRate = basalMetabolicRate;
         this.survivingMass = survivingMass;
         this.fractalDimension = fractalDimension;
         this.photoProcesses = requireNonNull(photoProcesses);
-        this.ipGenes = requireNonNull(ipGenes);
+        this.reactionProcesses = requireNonNull(reactionProcesses);
         this.eipGenes = requireNonNull(eipGenes);
         this.pipGenes = requireNonNull(pipGenes);
     }
@@ -121,16 +122,9 @@ public class Species {
     }
 
     /**
-     *
+     * Returns the list of photo reaction processes
      */
-    public List<? extends IPGene> getIpGenes() {
-        return ipGenes;
-    }
-
-    /**
-     *
-     */
-    public List<? extends PhotoProcess> getPhotoProcess() {
+    public List<? extends PhotoReactionProcess> getPhotoProcesses() {
         return this.photoProcesses;
     }
 
@@ -139,6 +133,13 @@ public class Species {
      */
     public List<? extends PIPGene> getPipGenes() {
         return pipGenes;
+    }
+
+    /**
+     * Returns the list of reaction processes
+     */
+    public List<? extends ReactionProcess> getReactionProcesses() {
+        return reactionProcesses;
     }
 
     /**

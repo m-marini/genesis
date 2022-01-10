@@ -34,10 +34,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mmarini.genesis.model3.Individual;
-import org.mmarini.genesis.model3.Matrix;
-import org.mmarini.genesis.model3.PhotoProcess;
-import org.mmarini.genesis.model3.Reaction;
+import org.mmarini.genesis.model3.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -65,7 +62,7 @@ class IndividualTest {
                 ), " must be an object \\(NUMBER\\)"
         ), Arguments.of(text(
                         "# 2",
-                        "IPSignals:",
+                        "reactionGenes:",
                         "  - [ 0.1 ]",
                         "EIPSignals:",
                         "  - [ 0.3, 0.4 ]",
@@ -78,7 +75,7 @@ class IndividualTest {
         ), Arguments.of(text(
                         "# 3",
                         "location: 2",
-                        "IPSignals:",
+                        "reactionGenes:",
                         "  - [ 0.1 ]",
                         "EIPSignals:",
                         "  - [ 0.3, 0.4 ]",
@@ -89,7 +86,7 @@ class IndividualTest {
         ), Arguments.of(text(
                         "# 4",
                         "location: 2",
-                        "photoSignals: []",
+                        "photoGenes: []",
                         "EIPSignals:",
                         "  - [ 0.3, 0.4 ]",
                         "  - [ 0.35, 0.45 ]",
@@ -97,12 +94,12 @@ class IndividualTest {
                         "  - [ 0.5, 0.6 ]",
                         "resources:",
                         "  A: 6000"
-                ), "/IPSignals is missing"
+                ), "/reactionGenes is missing"
         ), Arguments.of(text(
                         "# 5",
                         "location: 2",
-                        "photoSignals: []",
-                        "IPSignals:",
+                        "photoGenes: []",
+                        "reactionGenes:",
                         "  - [ 0.1 ]",
                         "PIPSignals:",
                         "  - [ 0.5, 0.6 ]",
@@ -112,8 +109,8 @@ class IndividualTest {
         ), Arguments.of(text(
                         "# 6",
                         "location: 2",
-                        "photoSignals: []",
-                        "IPSignals:",
+                        "photoGenes: []",
+                        "reactionGenes:",
                         "  - [ 0.1 ]",
                         "EIPSignals:",
                         "  - [ 0.3 ]",
@@ -124,8 +121,8 @@ class IndividualTest {
         ), Arguments.of(text(
                         "# 7",
                         "location: -1",
-                        "photoSignals: []",
-                        "IPSignals:",
+                        "photoGenes: []",
+                        "reactionGenes:",
                         "  - [ 0.1 ]",
                         "EIPSignals:",
                         "  - [ 0.3, 0.4 ]",
@@ -138,8 +135,8 @@ class IndividualTest {
         ), Arguments.of(text(
                         "# 8",
                         "location: 4",
-                        "photoSignals: []",
-                        "IPSignals:",
+                        "photoGenes: []",
+                        "reactionGenes:",
                         "  - [ 0.1 ]",
                         "EIPSignals:",
                         "  - [ 0.3, 0.4 ]",
@@ -152,9 +149,9 @@ class IndividualTest {
         ), Arguments.of(text(
                         "# 9",
                         "location: 2",
-                        "photoSignals:",
+                        "photoGenes:",
                         "  - [ 1 ]",
-                        "IPSignals:",
+                        "reactionGenes:",
                         "  - [ 0.1 ]",
                         "  - [ 0.1 ]",
                         "EIPSignals:",
@@ -164,13 +161,13 @@ class IndividualTest {
                         "  - [ 0.5, 0.6 ]",
                         "resources:",
                         "  A: 6000"
-                ), "/IPSignals must have at most 1 items \\(2\\)"
+                ), "/reactionGenes must have at most 1 items \\(2\\)"
         ), Arguments.of(text(
                         "# 10",
                         "location: 2",
-                        "photoSignals:",
+                        "photoGenes:",
                         "  - [ 1 ]",
-                        "IPSignals:",
+                        "reactionGenes:",
                         "  - [ 0.1 ]",
                         "EIPSignals:",
                         "  - [ 0.3 ]",
@@ -182,9 +179,9 @@ class IndividualTest {
         ), Arguments.of(text(
                         "# 11",
                         "location: 2",
-                        "photoSignals:",
+                        "photoGenes:",
                         "  - [ 1 ]",
-                        "IPSignals:",
+                        "reactionGenes:",
                         "  - [ 0.1 ]",
                         "EIPSignals:",
                         "  - [ 0.3 ]",
@@ -197,9 +194,9 @@ class IndividualTest {
                         "---",
                         "# 12",
                         "location: 2",
-                        "photoSignals:",
+                        "photoGenes:",
                         "  - [ 1 ]",
-                        "IPSignals:",
+                        "reactionGenes:",
                         "  - [ 0.1, 0.2 ]",
                         "EIPSignals:",
                         "  - [ 0.3 ]",
@@ -208,14 +205,14 @@ class IndividualTest {
                         "  - [ 0.4, 0.5, 0.6, 0.7 ]",
                         "resources:",
                         "  A: 6000"
-                ), "/IPSignals/0 must have at most 1 items \\(2\\)"
+                ), "/reactionGenes/0 must have at most 1 items \\(2\\)"
         ), Arguments.of(text(
                         "---",
                         "# 13",
-                        "photoSignals:",
+                        "photoGenes:",
                         "  - [ 1 ]",
                         "location: 2",
-                        "IPSignals:",
+                        "reactionGenes:",
                         "  - [ 0.1 ]",
                         "EIPSignals:",
                         "  - [ 0.3]",
@@ -229,9 +226,9 @@ class IndividualTest {
                         "---",
                         "# 14",
                         "location: 2",
-                        "photoSignals:",
+                        "photoGenes:",
                         "  - [ 1 ]",
-                        "IPSignals:",
+                        "reactionGenes:",
                         "  - [ 0.1 ]",
                         "EIPSignals:",
                         "  - [ 0.3 ]",
@@ -245,7 +242,7 @@ class IndividualTest {
                         "---",
                         "# 15",
                         "location: 2",
-                        "IPSignals:",
+                        "reactionGenes:",
                         "  - [ 0.1 ]",
                         "EIPSignals:",
                         "  - [ 0.3 ]",
@@ -254,13 +251,13 @@ class IndividualTest {
                         "  - [ 0.5, 0.6, 0.7]",
                         "resources:",
                         "  A: 6000"
-                ), "/photoSignals is missing"
+                ), "/photoGenes is missing"
         ), Arguments.of(text(
                         "---",
                         "# 16",
                         "location: 2",
-                        "photoSignals: []",
-                        "IPSignals:",
+                        "photoGenes: []",
+                        "reactionGenes:",
                         "  - [ 0.1 ]",
                         "EIPSignals:",
                         "  - [ 0.3 ]",
@@ -269,15 +266,15 @@ class IndividualTest {
                         "  - [ 0.5, 0.6, 0.7]",
                         "resources:",
                         "  A: 6000"
-                ), "/photoSignals must have at least 1 items \\(0\\)"
+                ), "/photoGenes must have at least 1 items \\(0\\)"
         ), Arguments.of(text(
                         "---",
                         "# 16",
                         "location: 2",
-                        "photoSignals:",
+                        "photoGenes:",
                         "  - [ 1 ]",
                         "  - [ 1 ]",
-                        "IPSignals:",
+                        "reactionGenes:",
                         "  - [ 0.1 ]",
                         "EIPSignals:",
                         "  - [ 0.3 ]",
@@ -286,14 +283,14 @@ class IndividualTest {
                         "  - [ 0.5, 0.6, 0.7]",
                         "resources:",
                         "  A: 6000"
-                ), "/photoSignals must have at most 1 items \\(2\\)"
+                ), "/photoGenes must have at most 1 items \\(2\\)"
         ), Arguments.of(text(
                         "---",
                         "# 17",
                         "location: 2",
-                        "photoSignals:",
+                        "photoGenes:",
                         "  - [ ]",
-                        "IPSignals:",
+                        "reactionGenes:",
                         "  - [ 0.1 ]",
                         "EIPSignals:",
                         "  - [ 0.3 ]",
@@ -302,14 +299,14 @@ class IndividualTest {
                         "  - [ 0.5, 0.6, 0.7]",
                         "resources:",
                         "  A: 6000"
-                ), "/photoSignals/0 must have at least 1 items \\(0\\)"
+                ), "/photoGenes/0 must have at least 1 items \\(0\\)"
         ), Arguments.of(text(
                         "---",
                         "# 18",
                         "location: 2",
-                        "photoSignals:",
+                        "photoGenes:",
                         "  - [ 1, 0]",
-                        "IPSignals:",
+                        "reactionGenes:",
                         "  - [ 0.1 ]",
                         "EIPSignals:",
                         "  - [ 0.3 ]",
@@ -318,7 +315,7 @@ class IndividualTest {
                         "  - [ 0.5, 0.6, 0.7]",
                         "resources:",
                         "  A: 6000"
-                ), "/photoSignals/0 must have at most 1 items \\(2\\)"
+                ), "/photoGenes/0 must have at most 1 items \\(2\\)"
         ));
     }
 
@@ -327,10 +324,10 @@ class IndividualTest {
         JsonNode root = fromText(text(
                 "---",
                 "location: 2",
-                "photoSignals:",
+                "photoGenes:",
                 "  - [ 0.5 ]",
-                "IPSignals:",
-                "  - [ 0.1 ]",
+                "reactionGenes:",
+                "  - [ 0.5 ]",
                 "EIPSignals:",
                 "  - [ 0.3 ]",
                 "  - [ 0.35 ]",
@@ -349,18 +346,17 @@ class IndividualTest {
                 Matrix.ones(2, 1),
                 Matrix.ones(2, 1)
         );
-        PhotoProcess p = PhotoProcess.create(1, 1, MIN_LEVEL, MAX_LEVEL, reaction);
+        PhotoReactionProcess photoProcess = PhotoReactionProcess.create(1, 1, MIN_LEVEL, MAX_LEVEL, reaction);
+        ReactionProcess reactionProcess = ReactionProcess.create(1, MIN_LEVEL, MAX_LEVEL, reaction);
 
-        Individual result = Parsers.individual(root, KEYS, List.of(p));
+        Individual result = Parsers.individual(root, KEYS, List.of(photoProcess), List.of(reactionProcess));
 
         assertNotNull(result);
         assertThat(result.getLocation(), equalTo(2));
         assertThat(result.getResources(), matrixCloseTo(6000, 0));
         assertThat(result.getPhotoTargetLevels(), matrixCloseTo(sqrt(MIN_LEVEL * MAX_LEVEL)));
+        assertThat(result.getReactionTargetLevels(), matrixCloseTo(sqrt(MIN_LEVEL * MAX_LEVEL)));
 
-        assertThat(Parsers.signalsList(root.path("IPSignals")), contains(
-                matrixCloseTo(0.1)
-        ));
         assertThat(Parsers.signalsList(root.path("EIPSignals")), contains(
                 matrixCloseTo(0.3),
                 matrixCloseTo(0.35)

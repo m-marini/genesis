@@ -40,7 +40,7 @@ import static java.lang.Math.min;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mmarini.genesis.model3.MatrixMatchers.matrixCloseTo;
 
-public class PhotoProcessTest {
+public class PhotoReactionProcessTest {
     public static final int REF = 1;
     private static final double REAGENT = 2;
     private static final double PRODUCT = 3;
@@ -90,7 +90,7 @@ public class PhotoProcessTest {
         Matrix thresholds = Matrix.of(reagentThreshold, 0);
         Matrix speeds = Matrix.of(reagentSpeed, 0);
         Reaction reaction = Reaction.create(reagents, products, thresholds, speeds);
-        PhotoProcess photoProcess = PhotoProcess.create(REF, speed, 0, 1, reaction);
+        PhotoReactionProcess photoReactionProcess = PhotoReactionProcess.create(REF, speed, 0, 1, reaction);
 
         /*
         And resources for 2 individuals (2 x 2)
@@ -118,7 +118,7 @@ public class PhotoProcessTest {
                         min(maxByTarget,
                                 maxBySpeed)));
         double expectedReagent = expectedProduct * REAGENT / PRODUCT;
-        Matrix delta = photoProcess.computeChanges(resources, targets, dt, distributions);
+        Matrix delta = photoReactionProcess.computeChanges(resources, targets, dt, distributions);
 
         /*
         Then the changes should be ...

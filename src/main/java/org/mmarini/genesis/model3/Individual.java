@@ -29,26 +29,42 @@
 
 package org.mmarini.genesis.model3;
 
+/**
+ * The individual in a cell index location,
+ * with resources, photo reaction target levels,
+ * reaction target levels
+ */
 public class Individual {
-    public static Individual create(int location, Matrix resources, Matrix photoTargetLevels) {
-        return new Individual(location, resources, photoTargetLevels);
+    /**
+     * Returns an individual
+     *
+     * @param location             the location cell index
+     * @param resources            the resources (noResources x 1)
+     * @param photoTargetLevels    the photo target levels (noGenes x 1)
+     * @param reactionTargetLevels the reaction target parameter
+     */
+    public static Individual create(int location, Matrix resources, Matrix photoTargetLevels, Matrix reactionTargetLevels) {
+        return new Individual(location, resources, photoTargetLevels, reactionTargetLevels);
     }
 
     private final int location;
     private final Matrix resources;
     private final Matrix photoTargetLevels;
+    private final Matrix reactionTargetLevels;
 
     /**
      * Creates an individual
      *
-     * @param location          the location cell index
-     * @param resources         the resources (noResources x 1)
-     * @param photoTargetLevels the photo target levels (noGenes x 1)
+     * @param location             the location cell index
+     * @param resources            the resources (noResources x 1)
+     * @param photoTargetLevels    the photo target levels (noGenes x 1)
+     * @param reactionTargetLevels the reaction target parameter
      */
-    protected Individual(int location, Matrix resources, Matrix photoTargetLevels) {
+    protected Individual(int location, Matrix resources, Matrix photoTargetLevels, Matrix reactionTargetLevels) {
         this.location = location;
         this.resources = resources;
         this.photoTargetLevels = photoTargetLevels;
+        this.reactionTargetLevels = reactionTargetLevels;
     }
 
     /**
@@ -63,6 +79,13 @@ public class Individual {
      */
     public Matrix getPhotoTargetLevels() {
         return photoTargetLevels;
+    }
+
+    /**
+     * Returns the reaction target levels (noGenes x 1)
+     */
+    public Matrix getReactionTargetLevels() {
+        return reactionTargetLevels;
     }
 
     /**

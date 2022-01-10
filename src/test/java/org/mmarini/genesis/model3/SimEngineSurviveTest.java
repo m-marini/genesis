@@ -80,7 +80,7 @@ class SimEngineSurviveTest {
         });
         int[] locations = new int[NUM_INDIVIDUALS];
         Species species = new Species(CONSUMPTION_SPEED, SURVIVE_MASS, 0, List.of(), List.of(), List.of(), List.of());
-        Population population = new Population(individualQties,  List.of(), List.of(), List.of(), List.of(), locations, species);
+        Population population = new Population(individualQties, List.of(), List.of(), List.of(), List.of(), locations, species);
         List<Population> populations = List.of(population);
         status = new SimStatus(0, quantities, populations);
     }
